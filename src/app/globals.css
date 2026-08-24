@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: var(--font-heading);
+    --bds-color-brand-teal: #54BFA5;
+    --bds-color-brand-teal-dark: #1C5F56;
+    --bds-color-brand-cream: #FFF8E8;
+    --bds-color-brand-gold: #E9C559;
+    --bds-color-brand-orange: #D36200;
+    --bds-color-brand-cocoa: #5A3A1F;
+    --bds-color-neutral-white: #FFFFFF;
+
+    --bds-color-surface-primary: var(--bds-color-brand-cream);
+    --bds-color-surface-secondary: var(--bds-color-neutral-white);
+    --bds-color-surface-inverse: var(--bds-color-brand-teal-dark);
+
+    --bds-color-text-heading: var(--bds-color-brand-teal-dark);
+    --bds-color-text-body: var(--bds-color-brand-cocoa);
+    --bds-color-text-inverse: var(--bds-color-brand-cream);
+
+    --bds-color-action-primary: var(--bds-color-brand-teal-dark);
+    --bds-color-action-primary-text: var(--bds-color-brand-cream);
+    --bds-color-action-promo: var(--bds-color-brand-orange);
+
+    /* Legacy compatibility variables */
+    --color-brand-mango: #EFA43A;
+    --color-brand-butter: #F9DE9C;
+    --color-brand-clay: #C4522A;
+    --color-brand-charcoal: #1C1A17;
+    --color-brand-sand: #FAF6F0;
+    --color-brand-cream: #FFFDF9;
+  }
+
+  body {
+    @apply bg-bds-surface-primary text-bds-text-body font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight text-bds-text-heading;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-bds-action-primary-text bg-bds-action-primary hover:bg-[#154942] rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-bds-action-primary focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-bds-text-heading bg-bds-gold hover:bg-[#dec050] rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-bds-gold focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-bds-text-heading border-2 border-bds-action-primary/30 hover:border-bds-action-primary hover:bg-bds-surface-primary rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-bds-action-primary focus:ring-offset-2;
+  }
+}
