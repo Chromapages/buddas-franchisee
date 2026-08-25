@@ -80,9 +80,10 @@ test("CandidateProfileSection provides bottom partnership callout and action sui
   assert.ok(content.includes("brings a distinctive product") || content.includes("distinctive product"), "Must render partnership description");
 
   // Primary & Secondary Actions
-  assert.ok(content.includes("REVIEW QUALIFICATIONS"), "Must render primary CTA button");
-  assert.ok(content.includes("/franchise/the-opportunity#qualifications") || content.includes("/franchise/the-opportunity"), "Must route to qualifications");
-  assert.ok(content.includes("VIEW INVESTMENT DETAILS"), "Must render secondary link");
+  assert.ok(content.includes("VIEW INVESTMENT DETAILS"), "Must render primary CTA button");
+  assert.ok(content.includes("/franchise/the-opportunity#financials") || content.includes("/franchise/the-opportunity"), "Must route to financials");
+  assert.ok(content.includes("REVIEW QUALIFICATIONS"), "Must render secondary link");
+  assert.ok(content.includes("No commitment"), "Must render reassurance microcopy");
 });
 
 test("FranchiseHomePage integrates CandidateProfileSection as 3rd section", () => {

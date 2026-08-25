@@ -286,20 +286,27 @@ export const CandidateProfileSection = () => {
               </div>
 
               {/* Right: Action Buttons Suite */}
-              <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
-                <Link
-                  href="/franchise/the-opportunity#qualifications"
-                  className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-white bg-[#1C5F56] hover:bg-bds-teal px-5 py-2.5 rounded-xl transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold active:scale-[0.99]"
-                >
-                  <span>REVIEW QUALIFICATIONS</span>
-                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-                </Link>
-                
+              <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
+                {/* Primary Action: View Investment Details */}
                 <Link
                   href="/franchise/the-opportunity#financials"
-                  className="text-xs font-bold uppercase tracking-wider text-[#1C5F56] hover:text-[#C47D2B] hover:underline underline-offset-2 inline-flex items-center gap-1 transition-colors"
+                  className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-white bg-[#1C5F56] hover:bg-bds-teal px-5 py-2.5 rounded-xl transition-all shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold active:scale-[0.99]"
                 >
                   <span>VIEW INVESTMENT DETAILS</span>
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+
+                {/* Reassurance Microcopy attached to Primary CTA */}
+                <span className="text-[11px] text-[#5A3A1F]/70 font-medium tracking-normal text-left sm:text-right">
+                  No commitment · Explore Item 7 ranges &amp; startup costs
+                </span>
+                
+                {/* Secondary Action: Review Qualifications */}
+                <Link
+                  href="/franchise/the-opportunity#qualifications"
+                  className="text-xs font-bold uppercase tracking-wider text-[#1C5F56] hover:text-[#C47D2B] hover:underline underline-offset-2 inline-flex items-center gap-1 transition-colors pt-1"
+                >
+                  <span>REVIEW QUALIFICATIONS</span>
                   <ArrowRight className="w-3 h-3" aria-hidden="true" />
                 </Link>
               </div>
