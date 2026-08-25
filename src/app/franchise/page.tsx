@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  ArrowUpRight,
   MapPin,
   Lock,
 } from "lucide-react";
@@ -91,7 +90,7 @@ export const FranchiseHomePage = () => {
                   className="self-center inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm sm:text-base font-semibold text-bds-teal-dark underline underline-offset-4 hover:text-bds-teal focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 sm:self-auto sm:rounded-xl sm:border-2 sm:border-bds-teal-dark/30 sm:bg-white/40 sm:px-6 sm:no-underline sm:hover:border-bds-teal-dark sm:hover:bg-white"
                 >
                   <span>Start a Franchise Inquiry</span>
-                  <ArrowUpRight className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
                 </Link>
               </div>
 
@@ -157,10 +156,24 @@ export const FranchiseHomePage = () => {
                 </Link>
               </div>
 
-              {/* Reassurance Microcopy */}
-              <p className="text-xs text-bds-cream/80 flex items-center justify-center lg:justify-start gap-1.5 pt-0.5">
-                <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-                <span>Confidential &bull; Zero Obligation</span>
+              {/* Workflow & Reassurance Signals */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5 text-xs text-bds-cream/80">
+                <span className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+                  <span>In-House Corporate Review</span>
+                </span>
+                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Instant Digital Brochure via Email</span>
+                </span>
+                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
+                <span>Zero Obligation</span>
+              </div>
+
+              {/* Approved Legal Privacy & Non-Binding Disclosure */}
+              <p className="text-[11px] text-bds-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
+                Initial inquiry only. Your information is confidential, reviewed solely by our internal corporate team, and never shared or sold. Submission does not constitute a formal franchise offering or binding agreement.
               </p>
             </div>
 

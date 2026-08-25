@@ -233,10 +233,24 @@ export default function TheOpportunityPage() {
                 </Link>
               </div>
 
-              {/* Reassurance Microcopy */}
-              <p className="text-xs text-brand-cream/80 flex items-center justify-center lg:justify-start gap-1.5 pt-0.5">
-                <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-                <span>Confidential &bull; Zero Obligation</span>
+              {/* Workflow & Reassurance Signals */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5 text-xs text-brand-cream/80">
+                <span className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+                  <span>In-House Corporate Review</span>
+                </span>
+                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Instant Digital Brochure via Email</span>
+                </span>
+                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
+                <span>Zero Obligation</span>
+              </div>
+
+              {/* Approved Legal Privacy & Non-Binding Disclosure */}
+              <p className="text-[11px] text-brand-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
+                Initial inquiry only. Your information is confidential, reviewed solely by our internal corporate team, and never shared or sold. Submission does not constitute a formal franchise offering or binding agreement.
               </p>
             </div>
 
