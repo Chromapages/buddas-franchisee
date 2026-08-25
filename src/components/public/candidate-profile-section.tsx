@@ -150,98 +150,116 @@ export const CandidateProfileSection = () => {
             {/* 2. Three Vertical Pillars in One Row with Dividers */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-[#1C5F56]/15 pt-2">
               
-              {/* Pillar 01: OPERATE (Narrative / Experience) */}
+              {/* Pillar 01: OPERATE (Experience-Based) */}
               <div className="flex flex-col items-center md:items-start text-center md:text-left md:pr-5 pt-4 md:pt-0 space-y-2.5">
-                <span className="text-2xl sm:text-3xl font-bold font-heading text-[#54BFA5] select-none">
-                  01
-                </span>
-                
+                {/* 1. Icon */}
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-[#1C5F56] bg-bds-cream flex items-center justify-center text-[#1C5F56] shadow-sm">
                   <OperateTeamIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
 
-                <div className="pt-1">
-                  <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56]">
-                    OPERATE
+                {/* 2. Number Label & Category */}
+                <div className="flex items-center space-x-2 pt-0.5">
+                  <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
+                    01
                   </span>
-                  <span className="block h-0.5 w-6 bg-[#C47D2B] mt-1 mx-auto md:mx-0" aria-hidden="true" />
+                  <div className="inline-block text-left">
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56] block">
+                      OPERATE
+                    </span>
+                    <span className="block h-0.5 w-6 bg-[#C47D2B] mt-0.5" aria-hidden="true" />
+                  </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug">
+                {/* 3. One Bolded Criterion Statement */}
+                <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex items-center">
                   Multi-unit or high-volume restaurant experience
                 </h3>
 
+                {/* 4. One Supporting Sentence */}
                 <p className="text-xs text-[#5A3A1F]/80 leading-relaxed">
                   Proven experience leading multiple units or managing high-volume operations with strong results.
                 </p>
               </div>
 
-              {/* Pillar 02: CAPITALIZE (Stat / Financial Metric Treatment) */}
+              {/* Pillar 02: CAPITALIZE (Financial-Based) */}
               <div className="flex flex-col items-center md:items-start text-center md:text-left md:px-5 pt-5 md:pt-0 space-y-2.5">
-                <span className="text-2xl sm:text-3xl font-bold font-heading text-[#54BFA5] select-none">
-                  02
-                </span>
-                
+                {/* 1. Icon */}
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-[#1C5F56] bg-bds-cream flex items-center justify-center text-[#1C5F56] shadow-sm">
                   <CapitalizeFinanceIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
 
-                <div className="pt-1">
-                  <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56]">
-                    CAPITALIZE
+                {/* 2. Number Label & Category */}
+                <div className="flex items-center space-x-2 pt-0.5">
+                  <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
+                    02
                   </span>
-                  <span className="block h-0.5 w-6 bg-[#C47D2B] mt-1 mx-auto md:mx-0" aria-hidden="true" />
-                </div>
-
-                {/* Stat / Metric Highlight */}
-                <div className="space-y-1.5 w-full">
-                  <div>
-                    <span className="text-xl sm:text-2xl font-black text-[#1C5F56] tracking-tight block">
-                      $150K
+                  <div className="inline-block text-left">
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56] block">
+                      CAPITALIZE
                     </span>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-[#5A3A1F]/70 block">
-                      LIQUID CAPITAL
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-xl sm:text-2xl font-black text-[#1C5F56] tracking-tight block">
-                      $400K
-                    </span>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-[#5A3A1F]/70 block">
-                      NET WORTH
-                    </span>
+                    <span className="block h-0.5 w-6 bg-[#C47D2B] mt-0.5" aria-hidden="true" />
                   </div>
                 </div>
 
-                <p className="text-xs text-[#5A3A1F]/80 leading-relaxed pt-0.5">
-                  Minimum financial requirements to support development.
-                </p>
+                {/* 3. One Bolded Criterion Statement (Resolved 2-figure primary/secondary treatment) */}
+                <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex flex-col justify-center">
+                  <span className="inline-flex items-baseline">
+                    <span className="text-base sm:text-lg font-black tracking-tight text-[#1C5F56]">$150K</span>
+                    <span className="ml-1 text-xs sm:text-sm font-black uppercase tracking-wider text-[#1C5F56]">LIQUID CAPITAL</span>
+                    <sup className="text-xs font-bold text-[#C47D2B] ml-0.5" aria-hidden="true">*</sup>
+                  </span>
+                  <span className="text-xs sm:text-[13px] font-semibold text-[#5A3A1F]/90 mt-0.5 inline-flex items-baseline">
+                    and <span className="font-bold text-[#1C5F56] mx-1">$400K</span> <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wide text-[#5A3A1F]/80">NET WORTH</span>
+                    <sup className="text-[10px] font-bold text-[#C47D2B] ml-0.5" aria-hidden="true">*</sup>
+                  </span>
+                </h3>
+
+                {/* 4. One Supporting Sentence */}
+                <div className="space-y-1">
+                  <p className="text-xs text-[#5A3A1F]/80 leading-relaxed">
+                    Minimum financial requirements to support development.
+                  </p>
+                  {/* Coordinated FDD Footnote Reference */}
+                  <p id="fdd-financial-disclosure-note" className="text-[11px] text-[#5A3A1F]/75 leading-tight">
+                    *Preliminary criteria. See{" "}
+                    <a
+                      href="/franchise/the-opportunity#financial-requirements"
+                      className="text-[#1C5F56] font-bold underline underline-offset-2 hover:text-[#54BFA5] focus:outline-none focus:ring-2 focus:ring-[#1C5F56] focus:ring-offset-1 rounded-sm inline-flex items-center"
+                      aria-label="View formal Franchise Disclosure Document Item 7 investment requirements"
+                    >
+                      FDD Item 7
+                    </a>{" "}
+                    for complete initial investment ranges.
+                  </p>
+                </div>
               </div>
 
-              {/* Pillar 03: STEWARD (Commitment / Value Treatment) */}
+              {/* Pillar 03: STEWARD (Values-Based) */}
               <div className="flex flex-col items-center md:items-start text-center md:text-left md:pl-5 pt-5 md:pt-0 space-y-2.5">
-                <span className="text-2xl sm:text-3xl font-bold font-heading text-[#54BFA5] select-none">
-                  03
-                </span>
-                
+                {/* 1. Icon */}
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-[#1C5F56] bg-bds-cream flex items-center justify-center text-[#1C5F56] shadow-sm">
                   <StewardHeartIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                 </div>
 
-                <div className="pt-1">
-                  <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56]">
-                    STEWARD
+                {/* 2. Number Label & Category */}
+                <div className="flex items-center space-x-2 pt-0.5">
+                  <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
+                    03
                   </span>
-                  <span className="block h-0.5 w-6 bg-[#C47D2B] mt-1 mx-auto md:mx-0" aria-hidden="true" />
+                  <div className="inline-block text-left">
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56] block">
+                      STEWARD
+                    </span>
+                    <span className="block h-0.5 w-6 bg-[#C47D2B] mt-0.5" aria-hidden="true" />
+                  </div>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug">
-                  Protect the product.<br />
-                  Lead the team.<br />
-                  Serve the community.
+                {/* 3. One Bolded Criterion Statement */}
+                <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex items-center">
+                  Protect the product, lead the team, and serve community
                 </h3>
 
+                {/* 4. One Supporting Sentence */}
                 <p className="text-xs text-[#5A3A1F]/80 leading-relaxed">
                   A commitment to Budda&apos;s standards, our people, and the communities we serve.
                 </p>
