@@ -256,7 +256,7 @@ export const CandidateProfileSection = () => {
 
                 {/* 3. One Bolded Criterion Statement */}
                 <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex items-center">
-                  Protect the product, lead the team, and serve community
+                  Protect the product. Lead the team. Serve the community.
                 </h3>
 
                 {/* 4. One Supporting Sentence */}
@@ -329,7 +329,7 @@ export const CandidateProfileSection = () => {
               />
 
               {/* Frosted Glass Overlay Badge in Lower-Right */}
-              <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-black/65 backdrop-blur-md px-4 py-3 rounded-2xl flex items-center gap-3 border border-white/15 text-white shadow-lg select-none">
+              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-black/65 backdrop-blur-md px-4 py-3 rounded-2xl flex items-center gap-3 border border-white/15 text-white shadow-lg select-none">
                 <div className="w-7 h-7 rounded-full bg-[#E9C559]/20 flex items-center justify-center text-[#E9C559] shrink-0">
                   <MonsteraIcon className="w-4 h-4" />
                 </div>
