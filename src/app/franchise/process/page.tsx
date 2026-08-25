@@ -131,10 +131,10 @@ export default function ProcessPage() {
         <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="text-2xl sm:text-3xl font-black font-heading">
-              Ready to Initiate Stage 01?
+              Initiate Stage 01: Introductory Inquiry
             </h3>
-            <p className="text-brand-cream/80 text-sm sm:text-base max-w-xl">
-              Complete the franchise inquiry form to begin our mutual evaluation process.
+            <p className="text-brand-cream/80 text-sm sm:text-base max-w-xl leading-relaxed">
+              Submit your preliminary background and territory of interest to begin our structured mutual evaluation.
             </p>
           </div>
           <Link

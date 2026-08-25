@@ -89,10 +89,10 @@ export default function WhyBuddasPage() {
         <div className="bg-bds-action-primary rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
           <div className="space-y-2 text-center md:text-left">
             <h3 className="text-2xl sm:text-3xl font-black font-heading text-white">
-              Ready to Explore Investment &amp; Support?
+              Explore Investment &amp; Support Architecture
             </h3>
-            <p className="text-bds-cream/80 text-sm sm:text-base max-w-xl">
-              See what Budda&apos;s looks for in prospective operating partners and review our training architecture.
+            <p className="text-bds-cream/80 text-sm sm:text-base max-w-xl leading-relaxed">
+              Review candidate criteria, Item 7 initial investment ranges, and our turnkey operating systems.
             </p>
           </div>
           <Link

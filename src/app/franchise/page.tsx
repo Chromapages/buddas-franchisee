@@ -131,10 +131,10 @@ export const FranchiseHomePage = () => {
             B
           </div>
           <h2 className="text-3xl sm:text-5xl font-black font-heading text-white max-w-2xl mx-auto tracking-tight">
-            Ready to Take the Next Step in Your Franchise Journey?
+            Bring Budda&apos;s to Your Market.
           </h2>
           <p className="text-base sm:text-lg text-bds-cream/80 max-w-xl mx-auto leading-relaxed">
-            Submit an introductory inquiry. Our development team will review your qualifications and connect for a mutual evaluation discussion.
+            Our development team will review your qualifications and connect for a mutual evaluation discussion.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

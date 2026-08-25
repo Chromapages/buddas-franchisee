@@ -204,10 +204,10 @@ export default function TheOpportunityPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-14 text-white text-center space-y-6 shadow-xl">
           <h2 className="text-3xl sm:text-4xl font-black font-heading text-white max-w-2xl mx-auto">
-            Ready to Evaluate Mutual Fit?
+            Start Your Franchise Evaluation.
           </h2>
-          <p className="text-base text-brand-cream/80 max-w-xl mx-auto">
-            Submit your franchise inquiry to connect with our development leadership and review the next steps.
+          <p className="text-base text-brand-cream/80 max-w-xl mx-auto leading-relaxed">
+            Connect directly with our development team to review market availability, candidate criteria, and Item 7 investment parameters.
           </p>
           <div className="pt-2">
             <Link href="/franchise/contact" className="btn-primary text-base font-bold">
