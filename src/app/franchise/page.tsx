@@ -127,9 +127,6 @@ export const FranchiseHomePage = () => {
       {/* Final Call to Action */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="bg-bds-teal-dark rounded-3xl p-8 sm:p-14 text-white text-center space-y-6 shadow-xl relative overflow-hidden">
-          <div className="w-12 h-12 rounded-2xl bg-bds-gold mx-auto flex items-center justify-center text-bds-teal-dark font-black text-2xl shadow-md">
-            B
-          </div>
           <h2 className="text-3xl sm:text-5xl font-black font-heading text-white max-w-2xl mx-auto tracking-tight">
             Bring Budda&apos;s to Your Market.
           </h2>
