@@ -47,7 +47,7 @@ export const FranchiseHomePage = () => {
             {/* Left Content Column matching reference image */}
             <div className="lg:col-span-6 xl:col-span-5 max-w-sm sm:max-w-md lg:max-w-lg space-y-4 sm:space-y-6 text-left">
               {/* Eyebrow: Inline Roll Icon SVG + Gold Text */}
-              <div className="flex items-center gap-2.5 text-[#C47D2B] text-xs sm:text-sm font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2.5 text-bds-teal-dark text-xs sm:text-sm font-bold uppercase tracking-widest">
                 <span
                   className="inline-block w-7 h-5 bg-[#C47D2B] shrink-0"
                   style={{
@@ -81,7 +81,7 @@ export const FranchiseHomePage = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-0.5 max-w-[320px] sm:max-w-none">
                 <Link
                   href="/franchise/the-opportunity"
-                  className="btn-primary !px-6 !py-3.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2 rounded-xl shadow-sm hover:!bg-bds-teal hover:text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2"
+                  className="btn-primary !px-6 !py-3.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2 rounded-xl shadow-sm hover:!bg-bds-teal hover:text-white transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-bds-teal-dark focus-visible:outline-offset-4"
                 >
                   <span>Review the Franchise Opportunity</span>
                   <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />

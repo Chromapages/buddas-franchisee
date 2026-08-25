@@ -202,37 +202,75 @@ export default function TheOpportunityPage() {
       </section>
 
       {/* Bottom CTA Box */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-14 text-white text-center shadow-xl">
-          {/* Message Cluster */}
-          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-black font-heading text-white">
-              Let&apos;s Build Something Together.
-            </h2>
-            <p className="text-base text-brand-cream/80 max-w-xl mx-auto leading-relaxed">
-              We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
-            </p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-20">
+        <div className="bg-brand-charcoal rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 text-white shadow-xl relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Message & Action Cluster (cols 1-7) */}
+            <div className="lg:col-span-7 text-center lg:text-left space-y-5 sm:space-y-6">
+              {/* Message Cluster */}
+              <div className="space-y-2.5 sm:space-y-4">
+                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight leading-tight">
+                  Let&apos;s Build Something Together.
+                </h2>
+                <p className="text-sm sm:text-base lg:text-lg text-brand-cream/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                  We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
+                </p>
+              </div>
+
+              {/* Action Cluster (44-48px Mobile Touch Targets) */}
+              <div className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
+                <Link
+                  href="/franchise/contact"
+                  className="btn-primary text-sm sm:text-base font-bold w-full sm:w-auto min-h-[48px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal"
+                >
+                  Request a Mutual Evaluation
+                </Link>
+                <Link
+                  href="/franchise/process"
+                  className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 min-h-[44px] flex items-center justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal transition-colors duration-200"
+                >
+                  See How We Partner &rarr;
+                </Link>
+              </div>
+
+              {/* Reassurance Microcopy */}
+              <p className="text-xs text-brand-cream/80 flex items-center justify-center lg:justify-start gap-1.5 pt-0.5">
+                <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+                <span>Confidential &bull; Zero Obligation</span>
+              </p>
+            </div>
+
+            {/* Right Column: Existing Brand Trust Anchor (cols 8-12) */}
+            <div className="lg:col-span-5 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-7 backdrop-blur-sm">
+              <div className="text-xs font-bold uppercase tracking-wider text-bds-gold mb-3.5 text-center lg:text-left">
+                Franchise Evaluation Benchmarks
+              </div>
+              <div className="grid grid-cols-2 gap-4 border-b border-white/10 pb-5 mb-5 text-center lg:text-left">
+                <div>
+                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$150K</div>
+                  <div className="text-xs text-brand-cream/70 mt-0.5">Min. Liquid Capital</div>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$400K</div>
+                  <div className="text-xs text-brand-cream/70 mt-0.5">Min. Net Worth</div>
+                </div>
+              </div>
+              <div className="space-y-2.5 text-xs text-brand-cream/80 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>2 Operating Corporate Locations (Utah)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Structured 4-Stage Mutual Vetting Process</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Direct Leadership &amp; Operational Onboarding</span>
+                </div>
+              </div>
+            </div>
           </div>
-          {/* Action Cluster */}
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/franchise/contact"
-              className="btn-primary text-base font-bold w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal"
-            >
-              Request a Mutual Evaluation
-            </Link>
-            <Link
-              href="/franchise/process"
-              className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal transition-colors duration-200"
-            >
-              See How We Partner &rarr;
-            </Link>
-          </div>
-          {/* Reassurance Microcopy */}
-          <p className="mt-4 text-xs text-brand-cream/80 flex items-center justify-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-            <span>Confidential &bull; Zero Obligation</span>
-          </p>
         </div>
       </section>
     </div>
