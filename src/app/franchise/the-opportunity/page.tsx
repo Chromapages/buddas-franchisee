@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Sparkles,
   ArrowRight,
+  Lock,
 } from "lucide-react";
 import { isActiveOfferingEnabled } from "@/src/lib/flags";
 import { FinancialDisclosure } from "@/src/components/public/financial-disclosure";
@@ -206,18 +207,29 @@ export default function TheOpportunityPage() {
           {/* Message Cluster */}
           <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-black font-heading text-white">
-              Start Your Franchise Evaluation.
+              Let&apos;s Build Something Together.
             </h2>
             <p className="text-base text-brand-cream/80 max-w-xl mx-auto leading-relaxed">
-              Connect directly with our development team to review market availability, candidate criteria, and Item 7 investment parameters.
+              We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
             </p>
           </div>
           {/* Action Cluster */}
-          <div className="mt-8 sm:mt-10">
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/franchise/contact" className="btn-primary text-base font-bold">
-              Start a Franchise Inquiry
+              Request a Mutual Evaluation
+            </Link>
+            <Link
+              href="/franchise/process"
+              className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 focus-visible:ring-2 focus-visible:ring-bds-gold"
+            >
+              See How We Partner &rarr;
             </Link>
           </div>
+          {/* Reassurance Microcopy */}
+          <p className="mt-4 text-xs text-brand-cream/80 flex items-center justify-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+            <span>Confidential &bull; Zero Obligation</span>
+          </p>
         </div>
       </section>
     </div>

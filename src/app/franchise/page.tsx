@@ -4,6 +4,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   MapPin,
+  Lock,
 } from "lucide-react";
 import { OperatorProofRail } from "@/src/components/public/operator-proof-rail";
 import { CandidateProfileSection } from "@/src/components/public/candidate-profile-section";
@@ -130,10 +131,10 @@ export const FranchiseHomePage = () => {
           {/* Message Cluster (Tight Proximity) */}
           <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
             <h2 className="text-3xl sm:text-5xl font-black font-heading text-white tracking-tight">
-              Bring Budda&apos;s to Your Market.
+              Let&apos;s Build Something Together.
             </h2>
             <p className="text-base sm:text-lg text-bds-cream/80 max-w-xl mx-auto leading-relaxed">
-              Our development team will review your qualifications and connect for a mutual evaluation discussion.
+              We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
             </p>
           </div>
 
@@ -143,15 +144,21 @@ export const FranchiseHomePage = () => {
               href="/franchise/contact"
               className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2"
             >
-              Start a Franchise Inquiry
+              Request a Mutual Evaluation
             </Link>
             <Link
               href="/franchise/process"
               className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 focus-visible:ring-2 focus-visible:ring-bds-gold"
             >
-              Review the 4-Stage Franchise Process &rarr;
+              See How We Partner &rarr;
             </Link>
           </div>
+
+          {/* Reassurance Microcopy */}
+          <p className="mt-4 text-xs text-bds-cream/80 flex items-center justify-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+            <span>Confidential &bull; Zero Obligation</span>
+          </p>
         </div>
       </section>
     </div>
