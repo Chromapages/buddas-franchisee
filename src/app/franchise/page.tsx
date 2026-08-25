@@ -87,7 +87,7 @@ export const FranchiseHomePage = () => {
                 </Link>
                 <Link
                   href="/franchise/contact"
-                  className="btn-outline !px-6 !py-3.5 text-sm sm:text-base font-semibold flex items-center justify-center gap-2 rounded-xl border-2 border-bds-teal-dark/30 hover:border-bds-teal-dark text-bds-teal-dark bg-white/40 hover:bg-white focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2"
+                  className="self-center inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm sm:text-base font-semibold text-bds-teal-dark underline underline-offset-4 hover:text-bds-teal focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 sm:self-auto sm:rounded-xl sm:border-2 sm:border-bds-teal-dark/30 sm:bg-white/40 sm:px-6 sm:no-underline sm:hover:border-bds-teal-dark sm:hover:bg-white"
                 >
                   <span>Start an Inquiry</span>
                   <ArrowUpRight className="w-4 h-4 shrink-0" aria-hidden="true" />
@@ -126,14 +126,19 @@ export const FranchiseHomePage = () => {
 
       {/* Final Call to Action */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div className="bg-bds-teal-dark rounded-3xl p-8 sm:p-14 text-white text-center space-y-6 shadow-xl relative overflow-hidden">
-          <h2 className="text-3xl sm:text-5xl font-black font-heading text-white max-w-2xl mx-auto tracking-tight">
-            Bring Budda&apos;s to Your Market.
-          </h2>
-          <p className="text-base sm:text-lg text-bds-cream/80 max-w-xl mx-auto leading-relaxed">
-            Our development team will review your qualifications and connect for a mutual evaluation discussion.
-          </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="bg-bds-teal-dark rounded-3xl p-8 sm:p-14 text-white text-center shadow-xl relative overflow-hidden">
+          {/* Message Cluster (Tight Proximity) */}
+          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-5xl font-black font-heading text-white tracking-tight">
+              Bring Budda&apos;s to Your Market.
+            </h2>
+            <p className="text-base sm:text-lg text-bds-cream/80 max-w-xl mx-auto leading-relaxed">
+              Our development team will review your qualifications and connect for a mutual evaluation discussion.
+            </p>
+          </div>
+
+          {/* Action Cluster (Distinct Separation) */}
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/franchise/contact"
               className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2"
@@ -154,4 +159,3 @@ export const FranchiseHomePage = () => {
 };
 
 export default FranchiseHomePage;
-

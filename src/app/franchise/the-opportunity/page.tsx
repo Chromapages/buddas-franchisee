@@ -202,14 +202,18 @@ export default function TheOpportunityPage() {
 
       {/* Bottom CTA Box */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-14 text-white text-center space-y-6 shadow-xl">
-          <h2 className="text-3xl sm:text-4xl font-black font-heading text-white max-w-2xl mx-auto">
-            Start Your Franchise Evaluation.
-          </h2>
-          <p className="text-base text-brand-cream/80 max-w-xl mx-auto leading-relaxed">
-            Connect directly with our development team to review market availability, candidate criteria, and Item 7 investment parameters.
-          </p>
-          <div className="pt-2">
+        <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-14 text-white text-center shadow-xl">
+          {/* Message Cluster */}
+          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-black font-heading text-white">
+              Start Your Franchise Evaluation.
+            </h2>
+            <p className="text-base text-brand-cream/80 max-w-xl mx-auto leading-relaxed">
+              Connect directly with our development team to review market availability, candidate criteria, and Item 7 investment parameters.
+            </p>
+          </div>
+          {/* Action Cluster */}
+          <div className="mt-8 sm:mt-10">
             <Link href="/franchise/contact" className="btn-primary text-base font-bold">
               Start a Franchise Inquiry
             </Link>
