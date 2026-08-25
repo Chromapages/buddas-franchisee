@@ -1258,9 +1258,23 @@ Typical:
 
 Do not box every section.
 
+## 9.3 Section Divider
+
+Use the `section-divider` primitive for a quiet structural break within a public
+section:
+
+```text
+border    1px Dark Teal at 10% opacity
+padding   24px between the rule and the following content
+spacing   parent layout owns the preceding gap; use space.7 (32px) compact or space.8 (40px) desktop
+```
+
+Do not add a local border color or padding when this primitive is used. Use a
+stronger divider only when the component documents a semantic reason.
+
 ---
 
-## 9.3 Shadows
+## 9.4 Shadows
 
 Acceptable:
 

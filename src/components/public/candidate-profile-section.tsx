@@ -158,7 +158,7 @@ export const CandidateProfileSection = () => {
                 </div>
 
                 {/* 2. Number Label & Category */}
-                <div className="flex items-center space-x-2 pt-0.5">
+                <div className="flex items-center space-x-2 pt-0.5" aria-hidden="true">
                   <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
                     01
                   </span>
@@ -172,6 +172,7 @@ export const CandidateProfileSection = () => {
 
                 {/* 3. One Bolded Criterion Statement */}
                 <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex items-center">
+                  <span className="sr-only">01 Operate: </span>
                   Multi-unit or high-volume restaurant experience
                 </h3>
 
@@ -189,7 +190,7 @@ export const CandidateProfileSection = () => {
                 </div>
 
                 {/* 2. Number Label & Category */}
-                <div className="flex items-center space-x-2 pt-0.5">
+                <div className="flex items-center space-x-2 pt-0.5" aria-hidden="true">
                   <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
                     02
                   </span>
@@ -203,14 +204,15 @@ export const CandidateProfileSection = () => {
 
                 {/* 3. One Bolded Criterion Statement (Resolved 2-figure primary/secondary treatment) */}
                 <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex flex-col justify-center">
-                  <span className="inline-flex items-baseline">
+                  <span className="sr-only">02 Capitalize: $150K liquid capital and $400K net worth</span>
+                  <span className="inline-flex items-baseline" aria-hidden="true">
                     <span className="text-base sm:text-lg font-black tracking-tight text-[#1C5F56]">$150K</span>
                     <span className="ml-1 text-xs sm:text-sm font-black uppercase tracking-wider text-[#1C5F56]">LIQUID CAPITAL</span>
-                    <sup className="text-xs font-bold text-[#C47D2B] ml-0.5" aria-hidden="true">*</sup>
+                    <sup className="text-xs font-bold text-[#C47D2B] ml-0.5">*</sup>
                   </span>
-                  <span className="text-xs sm:text-[13px] font-semibold text-[#5A3A1F]/90 mt-0.5 inline-flex items-baseline">
+                  <span className="text-xs sm:text-[13px] font-semibold text-[#5A3A1F]/90 mt-0.5 inline-flex items-baseline" aria-hidden="true">
                     and <span className="font-bold text-[#1C5F56] mx-1">$400K</span> <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wide text-[#5A3A1F]/80">NET WORTH</span>
-                    <sup className="text-[10px] font-bold text-[#C47D2B] ml-0.5" aria-hidden="true">*</sup>
+                    <sup className="text-[10px] font-bold text-[#C47D2B] ml-0.5">*</sup>
                   </span>
                 </h3>
 
@@ -242,7 +244,7 @@ export const CandidateProfileSection = () => {
                 </div>
 
                 {/* 2. Number Label & Category */}
-                <div className="flex items-center space-x-2 pt-0.5">
+                <div className="flex items-center space-x-2 pt-0.5" aria-hidden="true">
                   <span className="text-xl sm:text-2xl font-bold font-heading text-[#54BFA5] select-none">
                     03
                   </span>
@@ -256,6 +258,7 @@ export const CandidateProfileSection = () => {
 
                 {/* 3. One Bolded Criterion Statement */}
                 <h3 className="text-sm sm:text-base font-bold text-[#1C5F56] leading-snug min-h-[44px] flex items-center">
+                  <span className="sr-only">03 Steward: </span>
                   Protect the product. Lead the team. Serve the community.
                 </h3>
 
@@ -268,7 +271,7 @@ export const CandidateProfileSection = () => {
             </div>
 
             {/* 3. Bottom Partnership Callout and Action Suite */}
-            <div className="pt-6 border-t border-[#1C5F56]/15 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="section-divider flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               
               {/* Left: Relationship Callout */}
               <div className="flex items-start gap-3.5 max-w-sm text-left">
@@ -297,14 +300,14 @@ export const CandidateProfileSection = () => {
                 </Link>
 
                 {/* Reassurance Microcopy attached to Primary CTA */}
-                <span className="text-[11px] text-[#5A3A1F]/70 font-medium tracking-normal text-left sm:text-right">
+                <span className="text-[11px] text-[#5A3A1F]/80 font-medium tracking-normal text-left sm:text-right">
                   No commitment · Explore Item 7 ranges &amp; startup costs
                 </span>
                 
                 {/* Secondary Action: Review Qualifications */}
                 <Link
                   href="/franchise/the-opportunity#qualifications"
-                  className="text-xs font-bold uppercase tracking-wider text-[#1C5F56] hover:text-[#C47D2B] hover:underline underline-offset-2 inline-flex items-center gap-1 transition-colors pt-1"
+                  className="text-xs font-bold uppercase tracking-wider text-[#1C5F56] hover:text-[#C47D2B] hover:underline underline-offset-2 inline-flex items-center gap-1 transition-colors pt-1 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-4 focus-visible:ring-offset-bds-cream"
                 >
                   <span>REVIEW QUALIFICATIONS</span>
                   <ArrowRight className="w-3 h-3" aria-hidden="true" />

@@ -44,6 +44,10 @@
 }
 
 @layer components {
+  .section-divider {
+    @apply border-t border-bds-teal-dark/10 pt-6;
+  }
+
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-bds-action-primary-text bg-bds-action-primary hover:bg-[#154942] rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-bds-action-primary focus:ring-offset-2;
   }
