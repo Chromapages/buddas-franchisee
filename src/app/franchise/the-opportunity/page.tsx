@@ -215,12 +215,15 @@ export default function TheOpportunityPage() {
           </div>
           {/* Action Cluster */}
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/franchise/contact" className="btn-primary text-base font-bold">
+            <Link
+              href="/franchise/contact"
+              className="btn-primary text-base font-bold w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal"
+            >
               Request a Mutual Evaluation
             </Link>
             <Link
               href="/franchise/process"
-              className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 focus-visible:ring-2 focus-visible:ring-bds-gold"
+              className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal transition-colors duration-200"
             >
               See How We Partner &rarr;
             </Link>

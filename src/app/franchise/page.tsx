@@ -142,13 +142,13 @@ export const FranchiseHomePage = () => {
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/franchise/contact"
-              className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2"
+              className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark"
             >
               Request a Mutual Evaluation
             </Link>
             <Link
               href="/franchise/process"
-              className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 focus-visible:ring-2 focus-visible:ring-bds-gold"
+              className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark transition-colors duration-200"
             >
               See How We Partner &rarr;
             </Link>
