@@ -31,9 +31,9 @@ test("Hero section provides responsive mobile and desktop optimized background i
 test("Hero section provides accessible CTAs with correct destinations", () => {
   assert.ok(pageContent.includes("focus-visible:ring-2"), "Includes focus-visible ring styles");
   assert.ok(pageContent.includes('href="/franchise/the-opportunity"'), "Primary CTA links to /franchise/the-opportunity");
-  assert.ok(pageContent.includes("Explore the Opportunity"), "Primary CTA label matches reference");
+  assert.ok(pageContent.includes("Review the Franchise Opportunity"), "Primary CTA label matches approved evaluation-first CTA copy");
   assert.ok(pageContent.includes('href="/franchise/contact"'), "Secondary CTA links to /franchise/contact");
-  assert.ok(pageContent.includes("Start an Inquiry"), "Secondary CTA label matches reference");
+  assert.ok(pageContent.includes("Start a Franchise Inquiry"), "Secondary CTA label matches approved direct-interest CTA copy");
 });
 
 test("Hero section renders 2 Operating Utah Restaurants proof badge and Operator Proof Rail integration", () => {

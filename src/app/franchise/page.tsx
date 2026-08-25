@@ -83,14 +83,14 @@ export const FranchiseHomePage = () => {
                   href="/franchise/the-opportunity"
                   className="btn-primary !px-6 !py-3.5 text-sm sm:text-base font-bold flex items-center justify-center gap-2 rounded-xl shadow-sm hover:!bg-bds-teal hover:text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2"
                 >
-                  <span>Explore the Opportunity</span>
+                  <span>Review the Franchise Opportunity</span>
                   <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
                 </Link>
                 <Link
                   href="/franchise/contact"
                   className="self-center inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm sm:text-base font-semibold text-bds-teal-dark underline underline-offset-4 hover:text-bds-teal focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 sm:self-auto sm:rounded-xl sm:border-2 sm:border-bds-teal-dark/30 sm:bg-white/40 sm:px-6 sm:no-underline sm:hover:border-bds-teal-dark sm:hover:bg-white"
                 >
-                  <span>Start an Inquiry</span>
+                  <span>Start a Franchise Inquiry</span>
                   <ArrowUpRight className="w-4 h-4 shrink-0" aria-hidden="true" />
                 </Link>
               </div>
@@ -127,38 +127,74 @@ export const FranchiseHomePage = () => {
 
       {/* Final Call to Action */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div className="bg-bds-teal-dark rounded-3xl p-8 sm:p-14 text-white text-center shadow-xl relative overflow-hidden">
-          {/* Message Cluster (Tight Proximity) */}
-          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-5xl font-black font-heading text-white tracking-tight">
-              Let&apos;s Build Something Together.
-            </h2>
-            <p className="text-base sm:text-lg text-bds-cream/80 max-w-xl mx-auto leading-relaxed">
-              We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
-            </p>
-          </div>
+        <div className="bg-bds-teal-dark rounded-3xl p-8 sm:p-12 lg:p-16 text-white shadow-xl relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Message & Action Cluster (cols 1-7) */}
+            <div className="lg:col-span-7 text-center lg:text-left space-y-6">
+              {/* Message Cluster (Tight Proximity) */}
+              <div className="space-y-3 sm:space-y-4">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight">
+                  Let&apos;s Build Something Together.
+                </h2>
+                <p className="text-base sm:text-lg text-bds-cream/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                  We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
+                </p>
+              </div>
 
-          {/* Action Cluster (Distinct Separation) */}
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/franchise/contact"
-              className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark"
-            >
-              Request a Mutual Evaluation
-            </Link>
-            <Link
-              href="/franchise/process"
-              className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark transition-colors duration-200"
-            >
-              See How We Partner &rarr;
-            </Link>
-          </div>
+              {/* Action Cluster */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link
+                  href="/franchise/contact"
+                  className="btn-secondary text-base font-bold w-full sm:w-auto hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark"
+                >
+                  Request a Mutual Evaluation
+                </Link>
+                <Link
+                  href="/franchise/process"
+                  className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark transition-colors duration-200"
+                >
+                  See How We Partner &rarr;
+                </Link>
+              </div>
 
-          {/* Reassurance Microcopy */}
-          <p className="mt-4 text-xs text-bds-cream/80 flex items-center justify-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-            <span>Confidential &bull; Zero Obligation</span>
-          </p>
+              {/* Reassurance Microcopy */}
+              <p className="text-xs text-bds-cream/80 flex items-center justify-center lg:justify-start gap-1.5 pt-1">
+                <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
+                <span>Confidential &bull; Zero Obligation</span>
+              </p>
+            </div>
+
+            {/* Right Column: Existing Brand Trust Anchor (cols 8-12) */}
+            <div className="lg:col-span-5 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-sm">
+              <div className="text-xs font-bold uppercase tracking-wider text-bds-gold mb-4 text-center lg:text-left">
+                Franchise Evaluation Benchmarks
+              </div>
+              <div className="grid grid-cols-2 gap-4 border-b border-white/10 pb-6 mb-6">
+                <div>
+                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$150K</div>
+                  <div className="text-xs text-bds-cream/70 mt-1">Min. Liquid Capital</div>
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$400K</div>
+                  <div className="text-xs text-bds-cream/70 mt-1">Min. Net Worth</div>
+                </div>
+              </div>
+              <div className="space-y-2.5 text-xs text-bds-cream/80">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>2 Operating Corporate Locations (Utah)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Structured 4-Stage Mutual Vetting Process</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
+                  <span>Direct Leadership &amp; Operational Onboarding</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
