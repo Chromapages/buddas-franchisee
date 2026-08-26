@@ -128,46 +128,19 @@ export const FranchiseHomePage = () => {
       {/* Final Call to Action */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-20">
         <div className="bg-bds-teal-dark rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 text-white shadow-xl relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Column: Message & Action Cluster (cols 1-7) */}
-            <div className="lg:col-span-7 text-center lg:text-left space-y-5 sm:space-y-6">
-              {/* Message Cluster (Tight Proximity) */}
-              <div className="space-y-2.5 sm:space-y-4">
-                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight leading-tight">
-                  Let&apos;s Build Something Together.
-                </h2>
-                <p className="text-sm sm:text-base lg:text-lg text-bds-cream/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
-                </p>
-              </div>
-
-              {/* Action Cluster (44-48px Mobile Touch Targets) */}
-              <div className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
-                <Link
-                  href="/franchise/contact"
-                  className="btn-secondary text-sm sm:text-base font-bold w-full sm:w-auto min-h-[48px] flex items-center justify-center hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark"
-                >
-                  Request a Mutual Evaluation
-                </Link>
-                <Link
-                  href="/franchise/process"
-                  className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 min-h-[44px] flex items-center justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark transition-colors duration-200"
-                >
-                  See How We Partner &rarr;
-                </Link>
-              </div>
-
-              {/* Workflow & Reassurance Signals (Mobile Auto-Carousel + Desktop Static) */}
-              <WorkflowReassuranceCarousel theme="teal" />
-
-              {/* Approved Legal Privacy & Non-Binding Disclosure */}
-              <p className="text-[11px] text-bds-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
-                Initial inquiry only. Your information is confidential, reviewed solely by our internal corporate team, and never shared or sold. Submission does not constitute a formal franchise offering or binding agreement.
+          <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
+            {/* 1. Message Cluster: Order 1 on mobile, col 1-7 on desktop */}
+            <div className="w-full lg:col-span-7 text-center lg:text-left space-y-2.5 sm:space-y-4 order-1">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight leading-tight">
+                Let&apos;s Build Something Together.
+              </h2>
+              <p className="text-sm sm:text-base lg:text-lg text-bds-cream/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
               </p>
             </div>
 
-            {/* Right Column: Existing Brand Trust Anchor (cols 8-12) */}
-            <div className="lg:col-span-5 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-7 backdrop-blur-sm">
+            {/* 2. Trust Card: Order 2 on mobile (under body text), col 8-12 on desktop */}
+            <div className="w-full lg:col-span-5 lg:row-span-2 order-2 lg:order-2 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-7 backdrop-blur-sm">
               <div className="text-xs font-bold uppercase tracking-wider text-bds-gold mb-3.5 text-center lg:text-left">
                 Franchise Evaluation Benchmarks
               </div>
@@ -195,6 +168,33 @@ export const FranchiseHomePage = () => {
                   <span>Direct Leadership &amp; Operational Onboarding</span>
                 </div>
               </div>
+            </div>
+
+            {/* 3. Action Cluster & Reassurance: Order 3 on mobile (under trust card), col 1-7 on desktop */}
+            <div className="w-full lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 order-3 lg:order-3">
+              {/* Action Cluster (44-48px Mobile Touch Targets) */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
+                <Link
+                  href="/franchise/contact"
+                  className="btn-secondary text-sm sm:text-base font-bold w-full sm:w-auto min-h-[48px] flex items-center justify-center hover:!bg-bds-teal hover:!text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark"
+                >
+                  Request a Mutual Evaluation
+                </Link>
+                <Link
+                  href="/franchise/process"
+                  className="text-sm font-semibold text-bds-cream/80 hover:text-white px-4 py-3 min-h-[44px] flex items-center justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark transition-colors duration-200"
+                >
+                  See How We Partner &rarr;
+                </Link>
+              </div>
+
+              {/* Workflow & Reassurance Signals (Mobile Auto-Carousel + Desktop Static) */}
+              <WorkflowReassuranceCarousel theme="teal" />
+
+              {/* Approved Legal Privacy & Non-Binding Disclosure */}
+              <p className="text-[11px] text-bds-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
+                Initial inquiry only. Your information is confidential, reviewed solely by our internal corporate team, and never shared or sold. Submission does not constitute a formal franchise offering or binding agreement.
+              </p>
             </div>
           </div>
         </div>
