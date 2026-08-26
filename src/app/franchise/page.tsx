@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { OperatorProofRail } from "@/src/components/public/operator-proof-rail";
 import { CandidateProfileSection } from "@/src/components/public/candidate-profile-section";
+import { WorkflowReassuranceCarousel } from "@/src/components/public/workflow-reassurance-carousel";
 
 export const FranchiseHomePage = () => {
 
@@ -156,20 +157,8 @@ export const FranchiseHomePage = () => {
                 </Link>
               </div>
 
-              {/* Workflow & Reassurance Signals */}
-              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-1.5 text-xs text-bds-cream/80">
-                <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-                  <span>In-House Corporate Review</span>
-                </span>
-                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
-                  <span>Instant Digital Brochure via Email</span>
-                </span>
-                <span className="text-bds-gold/40 hidden sm:inline">&bull;</span>
-                <span>Zero Obligation</span>
-              </div>
+              {/* Workflow & Reassurance Signals (Mobile Auto-Carousel + Desktop Static) */}
+              <WorkflowReassuranceCarousel theme="teal" />
 
               {/* Approved Legal Privacy & Non-Binding Disclosure */}
               <p className="text-[11px] text-bds-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
