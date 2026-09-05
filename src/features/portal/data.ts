@@ -1,10 +1,11 @@
 import type {
-  PortalAnnouncement,
+  PortalBulletin,
   PortalLocation,
   PortalOrder,
   PortalProduct,
   PortalResource,
 } from "./types";
+import { ORDER_STATUS } from "./order-status.ts";
 
 export const portalLocations: PortalLocation[] = [
   {
@@ -15,6 +16,10 @@ export const portalLocations: PortalLocation[] = [
     state: "HI",
     franchiseeName: "Keahi & Leilani Akana",
     isOpen: true,
+    market: "Hawaii",
+    equipmentConfig: ["turbo-deck-oven", "automated-proofer"],
+    launchStage: "STABILIZED",
+    storeFormat: "in-line",
   },
   {
     id: "OAH-207",
@@ -24,6 +29,10 @@ export const portalLocations: PortalLocation[] = [
     state: "HI",
     franchiseeName: "Oahu Hospitality Ventures LLC",
     isOpen: true,
+    market: "Hawaii",
+    equipmentConfig: ["turbo-deck-oven", "soft-serve-station", "kiosk-pos"],
+    launchStage: "GRAND_OPENING",
+    storeFormat: "drive-thru",
   },
   {
     id: "SLC-302",
@@ -33,6 +42,10 @@ export const portalLocations: PortalLocation[] = [
     state: "UT",
     franchiseeName: "Wasatch Aloha Group",
     isOpen: true,
+    market: "Utah",
+    equipmentConfig: ["standard-deck-oven", "automated-proofer"],
+    launchStage: "TRAINING",
+    storeFormat: "in-line",
   },
 ];
 
@@ -48,6 +61,7 @@ export const portalProducts: PortalProduct[] = [
     isAvailable: true,
     price: 68.5,
     slug: "budda-roll-dough-base-50lb",
+    imageUrl: "/images/classic-budda-roll.png",
   },
   {
     id: "prod-butter-honey",
@@ -60,6 +74,7 @@ export const portalProducts: PortalProduct[] = [
     isAvailable: true,
     price: 42.0,
     slug: "whipped-honey-butter-compound",
+    imageUrl: "/images/buddas-hero.png",
   },
   {
     id: "prod-box-12",
@@ -72,18 +87,46 @@ export const portalProducts: PortalProduct[] = [
     isAvailable: true,
     price: 84.0,
     slug: "branded-12-pack-roll-boxes",
+    imageUrl: "/images/buddas-hero-rolls-cover.png",
   },
   {
     id: "prod-uniform-apron",
     sku: "UNF-APR01",
     name: "Heavyweight Canvas Baker Apron with Logo",
     category: "Signage & Uniforms",
-    description: "Charcoal washed canvas with embroidered golden mango Budda Roll emblem and cross-back straps.",
+    description: "Dark teal washed canvas with embroidered island gold Budda Roll emblem and cross-back straps.",
     packSize: "Pack of 5",
     leadTimeDays: 2,
     isAvailable: true,
     price: 95.0,
     slug: "heavyweight-canvas-baker-apron",
+    imageUrl: "/images/classic-budda-roll.png",
+  },
+  {
+    id: "prod-sign-window-posters",
+    sku: "SGN-WIN04",
+    name: "Seasonal Promotional Window Poster Kit (Set of 4)",
+    category: "Signage & Uniforms",
+    description: "UV-resistant, double-sided static-cling 24x36 window posters showcasing signature golden Budda Rolls with vibrant brand typography for high street visibility.",
+    packSize: "Set of 4 posters (24\" × 36\")",
+    leadTimeDays: 3,
+    isAvailable: true,
+    price: 58.0,
+    slug: "seasonal-promotional-window-poster-kit",
+    imageUrl: "/images/buddas-hero.png",
+  },
+  {
+    id: "prod-uniform-crew-shirts",
+    sku: "UNF-TEE10",
+    name: "Staff Crewneck Uniform T-Shirt (Pack of 10)",
+    category: "Signage & Uniforms",
+    description: "Breathable pre-shrunk organic cotton team tees in brand dark teal with screen-printed Budda's chest crest and kitchen-grade stitching.",
+    packSize: "Pack of 10 shirts (Assorted S–XXL)",
+    leadTimeDays: 2,
+    isAvailable: true,
+    price: 120.0,
+    slug: "staff-crewneck-uniform-t-shirt-pack",
+    imageUrl: "/images/buddas-about-storefront.png",
   },
 ];
 
@@ -92,7 +135,7 @@ export const portalOrders: PortalOrder[] = [
     id: "ORD-9482",
     locationId: "HNL-014",
     createdAt: "2026-08-18T14:32:00Z",
-    status: "Processing",
+    status: ORDER_STATUS.PROCESSING.id,
     eta: "Aug 23, 2026",
     total: 347.0,
     invoiceId: "INV-2026-0814",
@@ -105,7 +148,7 @@ export const portalOrders: PortalOrder[] = [
     id: "ORD-9120",
     locationId: "HNL-014",
     createdAt: "2026-08-04T09:15:00Z",
-    status: "Delivered",
+    status: ORDER_STATUS.DELIVERED.id,
     eta: "Aug 08, 2026",
     total: 219.0,
     invoiceId: "INV-2026-0792",
@@ -118,7 +161,7 @@ export const portalOrders: PortalOrder[] = [
     id: "ORD-9801",
     locationId: "SLC-302",
     createdAt: "2026-08-19T11:00:00Z",
-    status: "Processing",
+    status: ORDER_STATUS.PROCESSING.id,
     eta: "Aug 24, 2026",
     total: 512.5,
     invoiceId: "INV-2026-0820",
@@ -149,6 +192,30 @@ export const portalResources: PortalResource[] = [
     downloadUrl: "/resources/brand-toolkit-v2.0.zip",
   },
   {
+    id: "res-turbo-oven-guide",
+    title: "Turbo Deck Oven Operating Manual & Calibration Guide",
+    category: "Equipment Guides",
+    version: "v2.4",
+    updatedAt: "2026-08-12T00:00:00Z",
+    fileSize: "6.4 MB",
+    downloadUrl: "/resources/turbo-deck-oven-v2.4.pdf",
+    audience: {
+      equipmentConfigs: ["turbo-deck-oven"],
+    },
+  },
+  {
+    id: "res-grand-opening-kit",
+    title: "Grand Opening VIP Tasting & Community Activation Playbook",
+    category: "Brand & Marketing",
+    version: "v1.1",
+    updatedAt: "2026-07-28T00:00:00Z",
+    fileSize: "9.1 MB",
+    downloadUrl: "/resources/grand-opening-playbook-v1.1.pdf",
+    audience: {
+      launchStages: ["PRE_OPENING", "TRAINING", "GRAND_OPENING"],
+    },
+  },
+  {
     id: "res-food-safety",
     title: "Daily HACCP Food Safety Log & Temp Guidelines",
     category: "Operations Manuals",
@@ -159,17 +226,48 @@ export const portalResources: PortalResource[] = [
   },
 ];
 
-export const portalAnnouncements: PortalAnnouncement[] = [
+export const portalBulletins: PortalBulletin[] = [
   {
     id: "ann-01",
-    title: "Q3 Wholesale Dough Logistics Optimization",
-    body: "Regional cold-chain freight rates have been renegotiated for mainland units, providing a 4.2% reduction in landed flour cost starting Sept 1.",
+    title: "Q3 Mainland Wholesale Dough Logistics Optimization",
+    summary: "Regional cold-chain freight rates have been renegotiated for mainland units, providing a 4.2% reduction in landed flour cost starting Sept 1.",
     publishedAt: "2026-08-15T12:00:00Z",
+    audience: {
+      markets: ["Utah", "Mainland West"],
+    },
   },
   {
     id: "ann-02",
     title: "Fall Seasonal Butter Spread Testing",
-    body: "Lilikoi Passion Fruit Butter will launch as an optional seasonal LTO starting October 15. Training modules are now uploaded to the Resources center.",
+    summary: "Lilikoi Passion Fruit Butter will launch as an optional seasonal LTO starting October 15. Training modules are now uploaded to the Resources center.",
     publishedAt: "2026-08-10T08:00:00Z",
+  },
+  {
+    id: "ann-03",
+    title: "Turbo Deck Oven Gasket & Steam Purge Maintenance",
+    summary: "Required monthly preventative calibration and steam release valve check for units equipped with commercial Turbo Deck Ovens.",
+    publishedAt: "2026-08-20T10:00:00Z",
+    priority: "ACTION_REQUIRED",
+    audience: {
+      equipmentConfigs: ["turbo-deck-oven"],
+    },
+  },
+  {
+    id: "ann-04",
+    title: "New Store Launch Readiness & Soft-Opening Guidelines",
+    summary: "Pre-opening punchlist, mock service protocol, and soft-launch media embargo procedures for stores currently in onboarding or launch phases.",
+    publishedAt: "2026-08-18T09:00:00Z",
+    audience: {
+      launchStages: ["PRE_OPENING", "TRAINING", "GRAND_OPENING"],
+    },
+  },
+  {
+    id: "ann-05",
+    title: "Hawaii Inter-Island Refrigerated Sea Cargo Schedule",
+    summary: "Young Brothers sailing schedule adjustment for weekly butter compound deliveries to Oahu and Neighbor Island stores.",
+    publishedAt: "2026-08-19T14:00:00Z",
+    audience: {
+      markets: ["Hawaii"],
+    },
   },
 ];

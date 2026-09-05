@@ -5,12 +5,13 @@ import {
   buildInsertOrderQuery,
   buildInsertOrderItemQuery,
   buildInsertSupportCaseQuery,
-  buildSelectAnnouncementsQuery,
+  buildSelectBulletinsQuery,
   buildSelectLocationByIdQuery,
   buildSelectLocationsQuery,
   buildSelectOrdersByLocationQuery,
   buildSelectProductsByLocationQuery,
   buildSelectResourcesByLocationQuery,
+  buildSelectSupportCasesByLocationQuery,
 } from "../src/features/portal/db-storage.ts";
 import {
   defaultPortalStorage,
@@ -22,8 +23,26 @@ import {
   hasRoleAccess,
 } from "../src/lib/auth/auth-provider.ts";
 import {
+  assertPortalPermission,
+  PortalAuthorizationError,
+} from "../src/features/portal/authorization.ts";
+import {
   mapSupabaseUserToPortalSession,
 } from "../src/lib/auth/supabase.ts";
+import {
+  canTransitionOrderStatus,
+  getOrderStatus,
+  getOrderStatusAccessibleLabel,
+  getOrderStatusAnalytics,
+  getOrderStatusNotification,
+  normalizeOrderStatus,
+  ORDER_STATUS,
+  requiresOrderOperatorAction,
+} from "../src/features/portal/order-status.ts";
+import {
+  getVisibleBulletins,
+  requiresBulletinAction,
+} from "../src/features/portal/bulletins.ts";
 
 test("buildSelectLocationsQuery generates correct SQL for active locations", () => {
   const query = buildSelectLocationsQuery();
@@ -52,12 +71,30 @@ test("buildSelectOrdersByLocationQuery joins order items and scopes by tenant", 
   assert.deepEqual(query.values, ["OAH-207"]);
 });
 
+test("bulletin query and visibility model retain only supported operational communication", () => {
+  const query = buildSelectBulletinsQuery({ managedLocationIds: ["HNL-014"], role: "franchisee" });
+  assert.ok(query.text.includes('body as "summary"'));
+  assert.ok(query.text.includes('is_urgent'));
+  assert.ok(query.text.includes('audience_unit_ids'));
+  assert.deepEqual(query.values, [["HNL-014"], "franchisee"]);
+
+  const bulletins = [
+    { id: "current", title: "Current", summary: "Current bulletin", publishedAt: "2026-08-15T00:00:00Z" },
+    { id: "expired", title: "Expired", summary: "Expired bulletin", publishedAt: "2026-08-16T00:00:00Z", expiresAt: "2026-08-20T00:00:00Z" },
+    { id: "action", title: "Action", summary: "Action bulletin", publishedAt: "2026-08-17T00:00:00Z", priority: "ACTION_REQUIRED" },
+  ];
+
+  assert.deepEqual(getVisibleBulletins(bulletins, "HNL-014", "franchisee", new Date("2026-08-21T00:00:00Z")).map((bulletin) => bulletin.id), ["action", "current"]);
+  assert.equal(requiresBulletinAction(bulletins[2]), true);
+  assert.equal(requiresBulletinAction({ id: "ack-only", title: "Ack", summary: "No persisted workflow", publishedAt: "2026-08-18T00:00:00Z", acknowledgement: { required: true } }), false);
+});
+
 test("buildInsertOrderQuery & buildInsertOrderItemQuery create valid parameterized statements", () => {
   const orderInput = {
     id: "BD-1099",
     locationId: "HNL-014",
     createdAt: "2026-08-21T00:00:00.000Z",
-    status: "Processing",
+    status: ORDER_STATUS.PROCESSING.id,
     eta: "Next Wednesday",
     total: 154.5,
     invoiceId: "INV-99001",
@@ -98,6 +135,13 @@ test("buildInsertSupportCaseQuery captures support intake with user email and lo
   assert.equal(query.values[3], "Packaging box reorder delay");
 });
 
+test("support-case retrieval is scoped to the active unit", () => {
+  const query = buildSelectSupportCasesByLocationQuery("HNL-014");
+  assert.ok(query.text.includes("FROM portal_support_cases"));
+  assert.ok(query.text.includes("WHERE location_id = $1"));
+  assert.deepEqual(query.values, ["HNL-014"]);
+});
+
 test("InMemoryPortalStorage provides reliable seeded data and mutation handling", async () => {
   const storage = new InMemoryPortalStorage();
   const locations = await storage.getLocations();
@@ -107,7 +151,7 @@ test("InMemoryPortalStorage provides reliable seeded data and mutation handling"
     id: "BD-TEST-001",
     locationId: "HNL-014",
     createdAt: new Date().toISOString(),
-    status: "Processing",
+    status: ORDER_STATUS.PROCESSING.id,
     eta: "In 2 days",
     total: 99.0,
     invoiceId: "INV-TEST-01",
@@ -117,6 +161,20 @@ test("InMemoryPortalStorage provides reliable seeded data and mutation handling"
   await storage.createOrder(order);
   const locationOrders = await storage.getOrdersByLocation("HNL-014");
   assert.ok(locationOrders.some((o) => o.id === "BD-TEST-001"));
+});
+
+test("order status model owns lifecycle, accessibility, notifications, and analytics semantics", () => {
+  const delayed = getOrderStatus(ORDER_STATUS.DELAYED.id);
+
+  assert.equal(delayed.label, "Delayed");
+  assert.equal(delayed.operatorActionRequired, true);
+  assert.equal(requiresOrderOperatorAction(ORDER_STATUS.CANCELLED.id), true);
+  assert.equal(canTransitionOrderStatus(ORDER_STATUS.PROCESSING.id, ORDER_STATUS.IN_TRANSIT.id), true);
+  assert.equal(canTransitionOrderStatus(ORDER_STATUS.DELIVERED.id, ORDER_STATUS.PROCESSING.id), false);
+  assert.equal(normalizeOrderStatus("Shipped"), ORDER_STATUS.IN_TRANSIT.id);
+  assert.match(getOrderStatusAccessibleLabel(ORDER_STATUS.DELAYED.id), /requires operator review/i);
+  assert.equal(getOrderStatusNotification(ORDER_STATUS.CANCELLED.id).actionLabel, "Review order");
+  assert.equal(getOrderStatusAnalytics(ORDER_STATUS.DELIVERED.id).lifecycleStage, "complete");
 });
 
 test("RBAC auth-provider utilities strictly enforce role and location boundaries", () => {
@@ -145,4 +203,42 @@ test("RBAC auth-provider utilities strictly enforce role and location boundaries
   assert.equal(canAccessLocation(adminSession, "OAH-207"), true);
   assert.equal(hasRoleAccess("franchisee", "admin"), false);
   assert.equal(hasRoleAccess("admin", "franchisee"), true);
+});
+
+test("authorization denies horizontal and vertical portal privilege escalation", () => {
+  const operator = {
+    userId: "operator-1",
+    email: "operator@example.test",
+    role: "franchisee",
+    locationId: "HNL-014",
+    locationName: "La'ie Origin Grill",
+    managedLocationIds: ["HNL-014"],
+    expiresAt: Date.now() + 10_000,
+  };
+  const scopedAdmin = {
+    ...operator,
+    userId: "admin-1",
+    role: "admin",
+    managedLocationIds: ["HNL-014"],
+  };
+
+  assert.doesNotThrow(() => assertPortalPermission(operator, "VIEW_ORDERS"));
+  assert.throws(() => assertPortalPermission(operator, "VIEW_ORDERS", "OAH-207"), PortalAuthorizationError);
+  assert.throws(() => assertPortalPermission(operator, "ADMINISTER_PORTAL"), PortalAuthorizationError);
+  assert.doesNotThrow(() => assertPortalPermission(scopedAdmin, "ADMINISTER_PORTAL"));
+  assert.throws(() => assertPortalPermission(scopedAdmin, "VIEW_RESOURCES", "SLC-302"), PortalAuthorizationError);
+});
+
+test("Supabase portal authorization uses app metadata rather than mutable user metadata", () => {
+  const session = mapSupabaseUserToPortalSession({
+    id: "supabase-user",
+    email: "operator@example.test",
+    user_metadata: { role: "admin", locationId: "SLC-302", managedLocationIds: ["SLC-302"] },
+    app_metadata: { portal_access: true, role: "franchisee", location_id: "HNL-014", location_name: "La'ie Origin Grill", managed_location_ids: ["HNL-014"] },
+  });
+
+  assert.equal(session.role, "franchisee");
+  assert.equal(session.locationId, "HNL-014");
+  assert.deepEqual(session.managedLocationIds, ["HNL-014"]);
+  assert.throws(() => mapSupabaseUserToPortalSession({ id: "unassigned", email: "unassigned@example.test", app_metadata: { role: "admin" } }));
 });

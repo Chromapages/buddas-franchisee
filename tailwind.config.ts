@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { tailwindScreens } from "./responsive.tokens.js";
 
 const config: Config = {
   content: [
@@ -7,15 +8,18 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: tailwindScreens,
     extend: {
       colors: {
         bds: {
           teal: {
             DEFAULT: "#54BFA5",
             dark: "#1C5F56",
+            ink: "#154942",
           },
           cream: "#FFF8E8",
           gold: "#E9C559",
+          "gold-accessible": "#EFCF68",
           orange: "#D36200",
           cocoa: "#5A3A1F",
           surface: {

@@ -12,10 +12,10 @@ export const Item19FprTable = () => {
           <Info className="w-3.5 h-3.5" aria-hidden="true" />
           Item 19 Financial Performance Representation (FPR)
         </div>
-        <h3 className="text-2xl font-bold font-heading text-brand-charcoal">
+        <h3 className="heading-compact text-brand-charcoal">
           Historical Operating Financial Benchmarks
         </h3>
-        <p className="text-sm text-brand-charcoal/70 leading-relaxed max-w-3xl">
+        <p className="text-sm text-brand-charcoal/70 leading-relaxed max-w-3xl prose-measure">
           The table below reflects historical operating metrics for qualifying restaurant locations operating under the Budda&apos;s system during the measured reporting periods.
         </p>
       </div>
@@ -61,7 +61,7 @@ export const Item19FprTable = () => {
         <p className="font-bold text-brand-charcoal uppercase tracking-wider text-[11px]">
           FTC Franchise Rule Mandatory Disclosure:
         </p>
-        <p>{ITEM_19_LEGAL_DISCLAIMER}</p>
+        <p className="prose-measure">{ITEM_19_LEGAL_DISCLAIMER}</p>
       </div>
     </div>
   );

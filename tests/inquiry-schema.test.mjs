@@ -11,7 +11,7 @@ test("inquirySchema validates clean, valid franchise inquiry", () => {
     cityState: "Honolulu, HI",
     marketInterest: "Oahu - Windward Coast",
     experience: "10 years managing high-volume multi-unit bakery restaurants.",
-    investmentRange: "$500,000 - $999,999",
+    investmentRange: "$425,000 – $875,000",
     preferredTimeline: "6 - 12 months",
     message: "Interested in a multi-unit territory.",
     brokerId: "FSO-889",
@@ -36,10 +36,56 @@ test("inquirySchema rejects invalid email and missing consent", () => {
     cityState: "Honolulu, HI",
     marketInterest: "Oahu",
     experience: "Experience details",
-    investmentRange: "$500,000 - $999,999",
+    investmentRange: "$425,000 – $875,000",
     preferredTimeline: "6 - 12 months",
   };
 
   const parsed = inquirySchema.safeParse(invalidData);
   assert.equal(parsed.success, false);
+});
+
+test("inquirySchema rejects empty required fields and short experience", () => {
+  const parsed = inquirySchema.safeParse({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    cityState: "",
+    marketInterest: "",
+    experience: "Too short",
+    investmentRange: "$425,000 – $875,000",
+    preferredTimeline: "6 - 12 months",
+    consent: "",
+  });
+
+  assert.equal(parsed.success, false);
+  if (!parsed.success) {
+    const errors = parsed.error.flatten().fieldErrors;
+    assert.equal(errors.firstName?.[0], "First name is required.");
+    assert.match(errors.experience?.[0] ?? "", /at least 20 characters/);
+  }
+});
+
+test("inquirySchema rejects malformed email and phone formats", () => {
+  const parsed = inquirySchema.safeParse({
+    firstName: "Maya",
+    lastName: "Lindqvist",
+    email: "maya.example.com",
+    phone: "abc",
+    cityState: "Honolulu, HI",
+    marketInterest: "Oahu",
+    experience: "I have operated restaurant teams for more than ten years.",
+    investmentRange: "$425,000 – $875,000",
+    preferredTimeline: "6 - 12 months",
+    message: "",
+    brokerId: "",
+    consent: "on",
+  });
+
+  assert.equal(parsed.success, false);
+  if (!parsed.success) {
+    const errors = parsed.error.flatten().fieldErrors;
+    assert.equal(errors.email?.[0], "Enter a valid email address.");
+    assert.equal(errors.phone?.[0], "Enter a valid phone number.");
+  }
 });

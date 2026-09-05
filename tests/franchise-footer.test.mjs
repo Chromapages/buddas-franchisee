@@ -1,74 +1,79 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 
-const footerPath = path.resolve("src/components/public/footer.tsx");
-const footerContent = fs.readFileSync(footerPath, "utf8");
+const footer = fs.readFileSync(path.resolve("src/components/public/footer.tsx"), "utf8");
+const content = fs.readFileSync(path.resolve("src/features/footer/footer-content.ts"), "utf8");
+const analytics = fs.readFileSync(path.resolve("src/lib/analytics.ts"), "utf8");
+const globals = fs.readFileSync(path.resolve("src/app/globals.css"), "utf8");
 
-test("Footer component utilizes BDS v2.0 design tokens", () => {
-  assert.ok(footerContent.includes("bg-bds-teal-dark"), "Footer uses bds-teal-dark background");
-  assert.ok(footerContent.includes("text-bds-cream"), "Footer uses bds-cream base text");
-  assert.ok(footerContent.includes("text-bds-gold"), "Footer uses bds-gold headings/icons");
-  assert.ok(footerContent.includes("hover:text-bds-gold"), "Footer uses bds-gold hover accents");
+test("footer uses one centralized source for navigation, contact, CTA, and legal content", () => {
+  assert.ok(footer.includes("FOOTER_CONTENT"));
+  assert.ok(footer.includes("FOOTER_NAVIGATION"));
+  assert.ok(footer.includes("FOOTER_LEGAL_LINKS"));
+  assert.ok(content.includes('href: "/franchise/contact"'));
+  assert.ok(content.includes("buddasbakery@gmail.com"));
+  assert.ok(content.includes("tel:+18017010617"));
+  assert.ok(content.includes("does not constitute an offer to sell"));
 });
 
-test("Footer implements 3-tier desktop hierarchy: Tier 1 Brand/Actions first, Tier 2 Sitemap second, Tier 3 Legal last", () => {
-  const tier1Pos = footerContent.indexOf("TIER 1 (FIRST)");
-  const tier2Pos = footerContent.indexOf("TIER 2 (SECOND)");
-  const tier3Pos = footerContent.indexOf("TIER 3 (LAST)");
-
-  assert.ok(tier1Pos !== -1, "Contains Tier 1 comment/marker");
-  assert.ok(tier2Pos !== -1, "Contains Tier 2 comment/marker");
-  assert.ok(tier3Pos !== -1, "Contains Tier 3 comment/marker");
-  assert.ok(tier1Pos < tier2Pos, "Tier 1 appears before Tier 2");
-  assert.ok(tier2Pos < tier3Pos, "Tier 2 appears before Tier 3");
+test("footer keeps legal destinations in the utility row instead of duplicating Governance navigation", () => {
+  assert.ok(footer.includes('FOOTER_NAVIGATION.filter((section) => section.id !== "governance")'));
+  assert.ok(footer.includes("primaryFooterNavigation.map"));
 });
 
-test("Footer provides accessible landmarks and ARIA attributes", () => {
-  assert.ok(footerContent.includes('aria-label="Site Footer"'), "Footer has landmark label");
-  assert.ok(footerContent.includes('aria-label={section.title}'), "Nav landmark dynamically matches section title");
-  assert.ok(footerContent.includes('aria-label="Legal and Compliance"'), "Legal nav landmark present");
-  assert.ok(footerContent.includes("focus-visible:ring-bds-gold"), "Focus visible styling is applied");
+test("footer keeps inquiry available through candidate navigation without a duplicate conversion rail", () => {
+  assert.ok(content.includes('{ label: "Start Franchise Inquiry", href: "/franchise/contact" }'));
+  assert.ok(!footer.includes("FooterBrandRail"));
+  assert.ok(!footer.includes("FooterPrimaryAction"));
+  assert.ok(!footer.includes("ArrowRight"));
+  assert.ok(!footer.includes("/images/Logo.svg"));
 });
 
-test("Footer implements accessible mobile accordion with WAI-ARIA compliance", () => {
-  assert.ok(footerContent.includes("aria-expanded={isOpen}"), "Accordion trigger binds aria-expanded");
-  assert.ok(footerContent.includes("aria-controls={panelId}"), "Accordion trigger binds aria-controls");
-  assert.ok(footerContent.includes('role="region"'), "Accordion panel specifies region role");
-  assert.ok(footerContent.includes("aria-labelledby={headerId}"), "Accordion panel is labelled by header button");
-  assert.ok(footerContent.includes("ChevronDown"), "Accordion includes chevron toggle indicator");
+test("mobile footer disclosures are full-row native buttons with stable accessible state", () => {
+  assert.ok(footer.includes('type="button"'));
+  assert.ok(footer.includes("aria-expanded={isOpen}"));
+  assert.ok(footer.includes("aria-controls={panelId}"));
+  assert.ok(footer.includes("min-h-[56px]"));
+  assert.ok(footer.includes("{isOpen ? <nav"));
+  assert.ok(footer.includes("footer-accordion-header-"));
+  assert.ok(footer.includes("footer-accordion-panel-"));
 });
 
-test("Footer supports multiple-open accordion groups for sitemap discovery", () => {
-  assert.ok(footerContent.includes("Record<string, boolean>"), "Uses dictionary state to track independent group open states");
-  assert.ok(footerContent.includes("[sectionId]: !prev[sectionId]"), "Toggles individual group without closing adjacent groups");
+test("footer contact methods remain semantic and meet practical target sizing", () => {
+  assert.ok(footer.includes("mailto:${FOOTER_CONTENT.email}"));
+  assert.ok(footer.includes("FOOTER_CONTENT.phoneHref"));
+  assert.ok(footer.includes("min-h-11"));
+  assert.ok(footer.includes('aria-labelledby={headingId}'));
+  assert.equal((footer.match(/<FooterContact\b/g) || []).length, 1);
+  assert.equal((footer.match(/footer-contact-heading/g) || []).length, 2);
 });
 
-test("Footer provides a visually distinct brand and trust action card on desktop", () => {
-  assert.ok(footerContent.includes("rounded-2xl bg-white/[0.03] border border-white/10"), "Desktop brand card styling");
-  assert.ok(footerContent.includes("Oahu"), "Heritage and proof trust badge");
-  assert.ok(footerContent.includes("2 Operating Utah Locations"), "Utah operating proof");
+test("footer uses the approved desktop information hierarchy", () => {
+  assert.ok(footer.includes("bg-white/95"));
+  assert.ok(footer.includes("backdrop-blur-md"));
+  assert.ok(!footer.includes("bg-bds-teal-dark text-bds-cream"));
+  assert.ok(footer.includes("content-wide"));
+  assert.ok(footer.includes("lg:contents"));
+  assert.ok(content.includes('title: "Resources & Portals"'));
+  assert.ok(content.includes('{ label: "Accessibility", href: "/accessibility" }'));
+  assert.ok(content.includes("copyright:"));
 });
 
-test("Footer accordion triggers and items satisfy 44-48px touch target ergonomics with 8px separation", () => {
-  assert.ok(footerContent.includes("min-h-[48px]"), "Accordion trigger button enforces 48px minimum target height");
-  assert.ok(footerContent.includes("min-h-[44px]"), "Accordion panel links enforce 44px minimum touch target height");
-  assert.ok(footerContent.includes("space-y-2"), "Enforces at least 8px separation between adjacent links and accordion cards");
-  assert.ok(footerContent.includes("hover:bg-white/5"), "Touch targets include visual tap feedback");
+test("footer tracks non-identifying interaction milestones and honors motion and safe areas", () => {
+  for (const event of ["footer_inquiry_click", "footer_email_click", "footer_phone_click", "footer_nav_section_open", "footer_nav_link_click", "footer_legal_link_click"]) {
+    assert.ok(footer.includes(event));
+    assert.ok(analytics.includes(event));
+  }
+  assert.ok(footer.includes("motion-reduce:transition-none"));
+  assert.ok(globals.includes("calc(var(--space-6) + env(safe-area-inset-bottom))"));
+  assert.ok(globals.includes(".site-footer :is(a, button)"));
+  assert.ok(globals.includes("scroll-margin-block: calc(var(--public-header-height) + var(--space-4))"));
+  assert.ok(footer.includes("focus-visible:ring-2 focus-visible:ring-bds-action-primary"));
 });
 
-test("Footer contains actionable contact links, primary CTA, and consumer bridge", () => {
-  assert.ok(footerContent.includes('href="mailto:buddasbakery@gmail.com"'), "Clickable mailto email link");
-  assert.ok(footerContent.includes('href="tel:+18017010617"'), "Clickable tel phone link");
-  assert.ok(footerContent.includes("https://buddasbakerygrill.com"), "External link to consumer restaurant");
-  assert.ok(footerContent.includes('href="/franchise/contact"'), "Primary inquiry CTA link");
-  assert.ok(footerContent.includes("Start a Franchise Inquiry"), "Primary CTA button text immediately visible");
-  assert.ok(footerContent.includes('"/franchise/login"'), "Operator portal login route");
-});
-
-test("Footer includes standard regulatory and copyright disclaimers", () => {
-  assert.ok(footerContent.includes("Franchising LLC"), "Contains legal entity name");
-  assert.ok(footerContent.includes("All rights reserved"), "Contains copyright text");
-  assert.ok(footerContent.includes("does not constitute an offer to sell"), "Contains regulatory disclaimer");
+test("focused authentication routes do not render the marketing footer", () => {
+  assert.ok(footer.includes('pathname === "/franchise/login"'));
+  assert.ok(footer.includes('pathname === "/franchise/login/reset"'));
 });

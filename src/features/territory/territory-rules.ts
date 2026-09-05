@@ -1,54 +1,20 @@
 import type { TerritoryEvaluation, TerritoryStatus } from "./types";
+import { PUBLIC_JURISDICTION_STATUSES } from "./public-jurisdiction-status";
 
-export const APPROVED_TERRITORIES: Record<string, string> = {
-  HI: "Hawai'i",
-  UT: "Utah",
-  NV: "Nevada",
-  AZ: "Arizona",
-  TX: "Texas",
-  FL: "Florida",
-  CO: "Colorado",
-  NC: "North Carolina",
-  GA: "Georgia",
-  OH: "Ohio",
-  CA: "California",
-  WA: "Washington",
-};
+const toNameMap = (status: "OFFERING_CLEARED" | "REGISTRATION_PENDING" | "FUTURE_MARKET_INTEREST") =>
+  Object.fromEntries(
+    PUBLIC_JURISDICTION_STATUSES
+      .filter((record) => record.offeringStatus === status)
+      .map((record) => [record.code, record.name]),
+  ) as Record<string, string>;
 
-export const PENDING_REGISTRATION_STATES: Record<string, string> = {
-  NY: "New York",
-  IL: "Illinois",
-  VA: "Virginia",
-  MD: "Maryland",
-  MN: "Minnesota",
-  WI: "Wisconsin",
-  IN: "Indiana",
-  ND: "North Dakota",
-  RI: "Rhode Island",
-  SD: "South Dakota",
-};
+export const APPROVED_TERRITORIES = toNameMap("OFFERING_CLEARED");
+export const PENDING_REGISTRATION_STATES = toNameMap("REGISTRATION_PENDING");
+export const FUTURE_EXPANSION_MARKETS = toNameMap("FUTURE_MARKET_INTEREST");
 
 export const STATE_NAME_TO_CODE: Record<string, string> = {
+  ...Object.fromEntries(PUBLIC_JURISDICTION_STATUSES.map((record) => [record.name.toLowerCase(), record.code])),
   hawaii: "HI",
-  "hawai'i": "HI",
-  utah: "UT",
-  nevada: "NV",
-  arizona: "AZ",
-  texas: "TX",
-  florida: "FL",
-  colorado: "CO",
-  "north carolina": "NC",
-  georgia: "GA",
-  ohio: "OH",
-  california: "CA",
-  washington: "WA",
-  "new york": "NY",
-  illinois: "IL",
-  virginia: "VA",
-  maryland: "MD",
-  minnesota: "MN",
-  wisconsin: "WI",
-  indiana: "IN",
 };
 
 export const extractStateCode = (input: string): string | null => {
@@ -104,6 +70,17 @@ export const evaluateTerritory = (stateOrMarket: string): TerritoryEvaluation =>
       status: "PENDING_REGISTRATION",
       isAvailableForActiveOffering: false,
       message: `Budda's is currently completing franchise regulatory filings for ${PENDING_REGISTRATION_STATES[code]}. Submissions are accepted for priority review once effective.`,
+    };
+  }
+
+  if (FUTURE_EXPANSION_MARKETS[code]) {
+    return {
+      stateCode: code,
+      stateName: FUTURE_EXPANSION_MARKETS[code],
+      status: "FUTURE_EXPANSION",
+      isAvailableForActiveOffering: false,
+      message:
+        "This market is queued for future phase development. We welcome your expression of interest.",
     };
   }
 

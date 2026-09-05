@@ -11,56 +11,46 @@ import {
   utilityNavItems,
   publicNavItems,
 } from "@/src/features/navigation/nav-config.ts";
+import { trackFunnelEvent } from "@/src/lib/analytics";
 
 export type { NavItem };
 export { primaryNavItems, utilityNavItems, publicNavItems };
 
+const isCurrentPage = (pathname: string, href: string) => pathname === href;
+
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const drawerRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
+  const isInquiryPage = isCurrentPage(pathname, "/franchise/contact");
+  const scrollToInquiryForm = () => {
+    document.querySelector(".inquiry-form")?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start",
+    });
+  };
 
   const handleToggleMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev);
+    setIsMobileMenuOpen((prev) => {
+      trackFunnelEvent(prev ? "mobile_nav_close" : "mobile_nav_open", { page_path: pathname });
+      return !prev;
+    });
   };
 
   const handleCloseMenu = () => {
     if (!isMobileMenuOpen) return;
     setIsMobileMenuOpen(false);
+    trackFunnelEvent("mobile_nav_close", { page_path: pathname });
     menuButtonRef.current?.focus();
   };
 
-  // Keyboard navigation & focus trap inside mobile drawer
+  // Escape closes this non-modal expanded site navigation.
   const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (!isMobileMenuOpen) return;
 
     if (event.key === "Escape") {
       event.preventDefault();
       handleCloseMenu();
-      return;
-    }
-
-    if (event.key === "Tab" && drawerRef.current) {
-      const focusableElements = drawerRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex="0"]'
-      );
-      if (focusableElements.length === 0) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-        return;
-      }
-
-      if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
-        return;
-      }
     }
   };
 
@@ -69,23 +59,10 @@ export const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // Lock body scroll when mobile menu is open to prevent layout shift & background jitter
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileMenuOpen]);
-
-  // Auto-close menu if resized to desktop breakpoint (>= 1024px)
+  // The full header content first fits at 1,245px; close the expanded navigation above that point.
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+      if (window.innerWidth >= 1245 && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -94,16 +71,6 @@ export const Navbar = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isMobileMenuOpen]);
-
-  // Focus the first interactive item inside the mobile drawer when opened
-  useEffect(() => {
-    if (!isMobileMenuOpen || !drawerRef.current) return;
-
-    const firstFocusable = drawerRef.current.querySelector<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex="0"]'
-    );
-    firstFocusable?.focus();
   }, [isMobileMenuOpen]);
 
   return (
@@ -121,31 +88,31 @@ export const Navbar = () => {
         onKeyDown={handleKeyDown}
         className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-bds-teal-dark/10"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <div className="content-wide">
+          <div className="public-navbar-bar relative flex items-center justify-between h-16 nav:h-20 gap-2">
             {/* 1. Brand Identity Anchor (Top Left) */}
             <Link
               href="/franchise"
               onClick={handleCloseMenu}
               aria-label="Budda's Hawaiian Bakery & Grill - Franchise Opportunity Home"
               tabIndex={0}
-              className="flex items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary rounded-lg p-1 shrink-0"
+              className="touch-target flex min-w-0 items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary rounded-lg p-1.5 shrink-0"
             >
               <Image
                 src="/images/Logo.svg"
                 alt="Budda's Franchising"
                 width={210}
                 height={42}
-                className="h-8 sm:h-9 md:h-10 w-auto object-contain max-w-[140px] sm:max-w-[190px] md:max-w-[210px]"
+                className="public-navbar-logo h-8 w-auto max-w-[112px] object-contain sm:h-9 sm:max-w-[190px] md:h-10 md:max-w-[150px] nav:max-w-[210px]"
                 priority
               />
             </Link>
 
             {/* 2. Primary Education Curriculum (Center Navigation) */}
-            <nav aria-label="Primary Navigation" className="hidden lg:flex items-center">
+            <nav aria-label="Primary Navigation" className="hidden nav:flex items-center">
               <ul role="list" className="flex items-center gap-1 xl:gap-2">
                 {primaryNavItems.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = isCurrentPage(pathname, item.href);
                   return (
                     <li key={item.href}>
                       <Link
@@ -176,16 +143,16 @@ export const Navbar = () => {
               </ul>
             </nav>
 
-            {/* 3. Utility Module & Primary Action Lane (Right Cluster) */}
-            <div className="hidden lg:flex items-center gap-3 xl:gap-4">
+            {/* 3. Utility Module & Secondary Action Lane (Right Cluster) */}
+            <div className="hidden nav:flex items-center gap-3 xl:gap-4">
               {/* Visual Separator between Educational Curriculum and Utilities */}
               <div
-                className="h-5 w-px bg-bds-teal-dark/15 mx-1"
+                className="hidden nav:block h-5 w-px bg-bds-teal-dark/15 mx-1"
                 aria-hidden="true"
               />
 
               {/* Secondary Utilities Container */}
-              <nav aria-label="Utility Navigation" className="bg-bds-cream/70 p-1 rounded-xl border border-bds-cocoa/10">
+              <nav aria-label="Account and Reference" className="hidden nav:block bg-bds-cream/70 p-1 rounded-xl border border-bds-cocoa/10">
                 <ul role="list" className="flex items-center gap-1">
                   {utilityNavItems.map((item) => {
                     if (item.external) {
@@ -224,28 +191,30 @@ export const Navbar = () => {
                 </ul>
               </nav>
 
-              {/* High-Contrast Primary Conversion CTA */}
-              <Link
-                href="/franchise/contact"
-                tabIndex={0}
-                aria-label="Request Franchise Information"
-                className="btn-primary text-sm !py-2.5 !px-5 shadow-sm hover:shadow hover:!bg-bds-teal hover:text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2"
-              >
-                Request Franchise Info
-              </Link>
+              {/* Persistent secondary path for returning/high-intent visitors.
+               * The page-level hero owns the primary conversion emphasis. */}
+              {isInquiryPage ? (
+                <button type="button" onClick={scrollToInquiryForm} aria-label="Request Franchise Information" aria-current="page" className="text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 rounded-xl bg-bds-action-primary text-bds-action-primary-text font-bold shadow-none transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  Request Franchise Info<span className="sr-only"> (Current Page — scroll to form)</span>
+                </button>
+              ) : (
+                <Link href="/franchise/contact" tabIndex={0} aria-label="Request Franchise Information" className="btn-outline text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 shadow-none hover:!bg-bds-cream transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  Request Franchise Info
+                </Link>
+              )}
             </div>
 
-            {/* 4. Mobile Top Bar: Persistent Primary CTA + Accessible Hamburger Toggle */}
-            <div className="lg:hidden flex items-center gap-2 sm:gap-3">
-              <Link
-                href="/franchise/contact"
-                tabIndex={0}
-                aria-label="Request Franchise Information"
-                className="btn-primary text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-sm hover:!bg-bds-teal hover:text-white transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2"
-              >
-                <span className="hidden sm:inline">Request Franchise Info</span>
-                <span className="sm:hidden">Request info</span>
-              </Link>
+            {/* 4. Mobile Top Bar: Persistent secondary CTA + Accessible Hamburger Toggle */}
+            <div className="public-navbar-mobile-actions absolute right-0 nav:hidden flex shrink-0 items-center gap-2 sm:gap-3">
+              {isInquiryPage ? (
+                <button type="button" onClick={() => { trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: "#inquiry-form" }); scrollToInquiryForm(); }} aria-label="Request Franchise Information" aria-current="page" className="public-navbar-mobile-cta touch-target nav:hidden text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap rounded-xl bg-bds-action-primary text-bds-action-primary-text font-bold shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  <span className="hidden sm:inline">Request Franchise Info</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="sr-only"> (Current Page — scroll to form)</span>
+                </button>
+              ) : (
+                <Link href="/franchise/contact" onClick={() => trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: "/franchise/contact" })} tabIndex={0} aria-label="Request Franchise Information" className="public-navbar-mobile-cta touch-target nav:hidden btn-outline !border-bds-action-primary/70 text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-none hover:!bg-bds-cream transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  <span className="hidden sm:inline">Request Franchise Info</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="public-navbar-mobile-cta-compact hidden">Info</span>
+                </Link>
+              )}
 
               <button
                 ref={menuButtonRef}
@@ -255,8 +224,7 @@ export const Navbar = () => {
                 aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-navigation-drawer"
-                aria-haspopup="dialog"
-                className="p-2 rounded-xl text-bds-cocoa hover:bg-bds-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary"
+                className="touch-target shrink-0 rounded-xl border border-bds-teal-dark/15 bg-bds-cream p-2.5 text-bds-cocoa hover:bg-white focus:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary"
               >
                 {isMobileMenuOpen ? (
                   <X className="w-6 h-6" aria-hidden="true" />
@@ -268,26 +236,22 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* 5. Mobile Drawer Overlay (absolute top-full left-0 right-0 to prevent layout shift) */}
+        {/* 5. Non-modal mobile navigation: expanded beneath the persistent header. */}
         {isMobileMenuOpen ? (
           <div
             id="mobile-navigation-drawer"
-            ref={drawerRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile Navigation Menu"
-            className="absolute top-full left-0 right-0 w-full lg:hidden bg-white border-b border-bds-teal-dark/10 px-4 pt-3 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-2 z-50 max-h-[calc(100vh-5rem)] overflow-y-auto"
+            className="absolute top-full left-0 right-0 w-full nav:hidden max-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] overflow-y-auto border-b border-bds-teal-dark/10 bg-white px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-3 shadow-xl z-50"
           >
             {/* Primary Navigation */}
-            <nav aria-label="Mobile Primary Navigation">
-              <ul role="list" className="flex flex-col space-y-1">
+            <nav aria-label="Mobile Primary Navigation" className="nav:hidden">
+              <ul role="list" className="flex flex-col space-y-4">
                 {primaryNavItems.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = isCurrentPage(pathname, item.href);
                   return (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        onClick={handleCloseMenu}
+                        onClick={() => { trackFunnelEvent("mobile_nav_link_click", { page_path: pathname, nav_item: item.label, nav_destination: item.href }); handleCloseMenu(); }}
                         tabIndex={0}
                         aria-label={item.label}
                         aria-current={isActive ? "page" : undefined}
@@ -312,11 +276,11 @@ export const Navbar = () => {
             </nav>
 
             {/* Utility Divider Section with Explicit Iconography */}
-            <nav aria-label="Mobile Utility Navigation" className="pt-3 border-t border-bds-cream flex flex-col gap-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-bds-cocoa/40 px-3 py-1">
+            <nav aria-label="Account and Reference" className="mt-4 flex flex-col gap-4 border-t border-bds-teal-dark/15 pt-4">
+              <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-bds-cocoa/80">
                 Utilities
               </span>
-              <ul role="list" className="flex flex-col gap-1">
+              <ul role="list" className="flex flex-col gap-4">
                 {utilityNavItems.map((item) => {
                   if (item.external) {
                     return (
@@ -327,7 +291,8 @@ export const Navbar = () => {
                           rel="noopener noreferrer"
                           tabIndex={0}
                           aria-label={item.label}
-                          className="flex items-center justify-between px-3 py-2 text-sm font-medium text-bds-cocoa/80 hover:text-bds-action-primary hover:bg-bds-cream rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary"
+                          onClick={() => trackFunnelEvent("mobile_nav_link_click", { page_path: pathname, nav_item: item.label, nav_destination: item.href })}
+                          className="touch-target flex items-center justify-between px-3 py-2 text-sm font-medium text-bds-cocoa/80 hover:text-bds-action-primary hover:bg-bds-cream rounded-lg transition-colors motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary"
                         >
                           <div className="flex items-center gap-2">
                             <ExternalLink className="w-3.5 h-3.5 opacity-60" aria-hidden="true" />
@@ -344,10 +309,10 @@ export const Navbar = () => {
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        onClick={handleCloseMenu}
+                        onClick={() => { trackFunnelEvent("mobile_nav_link_click", { page_path: pathname, nav_item: item.label, nav_destination: item.href }); handleCloseMenu(); }}
                         tabIndex={0}
                         aria-label={item.label}
-                        className="flex items-center justify-between px-3 py-2 text-sm font-medium text-bds-cocoa/80 hover:text-bds-action-primary hover:bg-bds-cream rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary"
+                        className="touch-target flex items-center justify-between px-3 py-2 text-sm font-medium text-bds-cocoa/80 hover:text-bds-action-primary hover:bg-bds-cream rounded-lg transition-colors motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary"
                       >
                         <div className="flex items-center gap-2">
                           <User className="w-3.5 h-3.5 opacity-60" aria-hidden="true" />
@@ -366,6 +331,3 @@ export const Navbar = () => {
     </>
   );
 };
-
-
-

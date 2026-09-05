@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,10 +17,17 @@ import {
   Menu,
   X,
   Store,
+  MapPinned,
 } from "lucide-react";
-import { logoutAction } from "@/src/features/auth/actions";
+import { logoutAction, switchPortalLocationAction } from "@/src/features/auth/actions";
 import type { PortalSession } from "@/src/lib/auth/auth-provider";
 import type { PortalLocation } from "@/src/features/portal/types";
+import { hasPortalPermission, type PortalPermission } from "@/src/features/portal/authorization";
+import {
+  PortalCartBadge,
+  PortalNavBadge,
+  type ScopedNotificationCounts,
+} from "@/src/features/portal/portal-context";
 
 export type PortalShellProps = {
   session: PortalSession;
@@ -28,23 +35,35 @@ export type PortalShellProps = {
   children: ReactNode;
 };
 
-export const PortalShell = ({
+const PortalShellComponent = ({
   session,
   locations,
   children,
 }: PortalShellProps) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const wasMobileMenuOpen = useRef(false);
 
   const navItems = [
-    { href: "/portal", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/portal/supplies", label: "Supplies Catalog", icon: Package },
-    { href: "/portal/cart", label: "Wholesale Cart", icon: ShoppingCart },
-    { href: "/portal/orders", label: "Orders & Shipments", icon: Clock },
-    { href: "/portal/resources", label: "Resource Center", icon: FolderOpen },
-    { href: "/portal/support", label: "Operations Support", icon: HelpCircle },
-    { href: "/portal/account", label: "Account Profile", icon: User },
-  ];
+    { href: "/portal", label: "Dashboard", icon: LayoutDashboard, permission: "ACCESS_WORKSPACE", countKey: "actionRequiredBulletinCount" as const },
+    { href: "/portal/supplies", label: "Supplies Catalog", icon: Package, permission: "VIEW_CATALOG" },
+    { href: "/portal/cart", label: "Wholesale Cart", icon: ShoppingCart, permission: "MANAGE_CART", countKey: "cartItemCount" as const },
+    { href: "/portal/orders", label: "Orders & Shipments", icon: Clock, permission: "VIEW_ORDERS" },
+    { href: "/portal/resources", label: "Resource Center", icon: FolderOpen, permission: "VIEW_RESOURCES" },
+    { href: "/portal/support", label: "Operations Support", icon: HelpCircle, permission: "VIEW_SUPPORT", countKey: "actionRequiredSupportCount" as const },
+    { href: "/portal/expansion", label: "Growth Requests", icon: MapPinned, permission: "ACCESS_WORKSPACE" },
+    { href: "/portal/account", label: "Account Profile", icon: User, permission: "VIEW_ACCOUNT" },
+  ] satisfies Array<{
+    href: string;
+    label: string;
+    icon: typeof LayoutDashboard;
+    permission: PortalPermission;
+    countKey?: keyof ScopedNotificationCounts;
+  }>;
+  const visibleNavItems = navItems.filter((item) => hasPortalPermission(session, item.permission));
+  const authorizedUnitCount = session.managedLocationIds.length;
 
   const handleToggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -54,16 +73,47 @@ export const PortalShell = ({
     setIsMobileMenuOpen(false);
   };
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      mobileMenuRef.current?.querySelector<HTMLElement>("nav a")?.focus();
+    } else if (wasMobileMenuOpen.current) {
+      menuButtonRef.current?.focus();
+    }
+    wasMobileMenuOpen.current = isMobileMenuOpen;
+  }, [isMobileMenuOpen]);
+
   return (
-    <div className="min-h-screen bg-brand-sand/40 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-bds-cream/40 flex flex-col nav:h-dvh nav:overflow-hidden nav:flex-row">
+      <a
+        href="#portal-main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-3 focus:font-bold focus:text-bds-teal-dark focus:ring-4 focus:ring-bds-gold"
+      >
+        Skip to workspace content
+      </a>
+
       {/* Sidebar for Desktop */}
-      <aside className="hidden lg:flex w-72 bg-brand-charcoal text-white flex-col justify-between shrink-0 border-r border-brand-charcoal/20">
+      <aside
+        aria-label="Operator Workspace sidebar"
+        className="portal-sidebar hidden nav:h-dvh nav:overflow-hidden nav:flex w-[var(--bds-portal-rail-width)] shrink-0 flex-col justify-between border-r border-bds-teal-dark/20 bg-bds-teal-dark text-white"
+      >
         <div>
           {/* Brand Header */}
-          <div className="p-6 border-b border-white/10">
-            <Link href="/portal" className="inline-block bg-white/95 rounded-2xl px-3.5 py-2 hover:bg-white transition-colors">
+          <div className="portal-sidebar-brand p-5 border-b border-white/10">
+            <Link
+              href="/portal"
+              className="inline-block rounded-lg p-1 transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-bds-teal focus-visible:ring-2 focus-visible:ring-bds-teal"
+              aria-label="Budda's Franchising Operator Portal Home"
+            >
               <Image
-                src="/images/Logo.svg"
+                src="/images/Logo-white.svg"
                 alt="Budda's Franchising"
                 width={190}
                 height={38}
@@ -71,28 +121,51 @@ export const PortalShell = ({
                 priority
               />
             </Link>
-            <div className="mt-2 text-[10px] font-bold uppercase tracking-widest text-brand-mango">
+            <div className="mt-2 text-xs font-bold uppercase tracking-widest text-bds-teal">
               Operator Workspace
             </div>
           </div>
 
-          {/* Location Context Banner */}
-          <div className="p-4 mx-4 my-4 bg-white/5 rounded-2xl border border-white/10 space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-butter">
-              <Store className="w-3.5 h-3.5" aria-hidden="true" />
-              Active Unit
+          {/* Active operating context */}
+          <div className="portal-sidebar-unit p-3.5 mx-3.5 my-3.5 bg-white/5 rounded-xl border border-white/10 space-y-1.5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-bds-teal">
+              <Store className="w-4 h-4 shrink-0" aria-hidden="true" />
+              Working unit
             </div>
-            <p className="text-sm font-semibold text-white truncate">
-              {session.locationName}
-            </p>
-            <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-brand-clay text-white">
-              Role: {session.role}
-            </span>
+            {locations.length > 1 ? (
+              <form action={switchPortalLocationAction} className="space-y-2">
+                <label htmlFor="portal-working-unit" className="sr-only">
+                  Switch working unit
+                </label>
+                <select
+                  id="portal-working-unit"
+                  name="locationId"
+                  defaultValue={session.locationId}
+                  className="w-full rounded-lg border border-white/20 bg-bds-teal-dark px-2.5 py-2 text-sm font-semibold text-white outline-none focus-visible:border-bds-teal focus-visible:ring-2 focus-visible:ring-bds-teal"
+                >
+                  {locations.map((location) => (
+                    <option key={location.id} value={location.id}>
+                      {location.name} · {location.id}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  className="touch-target-inline text-xs font-bold uppercase tracking-wider text-bds-teal hover:text-white focus-visible:outline-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-bds-teal rounded-md px-1.5 py-1"
+                >
+                  Switch unit
+                </button>
+              </form>
+            ) : (
+              <p className="text-sm font-semibold text-white truncate">
+                {session.locationName}
+              </p>
+            )}
           </div>
 
           {/* Navigation Links */}
-          <nav aria-label="Portal Navigation" className="px-4 space-y-1">
-            {navItems.map((item) => {
+          <nav aria-label="Workspace primary navigation" className="portal-sidebar-nav px-4 space-y-1.5">
+            {visibleNavItems.map((item) => {
               const Icon = item.icon;
               const isActive =
                 item.href === "/portal"
@@ -103,118 +176,154 @@ export const PortalShell = ({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-bds-teal focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark ${
                     isActive
-                      ? "bg-brand-clay text-white shadow-sm font-bold"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
+                      ? "bg-white/15 text-white font-bold border-l-4 border-bds-teal shadow-sm"
+                      : "text-white/80 hover:text-white hover:bg-white/10 border-l-4 border-transparent"
                   }`}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.countKey ? <PortalNavBadge countKey={item.countKey} /> : null}
+                  {isActive ? <span className="sr-only">(Current page)</span> : null}
                 </Link>
               );
             })}
           </nav>
         </div>
 
-        {/* User Footer / Sign out */}
-        <div className="p-6 border-t border-white/10 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-brand-clay flex items-center justify-center font-bold text-white text-xs">
-              {session.email[0].toUpperCase()}
+        {/* Account context and session action */}
+        <div className="portal-sidebar-footer">
+          <Link
+            href="/portal/account"
+            className="portal-sidebar-account"
+            aria-label={`Open account profile for ${session.displayName || session.email}`}
+          >
+            <div className="portal-sidebar-avatar" aria-hidden="true">
+              {(session.displayName || session.email)[0].toUpperCase()}
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-white truncate">
-                {session.email}
-              </span>
-              <span className="text-[10px] text-white/50">
-                Unit {session.locationId}
-              </span>
-            </div>
-          </div>
+            <span className="portal-sidebar-account-copy">
+              <strong>{session.displayName || "Account profile"}</strong>
+              <span>{session.displayName ? session.email : "Account profile"}</span>
+            </span>
+            <User className="portal-sidebar-account-arrow" size={16} aria-hidden="true" />
+          </Link>
 
           <form action={logoutAction}>
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="portal-sidebar-signout"
             >
               <LogOut className="w-4 h-4" aria-hidden="true" />
-              Sign Out
+              <span>Sign Out</span>
             </button>
           </form>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="portal-shell-workspace flex min-w-0 flex-1 flex-col nav:h-dvh nav:min-h-0 nav:overflow-y-auto nav:overscroll-contain">
         {/* Top Mobile/Tablet Header */}
-        <header className="bg-white border-b border-brand-charcoal/10 px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <header
+          role="banner"
+          aria-label="Workspace header"
+          className="portal-shell-header sticky top-0 z-20 bg-white border-b border-bds-teal-dark/15 flex flex-wrap items-start justify-between gap-3 shadow-xs"
+        >
+          <div className="flex min-w-0 items-start gap-3 nav:hidden">
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={handleToggleMobileMenu}
-              className="lg:hidden p-2 rounded-xl text-brand-charcoal hover:bg-brand-sand focus:outline-none"
-              aria-label="Toggle Navigation Menu"
+              className="touch-target nav:hidden inline-flex items-center gap-2 px-3 py-2 rounded-xl text-bds-teal-dark bg-bds-cream hover:bg-bds-gold/30 border border-bds-teal-dark/15 focus-visible:outline-2 focus-visible:outline-bds-teal focus-visible:ring-2 focus-visible:ring-bds-gold"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="portal-mobile-navigation"
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" aria-hidden="true" />
+                <X className="w-5 h-5 shrink-0" aria-hidden="true" />
               ) : (
-                <Menu className="w-6 h-6" aria-hidden="true" />
+                <Menu className="w-5 h-5 shrink-0" aria-hidden="true" />
               )}
+              <span className="text-xs font-bold uppercase tracking-wider">
+                {isMobileMenuOpen ? "Close" : "Menu"}
+              </span>
             </button>
-            <div className="flex flex-col">
-              <h1 className="text-lg sm:text-xl font-bold font-heading text-brand-charcoal leading-none">
+            <div className="flex min-w-0 flex-col">
+              <p className="heading-compact text-bds-teal-dark [overflow-wrap:anywhere]">
                 {session.locationName}
-              </h1>
-              <span className="text-xs text-brand-charcoal/60 mt-0.5">
-                Location Code: {session.locationId} &bull; {locations.length} accessible unit(s)
+              </p>
+              <span className="mt-0.5 text-xs leading-tight text-bds-cocoa/80 [overflow-wrap:anywhere]">
+                {session.locationId} &bull; {authorizedUnitCount} accessible unit{authorizedUnitCount === 1 ? "" : "s"}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4 ml-auto">
             <Link
               href="/franchise"
-              className="hidden sm:inline-flex text-xs font-bold uppercase tracking-wider text-brand-clay hover:underline"
+              className="touch-target-inline hidden sm:inline-flex items-center text-xs font-bold uppercase tracking-wider text-bds-teal-dark hover:underline focus-visible:outline-2 focus-visible:outline-bds-teal focus-visible:ring-2 focus-visible:ring-bds-gold rounded-lg px-2 py-1"
             >
               &larr; View Public Hub
             </Link>
             <Link
               href="/portal/cart"
-              className="p-2.5 rounded-xl bg-brand-sand hover:bg-brand-butter text-brand-charcoal transition-colors relative"
-              aria-label="View Cart"
+              className="touch-target inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-bds-cream hover:bg-bds-gold/30 text-bds-teal-dark transition-colors focus-visible:outline-2 focus-visible:outline-bds-teal focus-visible:ring-2 focus-visible:ring-bds-gold border border-bds-teal-dark/15"
+              aria-label="View Store Supply Cart"
             >
-              <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+              <ShoppingCart className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <span className="text-xs font-bold uppercase tracking-wider">Cart</span>
+              <PortalCartBadge />
             </Link>
           </div>
         </header>
-
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen ? (
-          <div className="lg:hidden bg-brand-charcoal text-white p-4 space-y-3 shadow-xl">
+          <div
+            ref={mobileMenuRef}
+            id="portal-mobile-navigation"
+            className="nav:hidden bg-bds-teal-dark text-white p-4 space-y-3 shadow-xl"
+          >
             <div className="pb-3 border-b border-white/10">
-              <div className="bg-white/95 rounded-2xl px-3 py-1.5 inline-block">
+              <Link
+                href="/portal"
+                onClick={handleCloseMobileMenu}
+                className="inline-block rounded-lg p-1 transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-bds-teal focus-visible:ring-2 focus-visible:ring-bds-teal"
+                aria-label="Budda's Franchising Operator Portal Home"
+              >
                 <Image
-                  src="/images/Logo.svg"
+                  src="/images/Logo-white.svg"
                   alt="Budda's Franchising"
                   width={160}
                   height={32}
                   className="h-7 w-auto object-contain"
                 />
-              </div>
+              </Link>
             </div>
-            <nav className="space-y-1">
-              {navItems.map((item) => {
+            <nav aria-label="Mobile workspace navigation" className="space-y-1.5">
+              {visibleNavItems.map((item) => {
                 const Icon = item.icon;
+                const isActive =
+                  item.href === "/portal"
+                    ? pathname === "/portal"
+                    : pathname.startsWith(item.href);
+
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={handleCloseMobileMenu}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10"
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-bds-teal focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark ${
+                      isActive
+                        ? "bg-white/15 text-white font-bold border-l-4 border-bds-teal shadow-sm"
+                        : "text-white/80 hover:text-white hover:bg-white/10 border-l-4 border-transparent"
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
                   >
-                    <Icon className="w-4 h-4" aria-hidden="true" />
-                    {item.label}
+                    <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                    <span>{item.label}</span>
+                    {item.countKey ? <PortalNavBadge countKey={item.countKey} /> : null}
+                    {isActive ? <span className="sr-only">(Current page)</span> : null}
                   </Link>
                 );
               })}
@@ -223,10 +332,10 @@ export const PortalShell = ({
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-red-300 hover:bg-white/10"
+                  className="touch-target w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-rose-200 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-bds-teal"
                 >
-                  <LogOut className="w-4 h-4" aria-hidden="true" />
-                  Sign Out
+                  <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Sign Out</span>
                 </button>
               </form>
             </div>
@@ -234,10 +343,17 @@ export const PortalShell = ({
         ) : null}
 
         {/* Page Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main
+          id="portal-main-content"
+          tabIndex={-1}
+          aria-label="Workspace main content"
+          className="content-wide portal-main-content portal-shell-main flex-1 focus:outline-none"
+        >
           {children}
         </main>
       </div>
     </div>
   );
 };
+
+export const PortalShell = memo(PortalShellComponent);

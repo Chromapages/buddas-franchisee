@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function operator() { return signedIn() && exists(/databases/$(database)/documents/operators/$(request.auth.uid)); }
+    function assigned(unitId) { return operator() && unitId in get(/databases/$(database)/documents/operators/$(request.auth.uid)).data.managedUnitIds; }
+    match /units/{unitId} { allow read: if assigned(unitId); allow write: if false; }
+    // Credential records and sign-off acknowledgements include employee and
+    // compliance information. They are server-rendered after authorization,
+    // never exposed through the browser Firestore SDK.
+    match /units/{unitId}/{collectionId}/{document=**} {
+      allow read: if assigned(unitId) && collectionId != "foodSafetyCredentials" && collectionId != "brandSignoffRequirements";
+      allow write: if false;
+    }
+    match /auditEvents/{eventId} { allow read, write: if false; }
+    match /operators/{uid} { allow read: if signedIn() && uid == request.auth.uid; allow write: if false; }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

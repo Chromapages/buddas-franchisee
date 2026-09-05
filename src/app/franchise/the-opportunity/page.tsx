@@ -1,281 +1,469 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
-import {
-  CheckCircle2,
-  DollarSign,
-  Award,
-  Users,
-  ShieldCheck,
-  Building,
-  GraduationCap,
-  Sparkles,
-  ArrowRight,
-  Lock,
-} from "lucide-react";
+import Image from "next/image";
+import type { Metadata } from "next";
 import { isActiveOfferingEnabled } from "@/src/lib/flags";
+import {
+  FRANCHISE_INVESTMENT_DISCLOSURE,
+  ITEM_19_GOVERNANCE,
+  isApprovedPublicFinancialPlacement,
+} from "@/src/features/financials/financial-data";
+import { FRANCHISE_CANDIDATE_CRITERIA } from "@/src/features/franchise/candidate-criteria";
 import { FinancialDisclosure } from "@/src/components/public/financial-disclosure";
+import { CandidateReadinessCheck } from "@/src/components/public/candidate-readiness-check";
+import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
 import { Item19FprTable } from "@/src/components/public/item19-fpr-table";
+import { OpportunityIndex } from "@/src/components/public/opportunity-index";
+import { OpportunityIndexEnhancer } from "@/src/components/public/opportunity-index-enhancer";
+import { OpportunityAnalyticsLink } from "@/src/components/public/opportunity-analytics-link";
 import { TerritoryChecker } from "@/src/components/public/territory-checker";
-import { WorkflowReassuranceCarousel } from "@/src/components/public/workflow-reassurance-carousel";
+import {
+  getPublicJurisdictionDisplay,
+  PUBLIC_JURISDICTION_STATUSES,
+} from "@/src/features/territory/public-jurisdiction-status";
+import { getOpportunityDossierChapter, OPPORTUNITY_DOSSIER_CONTENT } from "@/src/features/franchise/opportunity-content";
+
+const OPPORTUNITY_BREADCRUMBS = [
+  {
+    name: "Franchising",
+    href: "/franchise",
+    absoluteHref: "https://buddasfranchise.com/franchise",
+  },
+  {
+    name: "The Opportunity",
+    href: "/franchise/the-opportunity",
+    absoluteHref: "https://buddasfranchise.com/franchise/the-opportunity",
+  },
+] as const;
+
+export const metadata: Metadata = {
+  title: OPPORTUNITY_DOSSIER_CONTENT.metadata.title,
+  description: OPPORTUNITY_DOSSIER_CONTENT.metadata.description,
+  alternates: {
+    canonical: "/franchise/the-opportunity",
+  },
+  openGraph: {
+    title: OPPORTUNITY_DOSSIER_CONTENT.metadata.title,
+    description: OPPORTUNITY_DOSSIER_CONTENT.metadata.description,
+    url: "/franchise/the-opportunity",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Budda's Hawaiian Bakery & Grill franchise opportunity",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: OPPORTUNITY_DOSSIER_CONTENT.metadata.title,
+    description: OPPORTUNITY_DOSSIER_CONTENT.metadata.description,
+    images: ["/images/og-image.png"],
+  },
+};
+
+const OpportunityPageStructuredData = () => {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://buddasfranchise.com/franchise/the-opportunity#webpage",
+        url: "https://buddasfranchise.com/franchise/the-opportunity",
+        name: OPPORTUNITY_DOSSIER_CONTENT.metadata.title,
+        description: OPPORTUNITY_DOSSIER_CONTENT.metadata.description,
+        inLanguage: "en-US",
+        isPartOf: {
+          "@id": "https://buddasfranchise.com/#website",
+        },
+        about: {
+          "@id": "https://buddasfranchise.com/#organization",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://buddasfranchise.com/franchise/the-opportunity#breadcrumb",
+        itemListElement: OPPORTUNITY_BREADCRUMBS.map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: item.name,
+          item: item.absoluteHref,
+        })),
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+    />
+  );
+};
+
+const DossierSection = ({
+  number,
+  eyebrow,
+  title,
+  description,
+  id,
+  children,
+  contextualLink,
+  tone = "default",
+  railLayout = false,
+  isOpeningChapter = false,
+  legacyIds = [],
+  chapterLabelAs = "h2",
+  titleHeadingAs = "h3",
+}: {
+  number: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  id: string;
+  children: ReactNode;
+  contextualLink?: { href: string; label: string; destinationId: string };
+  tone?: "default" | "sand";
+  /** Use inside the wide-screen dossier rail without applying a second page container. */
+  railLayout?: boolean;
+  /** Tightens the handoff from the dossier title spread into the first chapter. */
+  isOpeningChapter?: boolean;
+  /** Stable aliases preserve inbound links after a chapter ID is clarified. */
+  legacyIds?: readonly string[];
+  /** The opening chapter uses its candidate-facing title as the H2. */
+  chapterLabelAs?: "h2" | "p";
+  titleHeadingAs?: "h2" | "h3";
+}) => (
+  <section id={id} aria-labelledby={titleHeadingAs === "h2" ? `${id}-heading` : undefined} className={`${tone === "sand" ? "border-y border-brand-charcoal/10 bg-brand-sand/45" : ""} scroll-mt-[var(--opportunity-anchor-offset)] ${isOpeningChapter ? "pb-12 pt-8 lg:pb-14 lg:pt-10" : "py-12 lg:py-14"}`}>
+    {legacyIds.map((legacyId) => <span key={legacyId} id={legacyId} aria-hidden="true" className="block h-0 scroll-mt-[var(--opportunity-anchor-offset)]" />)}
+    <div className={railLayout ? "min-w-0" : "content-wide"}>
+      <div className="grid items-start gap-8 xl:grid-cols-[11rem_minmax(0,1fr)] xl:gap-9">
+        <div>
+          {chapterLabelAs === "h2" ? <h2 data-opportunity-chapter-heading tabIndex={-1} className="flex items-baseline gap-3 xl:flex-col xl:items-start xl:gap-2">
+            <span className="block font-heading text-3xl font-black text-bds-teal-dark xl:text-4xl">{number}</span>
+            <span className="block text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">{eyebrow}</span>
+          </h2> : <p className="flex items-baseline gap-3 xl:flex-col xl:items-start xl:gap-2">
+            <span className="block font-heading text-3xl font-black text-bds-teal-dark xl:text-4xl">{number}</span>
+            <span className="block text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">{eyebrow}</span>
+          </p>}
+        </div>
+        <div className="min-w-0">
+          <div className="max-w-3xl">
+            {title !== eyebrow && titleHeadingAs === "h2" ? <h2 id={`${id}-heading`} data-opportunity-chapter-heading tabIndex={-1} className="heading-section text-brand-charcoal">{title}</h2> : null}
+            {title !== eyebrow && titleHeadingAs === "h3" ? <h3 className="heading-section text-brand-charcoal">{title}</h3> : null}
+            <p className="mt-3 text-base leading-7 text-brand-charcoal/75">{description}</p>
+          </div>
+          <div className="mt-8 lg:mt-10">{children}</div>
+          {contextualLink ? (
+            <OpportunityAnalyticsLink href={contextualLink.href} event="opportunity_context_link_click" sectionId={id} destinationId={contextualLink.destinationId} className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-bds-teal-dark underline underline-offset-4 hover:text-brand-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-teal-dark focus-visible:ring-offset-2">
+              {contextualLink.label}
+            </OpportunityAnalyticsLink>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 export default function TheOpportunityPage() {
   const activeOffering = isActiveOfferingEnabled();
+  const showPublicInvestment = activeOffering && isApprovedPublicFinancialPlacement(
+    FRANCHISE_INVESTMENT_DISCLOSURE.governance,
+    "opportunity",
+  );
+  const showItem19 = activeOffering && isApprovedPublicFinancialPlacement(
+    ITEM_19_GOVERNANCE,
+    "item19",
+  );
+  const publicJurisdictions = PUBLIC_JURISDICTION_STATUSES.map(getPublicJurisdictionDisplay);
 
-  const supportPillars = [
+  const buddasFitCriteria = [
     {
-      title: "1. Real Estate & Site Selection",
-      description:
-        "Demographic scoring, drive-thru optimization, footprint sizing (1,800–2,600 sq ft), lease negotiation advisory, and architectural space planning.",
-      icon: Building,
+      label: "Operating experience",
+      title: FRANCHISE_CANDIDATE_CRITERIA.operatingExperience.meaning,
+      description: `${FRANCHISE_CANDIDATE_CRITERIA.operatingExperience.heading}. ${FRANCHISE_CANDIDATE_CRITERIA.operatingExperience.description}`,
     },
     {
-      title: "2. Comprehensive Training Academy",
-      description:
-        "3-week intensive immersion in La'ie covering dough proofing, steam baking, line speed, inventory controls, and Hawaiian hospitality standards.",
-      icon: GraduationCap,
+      label: "Financial qualification",
+      title: "Capital readiness",
+      description: "Financial readiness is reviewed alongside operating experience and leadership expectations.",
     },
     {
-      title: "3. Proprietary Supply Chain",
-      description:
-        "Direct access to master-batch frozen dough bases, compound whipped honey butters, signature teriyaki glazes, and custom branded packaging.",
-      icon: ShieldCheck,
+      label: "Operating quality evaluated",
+      title: "Hospitality leadership, standards discipline, and stewardship",
+      description: FRANCHISE_CANDIDATE_CRITERIA.stewardship.description,
+    },
+  ] as const;
+
+  const candidateEvaluationAreas = [
+    {
+      title: "Concept and operating model",
+      description: "Whether the bakery-and-grill model, product standards, and day-to-day operating expectations fit your leadership approach.",
     },
     {
-      title: "4. Grand Opening & Local Marketing",
-      description:
-        "Targeted digital campaigns, VIP roll tasting events, local PR orchestration, and ongoing local store marketing (LSM) toolkits.",
-      icon: Sparkles,
+      title: "Market and development context",
+      description: "The public state offering status, how a specific market is reviewed, and the fact that an inquiry does not reserve a territory.",
     },
-  ];
+    {
+      title: "Capital and disclosure context",
+      description: "How candidate capital requirements differ from estimated initial investment and which cost information is delivered through the FDD.",
+    },
+    {
+      title: "Support and partnership expectations",
+      description: "Whether the support runway and mutual evaluation process match the way you want to build and operate a business.",
+    },
+  ] as const;
+
+  const readinessItems = [
+    {
+      id: "operating-experience",
+      label: "I recognize the published operating-experience requirement.",
+      description: "Review the restaurant leadership and multi-unit experience described in the fit criteria above.",
+    },
+    {
+      id: "capital-criteria",
+      label: "I understand the current financial information status.",
+      description: "Review the Capital & Disclosure chapter for the financial information currently available on this page.",
+    },
+    {
+      id: "market-interest",
+      label: "I have a target market I would like to discuss.",
+      description: "State offering status is informational; a specific commercial market is reviewed individually during qualification.",
+    },
+    {
+      id: "diligence-path",
+      label: "I am prepared to review the concept, support, and disclosure path.",
+      description: "Use the opportunity dossier and mutual evaluation process to decide whether further discussion makes sense.",
+    },
+  ] as const;
+
+  const opportunityThesisItems = OPPORTUNITY_DOSSIER_CONTENT.thesis.items;
+  const opportunityThesisChapter = getOpportunityDossierChapter("opportunity-thesis");
+  const capitalChapter = getOpportunityDossierChapter("capital-disclosure");
+  const territoryChapter = getOpportunityDossierChapter("markets-territory");
+  const qualificationsChapter = getOpportunityDossierChapter("mutual-operator-fit");
+  const supportChapter = getOpportunityDossierChapter("operator-support");
+  const nextStepChapter = getOpportunityDossierChapter("next-step");
 
   return (
-    <div className="space-y-20 pb-20">
-      {/* Hero Section */}
-      <section className="bg-brand-sand/40 border-b border-brand-charcoal/10 py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-butter text-brand-charcoal text-xs font-bold uppercase tracking-wider">
-              <DollarSign className="w-3.5 h-3.5 text-brand-clay" aria-hidden="true" />
-              Franchise Opportunity &amp; Investment
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-black font-heading text-brand-charcoal tracking-tight">
-              Invest in a Category-Defining Hawaiian Bakery &amp; Grill.
-            </h1>
-            <p className="text-lg sm:text-xl text-brand-charcoal/80 leading-relaxed">
-              Review our candidate criteria, operating support structure, territory availability, and active investment requirements.
-            </p>
+    <div data-opportunity-dossier>
+      <OpportunityPageStructuredData />
+      <OpportunityIndexEnhancer />
+      <FranchisePageHeader
+        eyebrow={{
+          label: OPPORTUNITY_DOSSIER_CONTENT.hero.eyebrow.text,
+        }}
+        contentClassName="flex flex-col"
+        preTitle={
+          <div className="mb-[1rem]">
+            <nav aria-label="Breadcrumb">
+              <ol className="flex flex-wrap items-center gap-2 text-sm text-brand-charcoal/70">
+                {OPPORTUNITY_BREADCRUMBS.map((item, index) => (
+                  <li key={item.href} className="flex items-center gap-2">
+                    {index > 0 ? <span aria-hidden="true" className="text-brand-charcoal/45">/</span> : null}
+                    {index === OPPORTUNITY_BREADCRUMBS.length - 1 ? (
+                      <span aria-current="page" className="font-semibold text-brand-charcoal">{item.name}</span>
+                    ) : (
+                      <Link href={item.href} className="font-semibold text-bds-teal-dark underline underline-offset-4 hover:text-brand-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-teal-dark focus-visible:ring-offset-2">{item.name}</Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </nav>
           </div>
-        </div>
-      </section>
+        }
+        title={OPPORTUNITY_DOSSIER_CONTENT.hero.title.text}
+        eyebrowClassName="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-bds-action-primary"
+        titleClassName="heading-page mb-[1rem] max-w-[23ch] text-[clamp(2.25rem,2.65vw,3.0625rem)]"
+        description={OPPORTUNITY_DOSSIER_CONTENT.hero.description.text}
+        descriptionClassName="text-base leading-relaxed text-bds-text-body sm:text-xl"
+        sectionClassName="border-b border-bds-teal-dark/10 bg-bds-cream/60 py-12 xl:py-12"
+        containerClassName="content-wide"
+        layoutClassName="lg:items-start lg:grid-cols-1 lg:gap-8 dossier-spine:grid-cols-[minmax(34rem,1.15fr)_minmax(17rem,0.85fr)] dossier-spine:gap-8"
+        aside={
+          <figure className="relative aspect-video overflow-hidden rounded-3xl border-4 border-white bg-brand-sand shadow-xl dossier-spine:aspect-[2/1]">
+            <Image
+              src="/images/buddas-contact-service.png"
+              alt="A Budda's team member greeting a guest at a bakery counter"
+              fill
+              className="object-cover object-[38%_50%]"
+              sizes="(max-width: 67.25rem) 100vw, 34rem"
+            />
+          </figure>
+        }
+      />
 
-      {/* Financials & Item 7 Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-4 mb-8">
-          <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
-            Investment Parameters
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
-            Capital Readiness &amp; Estimated Investment
-          </h2>
-          <p className="text-base text-brand-charcoal/70 max-w-2xl leading-relaxed">
-            Transparent initial capital estimates to develop and launch an authentic Budda&apos;s restaurant.
-          </p>
-        </div>
+      <div className="content-wide pb-8 pt-6 dossier-spine:hidden">
+        <OpportunityIndex layout="inline" labelId="opportunity-index-inline-heading" />
+      </div>
 
-        <FinancialDisclosure isActiveOffering={activeOffering} />
-      </section>
+      <div className="content-wide">
+        <div className="dossier-spine:grid dossier-spine:grid-cols-[17rem_minmax(0,1fr)] dossier-spine:gap-8">
+          <aside className="hidden dossier-spine:mt-6 dossier-spine:block">
+            <div className="opportunity-dossier-spine sticky">
+              <OpportunityIndex labelId="opportunity-index-dossier-spine-heading" />
+            </div>
+          </aside>
+          <div className="min-w-0">
+      <DossierSection
+        id={opportunityThesisChapter.id}
+        number={opportunityThesisChapter.number}
+        eyebrow={opportunityThesisChapter.label.text}
+        title={OPPORTUNITY_DOSSIER_CONTENT.thesis.title.text}
+        description={OPPORTUNITY_DOSSIER_CONTENT.thesis.description.text}
+        contextualLink={{ href: "/franchise/why-buddas#four-pillars", label: "Review Budda's four operating pillars", destinationId: "why-buddas-four-pillars" }}
+        railLayout
+        isOpeningChapter
+        chapterLabelAs="p"
+        titleHeadingAs="h2"
+      >
+        <dl className="grid border-y border-bds-teal-dark/65 lg:grid-cols-2">
+          {opportunityThesisItems.map((item, index) => (
+            <div key={item.label.text} className={`p-6 sm:p-7 ${index > 0 ? "border-t border-bds-teal-dark/65" : ""} ${index === 1 ? "lg:border-t-0" : ""} ${index % 2 === 1 ? "lg:border-l lg:border-bds-teal-dark/65" : ""} ${index > 1 ? "lg:border-t lg:border-bds-teal-dark/65" : ""}`}>
+              <dt className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">{item.label.text}</dt>
+              <dd className="mt-3"><h3 className="font-heading text-xl font-bold text-brand-charcoal">{item.title.text}</h3></dd>
+              <dd className="mt-2 text-base leading-7 text-brand-charcoal/75">{item.description.text}</dd>
+              <dd className="mt-5 pt-1">
+                <p className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">{OPPORTUNITY_DOSSIER_CONTENT.thesis.operatorLensLabel.text}</p>
+                <p className="mt-2 text-sm leading-6 text-brand-charcoal/75 sm:text-base">{item.operatorLens.text}</p>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </DossierSection>
 
-      {/* Item 19 FPR Section (Gated in Release 2) */}
-      {activeOffering ? (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <DossierSection
+        id={capitalChapter.id}
+        legacyIds={capitalChapter.legacyIds}
+        number={capitalChapter.number}
+        eyebrow={capitalChapter.label.text}
+        title={OPPORTUNITY_DOSSIER_CONTENT.capital.title.text}
+        description={OPPORTUNITY_DOSSIER_CONTENT.capital.description.text}
+        contextualLink={{ href: "/franchise/faq#financial-qualifications", label: "Read the financial qualifications FAQ", destinationId: "faq-financial-qualifications" }}
+        railLayout
+      >
+        <FinancialDisclosure isActiveOffering={showPublicInvestment} />
+      </DossierSection>
+
+      {showItem19 ? (
+        <section className="pb-16">
           <Item19FprTable />
         </section>
       ) : null}
 
-      {/* Territory & Market Clearance Checker */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="territory">
-        <div className="space-y-4 mb-8">
-          <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
-            Expansion Markets
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
-            Approved Territories &amp; State Regulatory Status
-          </h2>
-          <p className="text-base text-brand-charcoal/70 max-w-2xl leading-relaxed">
-            Budda&apos;s complies strictly with federal and state franchise registration requirements. Check your territory clearance below.
-          </p>
+      <DossierSection
+        id={territoryChapter.id}
+        legacyIds={territoryChapter.legacyIds}
+        number={territoryChapter.number}
+        eyebrow={territoryChapter.label.text}
+        title="Where development may be considered"
+        description="State offering status and the availability of a specific market are reviewed separately. Selecting a state below does not confirm an available territory or reserve one."
+        contextualLink={{ href: "/franchise/faq#territory-award-process", label: "See how market territories are reviewed", destinationId: "faq-territory-award-process" }}
+        tone="sand"
+        railLayout
+      >
+        <TerritoryChecker jurisdictions={publicJurisdictions} />
+      </DossierSection>
+
+      <DossierSection
+        id={qualificationsChapter.id}
+        legacyIds={qualificationsChapter.legacyIds}
+        number={qualificationsChapter.number}
+        eyebrow={qualificationsChapter.label.text}
+        title="Mutual Operator Fit"
+        description="Budda&apos;s reviews verified requirements and operating qualities. In parallel, a prospective operator should examine the concept, market, capital context, support runway, and partnership expectations."
+        contextualLink={{ href: "/franchise/process", label: "Review the mutual evaluation process", destinationId: "mutual-evaluation-process" }}
+        railLayout
+      >
+        <div className="grid gap-10 xl:grid-cols-2 xl:gap-12">
+          <section aria-labelledby="buddas-fit-heading" className="border-t-2 border-bds-teal-dark/70 pt-5">
+            <h3 id="buddas-fit-heading" className="heading-compact text-brand-charcoal">Budda&apos;s evaluates</h3>
+            <dl className="mt-5 border-y border-bds-teal-dark/15">
+              {buddasFitCriteria.map((criterion, index) => (
+                <div key={criterion.title} className={`py-5 ${index > 0 ? "border-t border-bds-teal-dark/15" : ""}`}>
+                  <dt className="text-[0.8125rem] font-bold uppercase tracking-[0.1em] text-bds-teal-dark">{criterion.label}</dt>
+                  <dd className="mt-2 font-heading text-xl font-bold text-brand-charcoal">{criterion.title}</dd>
+                  <dd className="mt-2 text-base leading-7 text-brand-charcoal/75">{criterion.description}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <section aria-labelledby="candidate-evaluation-heading" className="border-t-2 border-brand-clay/70 pt-5">
+            <h3 id="candidate-evaluation-heading" className="heading-compact text-brand-charcoal">Candidate should evaluate</h3>
+            <ol className="mt-5 border-y border-bds-teal-dark/15">
+              {candidateEvaluationAreas.map((area, index) => (
+                <li key={area.title} className={`grid gap-3 py-5 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:gap-5 ${index > 0 ? "border-t border-bds-teal-dark/15" : ""}`}>
+                  <span className="font-heading text-2xl font-black text-bds-teal-dark">0{index + 1}</span>
+                  <div>
+                    <h4 className="font-heading text-xl font-bold text-brand-charcoal">{area.title}</h4>
+                    <p className="mt-2 text-base leading-7 text-brand-charcoal/75">{area.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
 
-        <TerritoryChecker />
-      </section>
+        <CandidateReadinessCheck items={readinessItems} />
+      </DossierSection>
 
-      {/* Qualifications Framework */}
-      <section className="bg-brand-sand/60 border-y border-brand-charcoal/10 py-16" id="qualifications">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
-              Ideal Candidate Profile
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
-              What Budda&apos;s Evaluates in Prospective Operators
-            </h2>
-            <p className="text-base text-brand-charcoal/70">
-              We look for partners who combine operational discipline with a heart for hospitality.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white border border-brand-charcoal/10 rounded-3xl p-8 shadow-sm space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-sand flex items-center justify-center text-brand-clay">
-                <Award className="w-5 h-5" aria-hidden="true" />
+      <DossierSection
+        id={supportChapter.id}
+        legacyIds={supportChapter.legacyIds}
+        number={supportChapter.number}
+        eyebrow={supportChapter.label.text}
+        title="How support and operator responsibility work across the runway"
+        description="The support model follows real operating phases. Budda&apos;s provides defined systems and resources; the operator remains responsible for local decisions, leadership, and execution."
+        contextualLink={{ href: "/franchise/faq#training-and-support", label: "Read the training and support FAQ", destinationId: "faq-training-support" }}
+        tone="sand"
+        railLayout
+      >
+        <ol className="border-y border-bds-teal-dark/25">
+          <li className="hidden grid-cols-[5rem_minmax(13rem,0.55fr)_minmax(0,1fr)_minmax(0,0.9fr)] gap-6 border-b border-bds-teal-dark/15 py-4 text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark xl:grid">
+            <span>Phase</span>
+            <span>Support area</span>
+            <span>Budda&apos;s provides</span>
+            <span>Operator remains responsible for</span>
+          </li>
+          {OPPORTUNITY_DOSSIER_CONTENT.support.phases.map((phase, index) => (
+            <li key={phase.number} className={`grid gap-4 py-6 xl:grid-cols-[5rem_minmax(13rem,0.55fr)_minmax(0,1fr)_minmax(0,0.9fr)] xl:gap-6 ${index > 0 ? "border-t border-bds-teal-dark/15" : ""}`}>
+              <div>
+                <span className="font-heading text-3xl font-black text-bds-teal-dark">{phase.number}</span>
+                <span className="mt-1 block text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">{phase.phase.text}</span>
               </div>
-              <h3 className="text-xl font-bold font-heading text-brand-charcoal">
-                Operating Experience
-              </h3>
-              <p className="text-sm text-brand-charcoal/70 leading-relaxed">
-                Minimum 3+ years of restaurant management, multi-unit leadership, or food-service franchise ownership with a proven record of team development.
-              </p>
-            </div>
-
-            <div className="bg-white border border-brand-charcoal/10 rounded-3xl p-8 shadow-sm space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-butter flex items-center justify-center text-brand-charcoal">
-                <DollarSign className="w-5 h-5 text-brand-clay" aria-hidden="true" />
+              <h3 className="font-heading text-xl font-bold text-brand-charcoal">{phase.title.text}</h3>
+              <div>
+                <p className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark xl:hidden">Budda&apos;s provides</p>
+                <p className="mt-1 text-base leading-7 text-brand-charcoal/75 xl:mt-0">{phase.support.text}</p>
               </div>
-              <h3 className="text-xl font-bold font-heading text-brand-charcoal">
-                Financial Qualifications
-              </h3>
-              <p className="text-sm text-brand-charcoal/70 leading-relaxed">
-                Minimum of $150,000 in liquid capital and $400,000 net worth per unit commitment to ensure adequate capitalization during buildout and ramp.
-              </p>
-            </div>
-
-            <div className="bg-white border border-brand-charcoal/10 rounded-3xl p-8 shadow-sm space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-sand flex items-center justify-center text-brand-clay">
-                <Users className="w-5 h-5" aria-hidden="true" />
+              <div>
+                <p className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark xl:hidden">Operator remains responsible for</p>
+                <p className="mt-1 text-base leading-7 text-brand-charcoal/75 xl:mt-0">{phase.operatorResponsibility.text}</p>
               </div>
-              <h3 className="text-xl font-bold font-heading text-brand-charcoal">
-                Cultural Alignment
-              </h3>
-              <p className="text-sm text-brand-charcoal/70 leading-relaxed">
-                A passion for genuine island hospitality, active community stewardship, and an unwavering commitment to bakery recipe standards.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Support Pillars */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
-            Turnkey Systems
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
-            Comprehensive Operator Support Architecture
-          </h2>
-          <p className="text-base text-brand-charcoal/70">
-            From initial site scoring to daily kitchen execution, our corporate infrastructure supports your growth.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {supportPillars.map((pillar) => {
-            const Icon = pillar.icon;
-            return (
-              <div
-                key={pillar.title}
-                className="bg-white border border-brand-charcoal/10 rounded-3xl p-8 shadow-sm flex items-start gap-5 hover:border-brand-mango transition-all"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-brand-sand flex items-center justify-center text-brand-clay shrink-0 mt-1">
-                  <Icon className="w-6 h-6" aria-hidden="true" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold font-heading text-brand-charcoal">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm text-brand-charcoal/70 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
+            </li>
+          ))}
+        </ol>
+          </DossierSection>
+          <section id={nextStepChapter.id} aria-labelledby="opportunity-next-step-heading" className="scroll-mt-[var(--opportunity-anchor-offset)] bg-bds-teal-dark px-6 py-14 text-bds-cream lg:px-10 lg:py-18">
+            <div className="grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)] xl:items-end xl:gap-12">
+              <div className="min-w-0">
+                <h2 data-opportunity-chapter-heading tabIndex={-1} className="text-[0.8125rem] font-bold uppercase tracking-[0.1em] text-bds-gold-accessible">{nextStepChapter.number} / {nextStepChapter.label.text}</h2>
+                <h3 id="opportunity-next-step-heading" className="mt-3 break-words font-heading text-4xl font-black leading-[1.05] tracking-tight text-bds-cream sm:text-5xl">Decide whether a mutual evaluation is the right next conversation.</h3>
+                <p className="mt-4 max-w-[58ch] text-base leading-7 text-bds-cream/85">Request franchise information when you are ready to discuss your operating background, target market, and capital readiness. We review inquiries within 2 business days.</p>
               </div>
-            );
-          })}
-        </div>
-      </section>
 
-      {/* Bottom CTA Box */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-20">
-        <div className="bg-brand-charcoal rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-14 text-white shadow-xl relative overflow-hidden">
-          <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
-            {/* 1. Message Cluster: Order 1 on mobile, col 1-7 on desktop */}
-            <div className="w-full lg:col-span-7 text-center lg:text-left space-y-2.5 sm:space-y-4 order-1">
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight leading-tight">
-                Let&apos;s Build Something Together.
-              </h2>
-              <p className="text-sm sm:text-base lg:text-lg text-brand-cream/80 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                We seek experienced operators who share our commitment to standards. Provide your background to begin a confidential, two-way evaluation.
-              </p>
-            </div>
-
-            {/* 2. Trust Card: Order 2 on mobile (under body text), col 8-12 on desktop */}
-            <div className="w-full lg:col-span-5 lg:row-span-2 order-2 lg:order-2 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-7 backdrop-blur-sm">
-              <div className="text-xs font-bold uppercase tracking-wider text-bds-gold mb-3.5 text-center lg:text-left">
-                Franchise Evaluation Benchmarks
-              </div>
-              <div className="grid grid-cols-2 gap-4 border-b border-white/10 pb-5 mb-5 text-center lg:text-left">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$150K</div>
-                  <div className="text-xs text-brand-cream/70 mt-0.5">Min. Liquid Capital</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black font-heading text-white">$400K</div>
-                  <div className="text-xs text-brand-cream/70 mt-0.5">Min. Net Worth</div>
-                </div>
-              </div>
-              <div className="space-y-2.5 text-xs text-brand-cream/80 text-left">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
-                  <span>2 Operating Corporate Locations (Utah)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
-                  <span>Structured 4-Stage Mutual Vetting Process</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bds-gold shrink-0" aria-hidden="true" />
-                  <span>Direct Leadership &amp; Operational Onboarding</span>
-                </div>
+              <div className="min-w-0 border-l-2 border-bds-gold pl-5">
+                <OpportunityAnalyticsLink href="/franchise/contact" event="opportunity_request_info_click" sectionId="next-step" destinationId="franchise-contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-bds-gold px-5 py-3 text-base font-bold text-bds-teal-ink hover:bg-bds-gold-accessible focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark">Request Franchise Information</OpportunityAnalyticsLink>
+                <OpportunityAnalyticsLink href="/franchise/process" event="opportunity_how_it_works_click" sectionId="next-step" destinationId="mutual-evaluation-process" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-bds-cream underline underline-offset-4 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark">Review How It Works</OpportunityAnalyticsLink>
+                <p className="mt-5 border-t border-white/20 pt-4 text-sm leading-6 text-bds-cream/80">This begins an inquiry—not an application, territory reservation, franchise offer, or approval decision.</p>
               </div>
             </div>
-
-            {/* 3. Action Cluster & Reassurance: Order 3 on mobile (under trust card), col 1-7 on desktop */}
-            <div className="w-full lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 order-3 lg:order-3">
-              {/* Action Cluster (44-48px Mobile Touch Targets) */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-4">
-                <Link
-                  href="/franchise/contact"
-                  className="btn-primary text-sm sm:text-base font-bold w-full sm:w-auto min-h-[48px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal"
-                >
-                  Request a Mutual Evaluation
-                </Link>
-                <Link
-                  href="/franchise/process"
-                  className="text-sm font-semibold text-brand-cream/80 hover:text-white px-4 py-3 min-h-[44px] flex items-center justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2 focus-visible:ring-offset-brand-charcoal transition-colors duration-200"
-                >
-                  See How We Partner &rarr;
-                </Link>
-              </div>
-
-              {/* Workflow & Reassurance Signals (Mobile Auto-Carousel + Desktop Static) */}
-              <WorkflowReassuranceCarousel theme="charcoal" />
-
-              {/* Approved Legal Privacy & Non-Binding Disclosure */}
-              <p className="text-[11px] text-brand-cream/60 leading-relaxed max-w-xl mx-auto lg:mx-0 pt-1">
-                Initial inquiry only. Your information is confidential, reviewed solely by our internal corporate team, and never shared or sold. Submission does not constitute a formal franchise offering or binding agreement.
-              </p>
-            </div>
+          </section>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

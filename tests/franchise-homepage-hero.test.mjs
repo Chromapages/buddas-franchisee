@@ -13,18 +13,17 @@ test("Franchise homepage hero section contains required BDS v2.0 design tokens a
   assert.ok(pageContent.includes("bds-action-primary"), "Includes bds-action-primary");
 });
 
-test("Hero section displays exact canonical headline, roll icon, and eyebrow from reference", () => {
-  assert.ok(pageContent.includes("Build the Home"), "Contains first line of headline");
-  assert.ok(pageContent.includes("of the Budda Roll"), "Contains second line of headline");
+test("Hero section displays the franchise-first headline, roll icon, and eyebrow", () => {
+  assert.ok(pageContent.includes("Build Budda&apos;s"), "Contains first line of headline");
   assert.ok(pageContent.includes("in Your Market."), "Contains third line of headline");
   assert.ok(pageContent.includes("franchise opportunity"), "Contains franchise opportunity in body copy");
-  assert.ok(pageContent.includes("Home of the Budda Roll"), "Contains eyebrow text");
+  assert.ok(pageContent.includes("Franchise Opportunity"), "Contains franchise-first eyebrow text");
   assert.ok(pageContent.includes("/roll-icon.svg"), "Directly uses roll-icon.svg");
   assert.ok(pageContent.includes("bg-[#C47D2B]"), "Roll icon renders in gold color");
 });
 
-test("Hero section provides responsive mobile and desktop optimized background images", () => {
-  assert.ok(pageContent.includes("FRANCHISE-HERO-mobile.jpg"), "Includes mobile-optimized hero background image");
+test("Hero section provides responsive mobile and desktop optimized imagery", () => {
+  assert.ok(pageContent.includes("buddas-about-storefront.png"), "Includes mobile storefront image");
   assert.ok(pageContent.includes("franchise-hero.jpg"), "Includes desktop hero background image");
 });
 

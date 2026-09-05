@@ -16,24 +16,24 @@ export const StatCard = ({
   trend,
 }: StatCardProps) => {
   return (
-    <div className="bg-white border border-brand-charcoal/10 rounded-3xl p-6 shadow-sm space-y-3">
+    <div className="bg-white border border-bds-teal-dark/15 rounded-2xl p-6 shadow-sm space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-brand-charcoal/60">
+        <span className="text-xs font-bold uppercase tracking-wider text-bds-cocoa/70">
           {title}
         </span>
-        <div className="w-10 h-10 rounded-xl bg-brand-sand flex items-center justify-center text-brand-clay">
+        <div className="w-10 h-10 rounded-xl bg-bds-cream flex items-center justify-center text-bds-teal-dark">
           {icon}
         </div>
       </div>
-      <div className="space-y-1">
-        <div className="text-3xl font-black font-heading text-brand-charcoal tracking-tight">
+      <div className="space-y-3">
+        <div className="text-3xl font-black font-heading text-bds-teal-dark tracking-tight">
           {value}
         </div>
         {description ? (
-          <p className="text-xs text-brand-charcoal/70">{description}</p>
+          <p className="text-xs text-bds-cocoa/80">{description}</p>
         ) : null}
         {trend ? (
-          <span className="inline-block text-[11px] font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-full">
+          <span className="inline-block text-[11px] font-bold text-emerald-950 bg-emerald-100 px-2 py-0.5 rounded-full">
             {trend}
           </span>
         ) : null}

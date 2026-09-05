@@ -1,186 +1,77 @@
-import { getPortalSession } from "@/src/features/auth/session";
-import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
-import { StatCard } from "@/src/components/portal/portal-primitives";
+import { Suspense } from "react";
 import Link from "next/link";
+import { AlertCircle, HelpCircle, Package, Store } from "lucide-react";
+import { DashboardRefresh } from "@/src/components/portal/dashboard-refresh";
+import { defaultPortalStorage, isUsingInMemoryPortalStorage } from "@/src/features/portal/storage-adapter";
 import {
-  Package,
-  Clock,
-  FolderOpen,
-  HelpCircle,
-  Bell,
-  ArrowRight,
-  TrendingUp,
-} from "lucide-react";
+  BulletinModule,
+  BulletinModuleSkeleton,
+  NeedsAttentionModule,
+  NeedsAttentionSkeleton,
+  OperationalPulseModule,
+  OperationalPulseSkeleton,
+  RecentOrdersModule,
+  RecentOrdersSkeleton,
+} from "@/src/components/portal/dashboard-modules";
+import { PortalDataBoundary } from "@/src/components/portal/portal-data-boundary";
+import { getPortalEnvironmentNotice } from "@/src/features/portal/environment";
+import { loadPortalModule } from "@/src/features/portal/module-loader";
+import { requirePortalPermission } from "@/src/features/portal/authorization-server";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function PortalDashboardPage() {
-  const session = (await getPortalSession())!;
-  const orders = await defaultPortalStorage.getOrdersByLocation(session.locationId);
-  const products = await defaultPortalStorage.getProductsByLocation(session.locationId);
-  const resources = await defaultPortalStorage.getResourcesByLocation(session.locationId);
-  const announcements = await defaultPortalStorage.getAnnouncements();
-
-  const openOrdersCount = orders.filter(
-    (o) => o.status === "Pending" || o.status === "Processing" || o.status === "Shipped",
-  ).length;
+  const session = await requirePortalPermission("ACCESS_WORKSPACE");
+  const orders = loadPortalModule("dashboard orders", () => defaultPortalStorage.getOrdersByLocation(session.locationId));
+  const bulletins = loadPortalModule("dashboard bulletins", () => defaultPortalStorage.getBulletinsForSession(session));
+  const supportCases = loadPortalModule("dashboard support", () => defaultPortalStorage.getSupportCasesByLocation(session.locationId));
+  const dashboardGreeting = session.displayName ? `Aloha, ${session.displayName}.` : "Aloha. Welcome to your workspace.";
+  const environmentNotice = getPortalEnvironmentNotice();
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-white border border-brand-charcoal/10 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-clay">
-            Store Operations Control
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-heading text-brand-charcoal">
-            Aloha, {session.email}
-          </h2>
-          <p className="text-xs sm:text-sm text-brand-charcoal/70">
-            Active Unit: <strong>{session.locationName}</strong> ({session.locationId}) &bull; Role: <strong>{session.role}</strong>
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/portal/supplies"
-            className="btn-primary text-xs font-bold uppercase tracking-wider !py-3 !px-5 flex items-center gap-2"
-          >
-            <Package className="w-4 h-4" aria-hidden="true" />
-            Order Supplies
-          </Link>
-          <Link
-            href="/portal/support"
-            className="btn-outline text-xs font-bold uppercase tracking-wider !py-3 !px-5 flex items-center gap-2"
-          >
-            <HelpCircle className="w-4 h-4" aria-hidden="true" />
-            Open Ticket
-          </Link>
-        </div>
-      </div>
-
-      {/* KPI Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Active Orders"
-          value={openOrdersCount}
-          description="In fulfillment or transit"
-          icon={<Clock className="w-5 h-5" aria-hidden="true" />}
-        />
-        <StatCard
-          title="Supply Catalog"
-          value={products.length}
-          description="Approved wholesale SKUs"
-          icon={<Package className="w-5 h-5" aria-hidden="true" />}
-        />
-        <StatCard
-          title="Document Library"
-          value={resources.length}
-          description="SOPs &amp; Brand Toolkits"
-          icon={<FolderOpen className="w-5 h-5" aria-hidden="true" />}
-        />
-        <StatCard
-          title="Baking Efficiency"
-          value="98.4%"
-          description="Roll batch yield target"
-          trend="+1.2% this week"
-          icon={<TrendingUp className="w-5 h-5" aria-hidden="true" />}
-        />
-      </div>
-
-      {/* Announcements & Recent Orders Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Recent Orders Column */}
-        <div className="lg:col-span-7 bg-white border border-brand-charcoal/10 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-brand-sand">
-            <div>
-              <h3 className="text-lg font-bold font-heading text-brand-charcoal">
-                Recent Wholesale Orders
-              </h3>
-              <p className="text-xs text-brand-charcoal/60">
-                Supply orders scoped to {session.locationName}
-              </p>
-            </div>
-            <Link
-              href="/portal/orders"
-              className="text-xs font-bold uppercase tracking-wider text-brand-clay hover:underline inline-flex items-center gap-1"
-            >
-              View All &rarr;
+    <div className="operator-dashboard">
+      <section className="dashboard-header">
+        <div className="dashboard-header-top">
+          <div>
+            <p className="dashboard-eyebrow">Operator Workspace</p>
+            <h1>Dashboard</h1>
+            <p className="dashboard-greeting">{dashboardGreeting} Here’s your unit at a glance.</p>
+          </div>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Link href="/portal/supplies" className="touch-target btn-primary inline-flex items-center gap-2 !px-4 !py-2 text-xs font-bold uppercase tracking-wider">
+              <Package className="h-4 w-4" aria-hidden="true" />Order supplies
+            </Link>
+            <Link href="/portal/support" className="dashboard-support-action">
+              <HelpCircle className="h-4 w-4" aria-hidden="true" />Get support
             </Link>
           </div>
-
-          <div className="space-y-4">
-            {orders.slice(0, 3).map((order) => (
-              <div
-                key={order.id}
-                className="p-4 rounded-2xl bg-brand-sand/40 border border-brand-charcoal/5 flex items-center justify-between gap-4"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-brand-charcoal">
-                      {order.id}
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                        order.status === "Delivered"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-amber-100 text-amber-800"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </div>
-                  <p className="text-xs text-brand-charcoal/70">
-                    {order.items.length} item(s) &bull; ETA: {order.eta}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="font-bold font-heading text-base text-brand-charcoal block">
-                    ${order.total.toFixed(2)}
-                  </span>
-                  <span className="text-[11px] text-brand-charcoal/50 font-mono">
-                    {order.invoiceId}
-                  </span>
-                </div>
-              </div>
-            ))}
-
-            {orders.length === 0 ? (
-              <p className="text-xs text-brand-charcoal/60 text-center py-6">
-                No recent wholesale orders found.
-              </p>
-            ) : null}
-          </div>
         </div>
+        <div className="dashboard-context"><p><Store size={18} aria-hidden="true" /><span>Working unit <strong>{session.locationName}</strong><span className="dashboard-unit-id">{session.locationId}</span></span></p><DashboardRefresh /></div>
+      </section>
 
-        {/* Announcements Column */}
-        <div className="lg:col-span-5 bg-white border border-brand-charcoal/10 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex items-center gap-2 pb-4 border-b border-brand-sand">
-            <Bell className="w-4 h-4 text-brand-clay" aria-hidden="true" />
-            <h3 className="text-lg font-bold font-heading text-brand-charcoal">
-              Operations Bulletins
-            </h3>
-          </div>
+      {environmentNotice ? (
+        <p role="status" className="flex items-start gap-2 rounded-xl border border-bds-teal/30 bg-bds-cream px-4 py-3 text-sm text-bds-cocoa/85">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-bds-teal-dark" aria-hidden="true" />
+          <span><strong>{isUsingInMemoryPortalStorage ? "Development-only data." : "Non-production environment."}</strong> {environmentNotice}</span>
+        </p>
+      ) : null}
 
-          <div className="space-y-4">
-            {announcements.map((ann) => (
-              <div
-                key={ann.id}
-                className="p-4 rounded-2xl bg-brand-sand/40 border border-brand-charcoal/5 space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold text-brand-charcoal">
-                    {ann.title}
-                  </h4>
-                  <span className="text-[10px] text-brand-charcoal/50">
-                    {new Date(ann.publishedAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-xs text-brand-charcoal/70 leading-relaxed">
-                  {ann.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <PortalDataBoundary title="Needs your attention could not be loaded" description="Actionable order, support, or bulletin updates are temporarily unavailable.">
+        <Suspense fallback={<NeedsAttentionSkeleton />}><NeedsAttentionModule session={session} orders={orders} bulletins={bulletins} supportCases={supportCases} /></Suspense>
+      </PortalDataBoundary>
+
+      <PortalDataBoundary title="Operational pulse could not be loaded" description="Current orders, support tickets, or required updates could not be retrieved.">
+        <Suspense fallback={<OperationalPulseSkeleton />}><OperationalPulseModule session={session} orders={orders} supportCases={supportCases} bulletins={bulletins} /></Suspense>
+      </PortalDataBoundary>
+
+      <div className="dashboard-streams">
+        <PortalDataBoundary title="Recent orders could not be loaded" description="Order history is temporarily unavailable. Try again in a moment.">
+          <Suspense fallback={<RecentOrdersSkeleton />}><RecentOrdersModule orders={orders} locationId={session.locationId} /></Suspense>
+        </PortalDataBoundary>
+        <PortalDataBoundary title="Operations bulletins could not be loaded" description="Current operational communication is temporarily unavailable.">
+          <Suspense fallback={<BulletinModuleSkeleton />}><BulletinModule session={session} bulletins={bulletins} /></Suspense>
+        </PortalDataBoundary>
       </div>
     </div>
   );

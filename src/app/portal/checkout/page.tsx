@@ -1,90 +1,51 @@
-import { getPortalSession } from "@/src/features/auth/session";
-import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
-import { checkoutFormAction } from "@/src/features/portal/actions";
-import { ShieldCheck, Store } from "lucide-react";
+import { getPortalCart } from "@/src/features/portal/cart";
+import { redirect } from "next/navigation";
+import { requirePortalPermission } from "@/src/features/portal/authorization-server";
+import { CheckoutForm } from "@/src/components/portal/checkout-form";
+import { getCheckoutFingerprint } from "@/src/features/portal/checkout-review";
 
-export default async function CheckoutPage() {
-  const session = (await getPortalSession())!;
-  const products = await defaultPortalStorage.getProductsByLocation(session.locationId);
+type CheckoutPageProps = {
+  searchParams: Promise<{ destination?: string }>;
+};
 
-  const orderItems = [
-    { sku: products[0].sku, name: products[0].name, quantity: 4, price: products[0].price },
-    { sku: products[1].sku, name: products[1].name, quantity: 2, price: products[1].price },
-  ];
+export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
+  const session = await requirePortalPermission("CREATE_ORDER");
+  const { destination } = await searchParams;
+  const cartItems = await getPortalCart(session);
+  if (cartItems.length === 0) redirect("/portal/cart");
+
+  const orderItems = cartItems.map((item) => ({
+    sku: item.product.sku,
+    name: item.product.name,
+    price: item.product.price,
+    quantity: item.quantity,
+    packSize: item.product.packSize,
+  }));
 
   const total = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
-    <div className="space-y-8 max-w-3xl">
-      <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-brand-clay">
-          Order Finalization
+    <div className="portal-checkout-page portal-page-stack">
+      <div className="portal-page-header">
+        <span className="portal-page-eyebrow">
+          Wholesale ordering / Checkout
         </span>
-        <h2 className="text-2xl sm:text-3xl font-bold font-heading text-brand-charcoal">
-          Location Checkout
-        </h2>
-        <p className="text-sm text-brand-charcoal/70 mt-1">
-          Direct warehouse invoice billing for <strong>{session.locationName}</strong>.
+        <h1 className="portal-page-title">
+          Review &amp; place your order
+        </h1>
+        <p className="text-sm text-bds-cocoa/80">
+          Check the receiving unit, supplies, and costs before submitting.
         </p>
       </div>
 
-      <form action={checkoutFormAction} className="bg-white border border-brand-charcoal/10 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <input type="hidden" name="locationId" value={session.locationId} />
-        <input type="hidden" name="items" value={JSON.stringify(orderItems)} />
-
-        {/* Location Verification Box */}
-        <div className="p-4 rounded-2xl bg-brand-sand/50 border border-brand-charcoal/10 flex items-center gap-3">
-          <Store className="w-5 h-5 text-brand-clay shrink-0" aria-hidden="true" />
-          <div className="text-xs text-brand-charcoal">
-            <span className="font-bold block">Delivery Unit Destination</span>
-            <span>{session.locationName} &bull; Unit Code: {session.locationId}</span>
-          </div>
-        </div>
-
-        {/* Order Summary */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-brand-charcoal">
-            Line Items Summary
-          </h3>
-          <div className="space-y-2">
-            {orderItems.map((item) => (
-              <div key={item.sku} className="flex items-center justify-between text-xs py-2 border-b border-brand-sand">
-                <span className="font-semibold text-brand-charcoal">
-                  {item.quantity}x {item.name} ({item.sku})
-                </span>
-                <span className="font-bold text-brand-charcoal">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Total & Terms */}
-        <div className="pt-4 border-t border-brand-sand flex items-center justify-between">
-          <span className="text-base font-bold font-heading text-brand-charcoal">Total Invoice Amount</span>
-          <span className="text-2xl font-black font-heading text-brand-clay">
-            ${total.toFixed(2)}
-          </span>
-        </div>
-
-        <div className="p-4 rounded-xl bg-brand-sand/30 border border-brand-charcoal/5 text-xs text-brand-charcoal/70 space-y-1">
-          <div className="flex items-center gap-1.5 font-bold text-brand-charcoal">
-            <ShieldCheck className="w-3.5 h-3.5 text-brand-clay" aria-hidden="true" />
-            Terms of Wholesale Supply
-          </div>
-          <p>
-            Invoices are billed net-30 through the franchisee central account. Deliveries are routed via cold-chain freight within 3–5 business days.
-          </p>
-        </div>
-
-        <button
-          type="submit"
-          className="btn-primary w-full py-4 text-base font-bold shadow-md hover:shadow-lg transition-all"
-        >
-          Submit Wholesale Order &amp; Generate Invoice
-        </button>
-      </form>
+      <CheckoutForm
+        locationId={session.locationId}
+        locationName={session.locationName}
+        orderItems={orderItems}
+        total={total}
+        reviewFingerprint={getCheckoutFingerprint(session.locationId, orderItems)}
+        destinationParam={destination}
+      />
     </div>
   );
 }

@@ -44,7 +44,7 @@ export const FddReceiptForm = ({ receipt }: FddReceiptFormProps) => {
             <CheckCircle2 className="w-7 h-7" aria-hidden="true" />
           </div>
           <div>
-            <h3 className="text-2xl font-bold font-heading">
+            <h3 className="heading-compact text-emerald-950">
               Item 23 Receipt Executed Successfully
             </h3>
             <p className="text-sm text-emerald-800">
@@ -108,7 +108,7 @@ export const FddReceiptForm = ({ receipt }: FddReceiptFormProps) => {
           <Lock className="w-3.5 h-3.5" aria-hidden="true" />
           Item 23 Compliance Acknowledgement
         </div>
-        <h3 className="text-2xl font-bold font-heading text-brand-charcoal">
+        <h3 className="heading-compact text-brand-charcoal">
           Acknowledge &amp; Sign Receipt of FDD
         </h3>
         <p className="text-sm text-brand-charcoal/70 leading-relaxed">

@@ -1,218 +1,293 @@
-﻿"use client";
+"use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import {
-  Sparkles,
-  CheckCircle2,
-  ChevronRight,
-} from "lucide-react";
-import {
-  type Pillar,
-  WHY_BUDDAS_PILLARS,
-} from "@/src/features/why-buddas/pillars-config.ts";
+import styles from "./why-buddas-pillars.module.css";
+import type {
+  PublicPillar,
+  PublicPillarSection,
+} from "@/src/features/why-buddas/pillars-config";
+import { trackFunnelEvent } from "@/src/lib/analytics";
 
-export type { Pillar };
-export { WHY_BUDDAS_PILLARS };
+type WhyBuddasPillarsProps = {
+  pillars: readonly PublicPillar[];
+  section: PublicPillarSection;
+};
 
-export const WhyBuddasPillars = () => {
-  const [activeTab, setActiveTab] = useState<number>(0);
-  const tabButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+const getPillarIndexFromHash = (pillars: readonly PublicPillar[]) => {
+  if (typeof window === "undefined") return 0;
 
-  const handleSelectTab = (index: number) => {
-    setActiveTab(index);
-    tabButtonRefs.current[index]?.focus();
+  const index = pillars.findIndex(
+    (pillar) => `#${pillar.id}` === window.location.hash
+  );
+
+  return index;
+};
+
+/**
+ * A focused, manually activated tab set. Every panel remains in the DOM so
+ * the relationship between each selector and its reading content is stable.
+ */
+export const WhyBuddasPillars = ({ pillars, section }: WhyBuddasPillarsProps) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [focusIndex, setFocusIndex] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    const syncHashToPillar = () => {
+      const index = getPillarIndexFromHash(pillars);
+      if (index < 0) return;
+      setActiveIndex(index);
+      setFocusIndex(index);
+
+      if (window.location.hash) {
+        requestAnimationFrame(() => {
+          document.getElementById(pillars[index].id)?.scrollIntoView({
+            block: "start",
+          });
+        });
+      }
+    };
+
+    syncHashToPillar();
+    window.addEventListener("hashchange", syncHashToPillar);
+    return () => window.removeEventListener("hashchange", syncHashToPillar);
+  }, [pillars]);
+
+  const selectPillar = (index: number) => {
+    const pillar = pillars[index];
+    if (!pillar) return;
+
+    setActiveIndex(index);
+    setFocusIndex(index);
+    window.history.replaceState(null, "", `#${pillar.id}`);
+
+    // Selection data informs content-coverage and navigation decisions only.
+    // It never represents qualification, intent to purchase, or readiness.
+    trackFunnelEvent("why_buddas_pillar_selected", {
+      page_path: "/franchise/why-buddas",
+      why_buddas_pillar_id: pillar.id,
+    });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
-    let nextIndex = currentIndex;
-
-    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-      event.preventDefault();
-      nextIndex = (currentIndex + 1) % WHY_BUDDAS_PILLARS.length;
-      handleSelectTab(nextIndex);
-      return;
-    }
-
-    if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-      event.preventDefault();
-      nextIndex = (currentIndex - 1 + WHY_BUDDAS_PILLARS.length) % WHY_BUDDAS_PILLARS.length;
-      handleSelectTab(nextIndex);
-      return;
-    }
-
-    if (event.key === "Home") {
-      event.preventDefault();
-      handleSelectTab(0);
-      return;
-    }
-
-    if (event.key === "End") {
-      event.preventDefault();
-      handleSelectTab(WHY_BUDDAS_PILLARS.length - 1);
-      return;
-    }
+  const moveFocus = (index: number) => {
+    setFocusIndex(index);
+    tabRefs.current[index]?.focus();
   };
 
-  const currentPillar = WHY_BUDDAS_PILLARS[activeTab];
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    currentIndex: number
+  ) => {
+    const lastIndex = pillars.length - 1;
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      moveFocus(currentIndex === lastIndex ? 0 : currentIndex + 1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      moveFocus(currentIndex === 0 ? lastIndex : currentIndex - 1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      moveFocus(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      moveFocus(lastIndex);
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectPillar(currentIndex);
+    }
+  };
 
   return (
-    <div className="space-y-8">
-      <div className="max-w-3xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-bds-gold/20 text-bds-teal-dark text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-4 h-4 text-bds-action-primary" aria-hidden="true" />
-          The Four Pillars of Distinction
-        </div>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-heading text-bds-text-heading tracking-tight">
-          Why Budda&apos;s Outperforms Conventional Fast-Casual.
+    <div className={styles.root}>
+      <div className={styles.intro}>
+        <p className="heading-panel">{section.eyebrow.text}</p>
+        <h2 className="heading-section max-w-[26ch] text-bds-text-heading lg:text-5xl">
+          {section.publicHeading.text}
         </h2>
-        <p className="text-base sm:text-lg text-bds-text-body/80 leading-relaxed">
-          Select a pillar to explore how our bakery-led architecture, all-day utility, and operational discipline create an enduring competitive moat.
+        <p className="prose-measure text-base leading-relaxed text-bds-text-body sm:text-lg">
+          {section.orientationCopy.text}
         </p>
       </div>
 
-      {/* Split Interactive Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        {/* Left Sticky Rail Navigation */}
-        <div
-          role="tablist"
-          aria-label="Why Budda's Core Pillars"
-          className="lg:col-span-5 lg:sticky lg:top-28 space-y-3"
-        >
-          {WHY_BUDDAS_PILLARS.map((pillar, idx) => {
-            const isSelected = activeTab === idx;
-            return (
-              <button
-                key={pillar.id}
-                ref={(el) => {
-                  tabButtonRefs.current[idx] = el;
-                }}
-                role="tab"
-                id={`tab-${pillar.id}`}
-                aria-selected={isSelected}
-                aria-controls={`panel-${pillar.id}`}
-                tabIndex={isSelected ? 0 : -1}
-                onClick={() => handleSelectTab(idx)}
-                onKeyDown={(e) => handleKeyDown(e, idx)}
-                className={`w-full text-left p-4 sm:p-5 rounded-2xl transition-all flex items-center justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 ${
-                  isSelected
-                    ? "bg-bds-action-primary text-bds-action-primary-text shadow-md ring-1 ring-bds-teal-dark"
-                    : "bg-white text-bds-text-body hover:bg-bds-cream/80 border border-bds-teal-dark/10"
-                }`}
-              >
-                <div className="flex items-center gap-4">
+      <div className={styles.desk}>
+        <div>
+          <p id="operator-proof-rail-heading" className="sr-only">
+            Explore the four pillars
+          </p>
+          <div
+            role="tablist"
+            aria-labelledby="operator-proof-rail-heading"
+            aria-orientation="horizontal"
+            className={styles.tabs}
+          >
+            {pillars.map((pillar, index) => {
+              const isActive = activeIndex === index;
+
+              return (
+                <button
+                  key={pillar.id}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={`${pillar.id}-tab`}
+                  aria-controls={pillar.id}
+                  aria-selected={isActive}
+                  tabIndex={focusIndex === index ? 0 : -1}
+                  onClick={() => selectPillar(index)}
+                  onFocus={() => setFocusIndex(index)}
+                  onKeyDown={(event) => handleKeyDown(event, index)}
+                  className={styles.tab}
+                >
                   <span
-                    className={`text-xs font-black px-2.5 py-1 rounded-lg uppercase tracking-wider font-heading ${
-                      isSelected
-                        ? "bg-bds-gold text-bds-teal-dark"
-                        : "bg-bds-cream text-bds-cocoa"
-                    }`}
+                    className={styles.tabNumber}
+                    aria-hidden="true"
                   >
                     {pillar.number}
                   </span>
-                  <div>
-                    <h3
-                      className={`text-base font-bold font-heading ${
-                        isSelected ? "text-white" : "text-bds-text-heading"
-                      }`}
-                    >
-                      {pillar.shortTitle}
-                    </h3>
-                    <p
-                      className={`text-xs mt-0.5 ${
-                        isSelected ? "text-bds-cream/80" : "text-bds-text-body/60"
-                      }`}
-                    >
-                      {pillar.tagline}
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight
-                  className={`w-5 h-5 transition-transform ${
-                    isSelected
-                      ? "text-bds-gold translate-x-1"
-                      : "text-bds-text-body/30 group-hover:translate-x-0.5"
-                  }`}
-                  aria-hidden="true"
-                />
-              </button>
-            );
-          })}
+                  <span className={styles.tabLabel}>
+                    {pillar.shortLabel.text}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Right Dynamic Evidence Canvas */}
-        <div
-          role="tabpanel"
-          id={`panel-${currentPillar.id}`}
-          aria-labelledby={`tab-${currentPillar.id}`}
-          tabIndex={0}
-          className="lg:col-span-7 bg-white border border-bds-teal-dark/10 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl space-y-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary transition-all"
-        >
-          {/* Header Badges & Tagline */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-bds-teal-dark/10 pb-4">
-            <div className="flex flex-wrap gap-2">
-              {currentPillar.badges.map((badge) => (
-                <span
-                  key={badge}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-bds-cream text-bds-teal-dark text-xs font-bold"
-                >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-bds-action-primary" aria-hidden="true" />
-                  {badge}
-                </span>
-              ))}
-            </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-bds-cocoa/50">
-              Pillar {currentPillar.number} of 04
-            </span>
-          </div>
+        <div>
+          {pillars.map((pillar, index) => {
+            const isActive = activeIndex === index;
+            const image = pillar.image;
+            const quantitativeEvidence = pillar.evidenceItems.filter(
+              (item) => item.kind === "QUANTITATIVE"
+            );
+            const qualitativeEvidence = pillar.evidenceItems.filter(
+              (item) => item.kind !== "QUANTITATIVE"
+            );
+            const hasApprovedEvidence =
+              pillar.verifiedExplanatoryCopy !== null || pillar.evidenceItems.length > 0;
 
-          {/* Core Headline & Narrative */}
-          <div className="space-y-3">
-            <h3 className="text-2xl sm:text-3xl font-black font-heading text-bds-text-heading leading-tight">
-              {currentPillar.headline}
-            </h3>
-            <p className="text-base text-bds-text-body/80 leading-relaxed">
-              {currentPillar.narrative}
-            </p>
-          </div>
-
-          {/* Operational Metrics Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            {currentPillar.metrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="bg-bds-cream/60 border border-bds-teal-dark/10 rounded-2xl p-4 text-center sm:text-left space-y-1"
+            return (
+              <section
+                key={pillar.id}
+                id={pillar.id}
+                role="tabpanel"
+                aria-labelledby={`${pillar.id}-tab`}
+                tabIndex={isActive ? 0 : -1}
+                hidden={!isActive}
+                className={styles.panel}
               >
-                <p className="text-2xl sm:text-3xl font-black font-heading text-bds-action-primary">
-                  {metric.value}
-                </p>
-                <p className="text-xs font-semibold text-bds-text-body/70">
-                  {metric.label}
-                </p>
-              </div>
-            ))}
-          </div>
+                <div className={image ? styles.withImage : undefined}>
+                  <div className={styles.panelContent}>
+                    <header className={styles.panelHeading}>
+                      <p className={styles.kicker}>Pillar {pillar.number} / {pillar.shortLabel.text}</p>
+                      <h3 className="heading-section text-3xl text-bds-text-heading sm:text-4xl">
+                        {pillar.publicTitle.text}
+                      </h3>
+                      <p className="text-base leading-relaxed text-bds-text-body sm:text-lg">
+                        {pillar.operatingThesis.text}
+                      </p>
+                    </header>
 
-          {/* Visual Showcase Card with Image */}
-          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-bds-teal-dark/10 bg-bds-cream">
-            <Image
-              src={currentPillar.imageSrc}
-              alt={currentPillar.imageAlt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 600px"
-            />
-          </div>
+                    {hasApprovedEvidence ? <div className={styles.evidence}>
+                      <p className="heading-panel">{pillar.evidenceHeading.label}</p>
+                      {pillar.verifiedExplanatoryCopy ? (
+                        <p className="mt-2 text-sm leading-relaxed text-bds-text-body sm:text-base">
+                          {pillar.verifiedExplanatoryCopy.text}
+                        </p>
+                      ) : null}
+                      {quantitativeEvidence.length ? (
+                        <dl
+                          className={`mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2 xl:grid-cols-3 ${
+                            quantitativeEvidence.length === 1 ? "max-w-xs" : ""
+                          }`}
+                        >
+                          {quantitativeEvidence.map((item) => (
+                            <div key={item.id} className="border-l-2 border-bds-action-primary py-1 pl-3">
+                              <dt className="text-xs font-bold uppercase tracking-wider text-bds-text-body">
+                                {item.label}
+                              </dt>
+                              <dd className="mt-1 font-heading text-2xl font-black leading-none text-bds-text-heading">
+                                {item.value}
+                              </dd>
+                              <p className="mt-2 text-sm leading-relaxed text-bds-text-body">
+                                {item.explanation}
+                              </p>
+                            </div>
+                          ))}
+                        </dl>
+                      ) : null}
+                      {qualitativeEvidence.length ? (
+                        <ul className="mt-3 space-y-3">
+                          {qualitativeEvidence.map((item) => (
+                            <li key={item.id} className="border-l-2 border-bds-teal-dark/35 pl-3">
+                              <p className="text-sm font-semibold text-bds-text-heading">
+                                {item.label}
+                              </p>
+                              <p className="mt-1 text-sm leading-relaxed text-bds-text-body">
+                                {item.explanation}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div> : null}
 
-          {/* Founder / Team Quote */}
-          <div className="bg-bds-cream/80 border-l-4 border-bds-gold rounded-r-2xl p-5 space-y-2">
-            <blockquote className="text-sm sm:text-base italic text-bds-text-heading font-medium leading-relaxed">
-              &ldquo;{currentPillar.quote}&rdquo;
-            </blockquote>
-            <p className="text-xs font-bold uppercase tracking-wider text-bds-cocoa/70">
-              — {currentPillar.quoteAuthor}
-            </p>
-          </div>
+                    <div className={styles.lens}>
+                      <p className="heading-panel">{pillar.operatorLens.label}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-bds-text-body sm:text-base">
+                        {pillar.operatorLens.text}
+                      </p>
+                    </div>
+
+                    {pillar.contextualLink ? (
+                      <a
+                        href={pillar.contextualLink.href}
+                        onClick={() =>
+                          trackFunnelEvent("why_buddas_pillar_resource_open", {
+                            page_path: "/franchise/why-buddas",
+                            why_buddas_pillar_id: pillar.id,
+                            why_buddas_destination_id: pillar.contextualLink?.destinationId,
+                          })
+                        }
+                        className={styles.resource}
+                      >
+                        {pillar.contextualLink.label}
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    ) : null}
+
+                    {pillar.quote ? (
+                      <blockquote className="border-l-2 border-bds-gold pl-4 text-sm italic leading-relaxed text-bds-text-heading sm:text-base">
+                        <p>&ldquo;{pillar.quote.text}&rdquo;</p>
+                        <footer className="mt-2 text-xs font-bold not-italic uppercase tracking-wider text-bds-text-body">
+                          {pillar.quote.speakerName} · {pillar.quote.speakerRole}
+                        </footer>
+                      </blockquote>
+                    ) : null}
+                  </div>
+
+                  {isActive && image ? (
+                    <figure className="w-full max-w-xs self-start overflow-hidden rounded-xl border border-bds-teal-dark/15 bg-bds-cream lg:max-w-40">
+                      <div className="relative aspect-[4/3]">
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          fill
+                          className="object-cover"
+                          style={{ objectPosition: image.objectPosition }}
+                          sizes="(max-width: 1023px) min(100vw - 3rem, 20rem), 160px"
+                        />
+                      </div>
+                    </figure>
+                  ) : null}
+                </div>
+              </section>
+            );
+          })}
         </div>
       </div>
     </div>

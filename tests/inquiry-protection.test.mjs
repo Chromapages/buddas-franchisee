@@ -9,6 +9,7 @@ import {
   reserveInquiry,
   recordDeliveredInquiry,
 } from "../src/features/inquiry/protection.ts";
+import { FRANCHISE_INVESTMENT_DISCLOSURE } from "../src/features/financials/financial-data.ts";
 
 test("issueInquiryFormSession & verifyInquiryFormSession validate signed tokens", () => {
   const { session, token } = issueInquiryFormSession();
@@ -38,7 +39,7 @@ test("getInquiryProtectionResult prevents duplicate submissions", () => {
     cityState: "La'ie, HI",
     marketInterest: "North Shore",
     experience: "Experienced operator",
-    investmentRange: "$1,000,000+",
+    investmentRange: FRANCHISE_INVESTMENT_DISCLOSURE.inquiryOptions[2],
     preferredTimeline: "0 - 6 months",
     consent: "on",
   };

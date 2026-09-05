@@ -12,6 +12,15 @@ export type InquiryDeliveryStatus =
   | "RETRYING"
   | "FAILED";
 
+export type InquiryAttribution = Partial<{
+  sourcePage: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  utmContent: string;
+  utmTerm: string;
+}>;
+
 export type StoredInquiry = {
   id: string;
   submittedAt: string;
@@ -21,6 +30,7 @@ export type StoredInquiry = {
   attempts: number;
   lastError?: string;
   brokerId?: string;
+  attribution?: InquiryAttribution;
 };
 
 export interface IInquiryStorage {

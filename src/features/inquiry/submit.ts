@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import {
   inquiryFieldNames,
   inquirySchema,
+  normalizeText,
 } from "./schema";
 import { getInquiryDeliveryUrl } from "./delivery-config";
 import { verifyInquiryFormSession } from "./form-token";
@@ -24,6 +25,7 @@ import {
   reserveInquiry,
 } from "./protection";
 import type { InquiryActionState } from "./state";
+import type { InquiryAttribution } from "./types";
 
 const WEBHOOK_TIMEOUT_MS = 10_000;
 
@@ -60,6 +62,22 @@ const getSingleString = (formData: FormData, name: string): string | null => {
   return entries[0];
 };
 
+const getAttribution = (formData: FormData): InquiryAttribution => {
+  const fields: Array<[keyof InquiryAttribution, string]> = [
+    ["sourcePage", "attribution_sourcePage"],
+    ["utmSource", "attribution_utmSource"],
+    ["utmMedium", "attribution_utmMedium"],
+    ["utmCampaign", "attribution_utmCampaign"],
+    ["utmContent", "attribution_utmContent"],
+    ["utmTerm", "attribution_utmTerm"],
+  ];
+  return fields.reduce<InquiryAttribution>((attribution, [key, name]) => {
+    const value = getSingleString(formData, name);
+    if (value) attribution[key] = normalizeText(value).slice(0, 128);
+    return attribution;
+  }, {});
+};
+
 const getSubmissionMetadata = (formData: FormData) => {
   const token = getSingleString(formData, "submissionToken");
   const website = getSingleString(formData, "website");
@@ -81,7 +99,7 @@ const acceptedState = (): InquiryActionState => {
     status: "success",
     submittedAt: new Date().toISOString(),
     message:
-      "Thank you. Your inquiry has been submitted for internal review. If there appears to be a potential fit, the Budda's franchise team will follow up with next-step information.",
+      "Thank you. Your inquiry has been submitted for internal review. A member of our franchise development team will contact you within 2 business days if there appears to be a potential fit.",
     fieldErrors: {},
     values: {},
   };
@@ -109,6 +127,7 @@ export const submitFranchiseInquiry = async (
       values: {},
     };
   }
+  const attribution = getAttribution(formData);
 
   const metadata = getSubmissionMetadata(formData);
   if (metadata.kind === "rejected") {
@@ -214,6 +233,7 @@ export const submitFranchiseInquiry = async (
     payload: parsed.data,
     attempts: 1,
     brokerId: parsed.data.brokerId,
+    attribution,
   });
 
   try {
@@ -231,6 +251,7 @@ export const submitFranchiseInquiry = async (
         submittedAt: submissionTimestamp,
         classification,
         inquiry: parsed.data,
+        attribution,
       }),
       cache: "no-store",
       redirect: "error",

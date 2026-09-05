@@ -10,23 +10,23 @@ export default function TermsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main id="main-content" tabIndex={-1} className="flex-1 py-16 sm:py-20 max-w-4xl mx-auto px-4 sm:px-6 focus:outline-none">
-        <div className="space-y-8 bg-white border border-brand-charcoal/10 rounded-3xl p-8 sm:p-12 shadow-sm">
-          <div className="space-y-2 border-b border-brand-sand pb-6">
+      <main id="main-content" tabIndex={-1} className="content-narrow section-standard flex-1 focus:outline-none">
+        <div className="surface-legal space-y-8 bg-white border border-brand-charcoal/10 rounded-3xl shadow-sm">
+          <div className="space-y-3 border-b border-brand-sand pb-6">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
               Legal Agreement
             </span>
-            <h1 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
+            <h1 className="heading-page text-brand-charcoal">
               Terms of Use
             </h1>
-            <p className="text-xs text-brand-charcoal/60">
+            <p className="support-copy text-brand-charcoal/60">
               Effective Date: August 21, 2026 &bull; Version 1.0
             </p>
           </div>
 
-          <div className="space-y-6 text-sm text-brand-charcoal/80 leading-relaxed">
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+          <div className="space-y-6 text-sm lg:text-base text-brand-charcoal/80 leading-relaxed">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 1. Informational Purpose (Non-Offer Disclosure)
               </h2>
               <p>
@@ -34,8 +34,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 2. Intellectual Property
               </h2>
               <p>
@@ -43,8 +43,8 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 3. Governing Law
               </h2>
               <p>

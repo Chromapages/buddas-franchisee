@@ -7,6 +7,7 @@ import {
 } from "../src/features/territory/territory-rules.ts";
 import {
   PUBLISHED_FINANCIAL_THRESHOLDS,
+  FRANCHISE_INVESTMENT_DISCLOSURE,
   ESTIMATED_INITIAL_INVESTMENT_TABLE,
   ITEM_19_FPR_DATA,
 } from "../src/features/financials/financial-data.ts";
@@ -57,7 +58,7 @@ test("classifyInquiry correctly handles broker codes and experience", () => {
     cityState: "Honolulu, HI",
     marketInterest: "Oahu",
     experience: "General business experience",
-    investmentRange: "$500,000 - $999,999",
+    investmentRange: FRANCHISE_INVESTMENT_DISCLOSURE.inquiryOptions[1],
     preferredTimeline: "0 - 6 months",
     brokerId: "FSO-999",
     consent: "on",

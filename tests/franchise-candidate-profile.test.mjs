@@ -1,92 +1,92 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 
-const COMPONENT_PATH = path.join(process.cwd(), "src/components/public/candidate-profile-section.tsx");
-const PAGE_PATH = path.join(process.cwd(), "src/app/franchise/page.tsx");
+const component = fs.readFileSync(path.resolve("src/components/public/candidate-profile-section.tsx"), "utf8");
+const mobileGate = fs.readFileSync(path.resolve("src/components/public/candidate-profile-mobile-fit-gate.tsx"), "utf8");
+const investmentLink = fs.readFileSync(path.resolve("src/components/public/candidate-profile-investment-link.tsx"), "utf8");
+const actions = fs.readFileSync(path.resolve("src/components/public/candidate-profile-actions.tsx"), "utf8");
+const criteria = fs.readFileSync(path.resolve("src/features/franchise/candidate-criteria.ts"), "utf8");
+const financialDisclosure = fs.readFileSync(path.resolve("src/components/public/financial-disclosure.tsx"), "utf8");
+const candidateActions = fs.readFileSync(path.resolve("src/components/public/candidate-profile-actions.tsx"), "utf8");
+const homepage = fs.readFileSync(path.resolve("src/app/franchise/page.tsx"), "utf8");
+const styles = fs.readFileSync(path.resolve("src/app/globals.css"), "utf8");
 
-test("CandidateProfileSection utilizes BDS v2.0 design tokens and 60/40 two-column structure", () => {
-  assert.ok(fs.existsSync(COMPONENT_PATH), "candidate-profile-section.tsx must exist");
-  const content = fs.readFileSync(COMPONENT_PATH, "utf8");
-
-  // 60/40 desktop column distribution
-  assert.ok(content.includes("lg:col-span-7"), "Must allocate ~60% to left content column");
-  assert.ok(content.includes("lg:col-span-5"), "Must allocate ~40% to right image column");
-
-  // Background and color tokens
-  assert.ok(content.includes("bg-bds-cream") || content.includes("#FFF8E8"), "Must use bds-cream background");
-  assert.ok(content.includes("#1C5F56") || content.includes("bds-teal-dark"), "Must use dark teal for primary headings/strokes");
-  assert.ok(content.includes("#C47D2B"), "Must use warm amber gold for accents");
+test("candidate profile provides three qualification criteria with approved financial labels", () => {
+  for (const value of ["CANDIDATE PROFILE", "OPERATE", "CAPITALIZE", "STEWARD"]) {
+    assert.ok(component.includes(value));
+  }
+  for (const value of ["Restaurant leadership", "Financial requirement", "Owner responsibility"]) {
+    assert.ok(criteria.includes(value));
+  }
+  assert.ok(component.includes("candidate-profile-layout"));
+  assert.ok(component.includes("candidate-profile-section"));
+  assert.ok(component.includes("candidate-profile-heading"));
+  assert.ok(component.includes("Built for operators who can build with us."));
+  assert.ok(component.includes("The gate reviews restaurant leadership, financial readiness, and owner responsibility."));
+  assert.ok(component.includes("candidate-profile-content min-w-0"));
+  assert.ok(component.includes("space-y-6 lg:space-y-10"));
+  assert.ok(component.includes("mt-3 homepage-section-heading"));
+  assert.ok(component.includes("homepage-section-eyebrow"));
+  assert.ok(component.includes("homepage-section-description"));
+  assert.ok(component.includes("candidate-action-suite flex flex-col justify-between gap-6"));
+  assert.ok(component.includes("mt-4 divide-y divide-[#1C5F56]/15 border-y"));
+  assert.ok(component.includes("CandidateProfileMobileFitGate"));
+  assert.ok(component.includes("getCandidatePillars"));
+  assert.ok(component.includes("candidatePillars.map"));
+  assert.ok(!component.includes("$150K"));
+  assert.ok(!component.includes("FDD Item 7"));
+  assert.ok(mobileGate.includes("Operator standards"));
+  assert.ok(mobileGate.includes("grid-cols-[2rem_minmax(0,1fr)]"));
+  assert.ok(!mobileGate.includes("aria-expanded"));
+  assert.ok(!mobileGate.includes("FDD Item 7"));
+  assert.ok(criteria.includes("CANDIDATE_FINANCIAL_QUALIFICATION"));
+  assert.ok(!criteria.includes("PUBLISHED_FINANCIAL_THRESHOLDS"));
+  assert.ok(component.includes("getApprovedCandidateProfileFinancialQualification"));
+  assert.ok(component.includes("hasApprovedFinancialQualification"));
+  assert.ok(component.includes("Review financial qualification and disclosure status"));
+  assert.ok(component.includes("financial.investmentDetailsHref"));
+  assert.ok(mobileGate.includes("CandidateProfileInvestmentLink"));
+  assert.ok(investmentLink.includes("candidate_profile_investment_click"));
+  assert.ok(investmentLink.includes("candidate_destination: \"investment\""));
+  assert.ok(component.includes("THE PARTNERSHIP WORKS BOTH WAYS."));
+  assert.ok(component.includes("What you bring"));
+  assert.ok(component.includes("What Budda&apos;s brings"));
+  assert.ok(component.includes("Operate · Capitalize · Steward"));
+  assert.ok(component.includes("Signature product · Bakery standards · Operating systems · Support"));
+  assert.ok(component.includes("divide-y divide-[#1C5F56]/15 border-y"));
+  assert.ok(component.includes("md:divide-x"));
+  assert.match(styles, /\.candidate-profile-layout \{\s*grid-template-columns: minmax\(0, 1fr\);/);
+  assert.match(styles, /\.candidate-profile-section \{\s*padding-block: var\(--space-8\);/);
 });
 
-test("CandidateProfileSection renders required introduction elements", () => {
-  const content = fs.readFileSync(COMPONENT_PATH, "utf8");
-
-  // Eyebrow with gold accent bar
-  assert.ok(content.includes("CANDIDATE PROFILE"), "Must render uppercase eyebrow label");
-  assert.ok(content.includes("bg-[#C47D2B]"), "Must render gold underline accent below eyebrow");
-
-  // Display Headline & Description
-  assert.ok(content.includes("Built for operators"), "Must render canonical display headline");
-  assert.ok(content.includes("who can build with us"), "Must complete canonical headline");
-  assert.ok(content.includes("experienced restaurant leaders"), "Must render supporting copy");
+test("candidate profile keeps the current image, accessibility text, and actions", () => {
+  assert.ok(component.includes("buddas-about-storefront.png"));
+  assert.ok(component.includes('alt="A baker arranging freshly baked rolls at a sunlit bakery counter"'));
+  assert.ok(component.includes('loading="lazy"'));
+  assert.ok(component.includes('sizes="(max-width: 767px) calc(100vw - 2rem), (max-width: 1024px) 45vw, 368px"'));
+  assert.ok(component.includes("object-[100%_50%] md:object-[92%_50%] lg:object-[85%_50%]"));
+  assert.ok(component.includes("<figure className="));
+  assert.ok(component.includes("OPERATING DISCIPLINE"));
+  assert.ok(component.includes("absolute left-4 top-4"));
+  assert.ok(component.includes("MORE TABLES."));
+  assert.ok(actions.includes("REVIEW QUALIFICATIONS"));
+  assert.ok(actions.includes("dataStickyCtaHide"));
+  assert.ok(actions.includes("No obligation — review the full candidate criteria."));
+  assert.ok(actions.includes("qualificationActivation"));
+  assert.ok(actions.includes("OPENING QUALIFICATIONS…"));
+  assert.ok(actions.includes("destination: \"/franchise/the-opportunity#qualifications\""));
+  assert.ok(candidateActions.includes("source_page=homepage_candidate_profile#qualifications"));
+  assert.ok(component.includes("w-full min-w-0 aspect-[4/3] min-h-0"));
+  assert.ok(!actions.includes("VIEW INVESTMENT DETAILS"));
+  assert.ok(!actions.includes("candidate_profile_investment_click"));
+  assert.ok(financialDisclosure.includes('id="financials"'));
+  assert.ok(financialDisclosure.includes('id="financial-requirements"'));
+  assert.ok(financialDisclosure.includes("getApprovedCandidateProfileFinancialQualification"));
+  assert.ok(financialDisclosure.includes("approvedCandidateFinancialQualification ?"));
 });
 
-test("CandidateProfileSection renders 3 vertical pillars with metric and narrative treatments", () => {
-  const content = fs.readFileSync(COMPONENT_PATH, "utf8");
-
-  // Sequence numbers
-  assert.ok(content.includes("01"), "Must render pillar 01 sequence");
-  assert.ok(content.includes("02"), "Must render pillar 02 sequence");
-  assert.ok(content.includes("03"), "Must render pillar 03 sequence");
-
-  // Pillar 01: OPERATE
-  assert.ok(content.includes("OPERATE"), "Must render OPERATE title");
-  assert.ok(content.includes("Multi-unit or high-volume"), "Must render OPERATE statement");
-
-  // Pillar 02: CAPITALIZE with real approved metrics
-  assert.ok(content.includes("CAPITALIZE"), "Must render CAPITALIZE title");
-  assert.ok(content.includes("$150K"), "Must render $150K liquid capital metric");
-  assert.ok(content.includes("LIQUID CAPITAL"), "Must render LIQUID CAPITAL label");
-  assert.ok(content.includes("$400K"), "Must render $400K net worth metric");
-  assert.ok(content.includes("NET WORTH"), "Must render NET WORTH label");
-
-  // Pillar 03: STEWARD
-  assert.ok(content.includes("STEWARD"), "Must render STEWARD title");
-  assert.ok(content.includes("Protect the product"), "Must render STEWARD statement");
-
-  // Vertical dividers
-  assert.ok(content.includes("md:divide-x") || content.includes("border-r"), "Must include vertical dividers between pillars");
-});
-
-test("CandidateProfileSection provides tall photo panel with frosted overlay badge", () => {
-  const content = fs.readFileSync(COMPONENT_PATH, "utf8");
-
-  // Image source
-  assert.ok(content.includes("stock1.webp") || content.includes("candidate-profile-baker.png"), "Must reference approved photo");
-
-  // Overlay badge
-  assert.ok(content.includes("MORE TABLES."), "Must render badge line 1");
-  assert.ok(content.includes("SAME STANDARD."), "Must render badge line 2");
-  assert.ok(content.includes("backdrop-blur"), "Must use frosted glass blur effect");
-});
-
-test("CandidateProfileSection provides bottom partnership callout and action suite", () => {
-  const content = fs.readFileSync(COMPONENT_PATH, "utf8");
-
-  // Partnership narrative
-  assert.ok(content.includes("THE RIGHT PARTNERSHIP WORKS BOTH WAYS"), "Must render relationship headline");
-  assert.ok(content.includes("brings a distinctive product") || content.includes("distinctive product"), "Must render partnership description");
-
-  // Primary & Secondary Actions
-  assert.ok(content.includes("VIEW INVESTMENT DETAILS"), "Must render primary CTA button");
-  assert.ok(content.includes("/franchise/the-opportunity#financials") || content.includes("/franchise/the-opportunity"), "Must route to financials");
-  assert.ok(content.includes("REVIEW QUALIFICATIONS"), "Must render secondary link");
-  assert.ok(content.includes("No commitment"), "Must render reassurance microcopy");
-});
-
-test("FranchiseHomePage integrates CandidateProfileSection as 3rd section", () => {
-  const pageContent = fs.readFileSync(PAGE_PATH, "utf8");
-  assert.ok(pageContent.includes("<CandidateProfileSection />"), "Page must mount CandidateProfileSection");
+test("homepage renders the candidate-profile section", () => {
+  assert.ok(homepage.includes("<CandidateProfileSection />"));
 });

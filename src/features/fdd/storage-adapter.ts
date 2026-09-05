@@ -1,5 +1,6 @@
 import type { FddReceipt, IFddStorage } from "./types.ts";
 import { DatabaseFddStorage } from "./db-storage.ts";
+import { canUseDevelopmentSeedData } from "../portal/environment.ts";
 
 export class InMemoryFddStorage implements IFddStorage {
   private receipts = new Map<string, FddReceipt>();
@@ -57,6 +58,18 @@ export class InMemoryFddStorage implements IFddStorage {
   }
 }
 
+class UnconfiguredFddStorage implements IFddStorage {
+  private fail(): never {
+    throw new Error("FDD storage must be configured outside local development.");
+  }
+
+  public async createReceipt(): Promise<FddReceipt> { return this.fail(); }
+  public async getReceiptByToken(): Promise<FddReceipt | null> { return this.fail(); }
+  public async recordSignature(): Promise<FddReceipt | null> { return this.fail(); }
+}
+
 export const defaultFddStorage: IFddStorage = process.env.DATABASE_URL
   ? (new DatabaseFddStorage() as unknown as IFddStorage)
-  : new InMemoryFddStorage();
+  : canUseDevelopmentSeedData()
+    ? new InMemoryFddStorage()
+    : new UnconfiguredFddStorage();

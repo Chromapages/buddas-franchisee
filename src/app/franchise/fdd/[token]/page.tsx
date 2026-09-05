@@ -36,14 +36,14 @@ export default async function FddDetailPage({
   ];
 
   return (
-    <div className="space-y-16 py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="content-wide page-rhythm">
       {/* Header Banner */}
       <div className="bg-brand-charcoal text-white rounded-3xl p-8 sm:p-12 space-y-4 shadow-xl">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-clay text-white text-xs font-bold uppercase tracking-wider">
           <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
           Confidential Disclosure Delivery
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black font-heading text-white tracking-tight">
+        <h1 className="heading-page heading-inverse sm:text-5xl">
           Budda&apos;s Franchise Disclosure Document (FDD v{receipt.fddVersion})
         </h1>
         <p className="text-sm sm:text-base text-brand-cream/80 leading-relaxed max-w-3xl">
@@ -59,7 +59,7 @@ export default async function FddDetailPage({
               <FileText className="w-6 h-6" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-xl font-bold font-heading text-brand-charcoal">
+              <h2 className="heading-compact text-brand-charcoal">
                 Complete Disclosure Document (PDF)
               </h2>
               <span className="text-xs text-brand-charcoal/60">
@@ -80,7 +80,7 @@ export default async function FddDetailPage({
 
         {/* Sections Preview List */}
         <div className="space-y-3">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-brand-charcoal/80">
+          <h3 className="heading-panel text-brand-charcoal/80">
             Key Disclosure Items Summary
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

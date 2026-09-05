@@ -8,6 +8,7 @@ import type { InquiryValues } from "./schema.ts";
 import { DatabaseInquiryStorage } from "./db-storage.ts";
 import { evaluateTerritory } from "../territory/territory-rules.ts";
 import { isActiveOfferingEnabled } from "../../lib/flags.ts";
+import { FRANCHISE_INVESTMENT_DISCLOSURE } from "../financials/financial-data.ts";
 
 export class InMemoryInquiryStorage implements IInquiryStorage {
   private inquiries = new Map<string, StoredInquiry>();
@@ -72,8 +73,8 @@ export const classifyInquiry = (
     exp.includes("operator");
 
   const hasSufficientCapital =
-    inquiry.investmentRange === "$500,000 - $999,999" ||
-    inquiry.investmentRange === "$1,000,000+";
+    inquiry.investmentRange === FRANCHISE_INVESTMENT_DISCLOSURE.inquiryOptions[1] ||
+    inquiry.investmentRange === FRANCHISE_INVESTMENT_DISCLOSURE.inquiryOptions[2];
 
   if (hasFoodExperience && hasSufficientCapital) {
     return "QUALIFIED_CANDIDATE";

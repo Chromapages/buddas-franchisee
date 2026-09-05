@@ -1,8 +1,10 @@
 import type { PortalRole } from "@/src/features/portal/types";
 
 export type PortalSession = {
+  sessionId: string;
   userId: string;
   email: string;
+  displayName?: string;
   role: PortalRole;
   locationId: string;
   locationName: string;
@@ -22,8 +24,6 @@ export const canAccessLocation = (
   session: PortalSession,
   targetLocationId: string,
 ): boolean => {
-  if (session.role === "admin") return true;
-  if (session.locationId === targetLocationId) return true;
   return session.managedLocationIds.includes(targetLocationId);
 };
 

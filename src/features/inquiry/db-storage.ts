@@ -16,8 +16,8 @@ export const buildInsertInquiryQuery = (
       id, submitted_at, classification, delivery_status,
       first_name, last_name, email, phone, city_state,
       market_interest, investment_range, preferred_timeline,
-      experience, message, broker_id, payload, attempts, last_error
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+      experience, message, broker_id, attribution, payload, attempts, last_error
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
     ON CONFLICT (id) DO UPDATE SET
       attempts = franchise_inquiries.attempts + 1,
       updated_at = NOW()
@@ -39,6 +39,7 @@ export const buildInsertInquiryQuery = (
     payload?.experience || null,
     payload?.message || null,
     inquiry.brokerId || null,
+    Object.keys(inquiry.attribution || {}).length ? JSON.stringify(inquiry.attribution) : null,
     JSON.stringify(inquiry.payload),
     inquiry.attempts || 1,
     inquiry.lastError || null,
@@ -66,7 +67,7 @@ export const buildUpdateInquiryStatusQuery = (
 export const buildSelectInquiryByIdQuery = (id: string): ParameterizedQuery => {
   const text = `
     SELECT id, submitted_at as "submittedAt", classification,
-           delivery_status as "deliveryStatus", payload, attempts,
+           delivery_status as "deliveryStatus", payload, attribution, attempts,
            last_error as "lastError", broker_id as "brokerId"
     FROM franchise_inquiries
     WHERE id = $1
@@ -125,7 +126,7 @@ export class DatabaseInquiryStorage implements IInquiryStorage {
     const pool = await this.getPool();
     if (!pool) return [];
     const result = await pool.query(
-      `SELECT id, submitted_at as "submittedAt", classification, delivery_status as "deliveryStatus", payload, attempts, last_error as "lastError", broker_id as "brokerId" FROM franchise_inquiries ORDER BY submitted_at DESC LIMIT 100`,
+      `SELECT id, submitted_at as "submittedAt", classification, delivery_status as "deliveryStatus", payload, attribution, attempts, last_error as "lastError", broker_id as "brokerId" FROM franchise_inquiries ORDER BY submitted_at DESC LIMIT 100`,
     );
     return result.rows as StoredInquiry[];
   }

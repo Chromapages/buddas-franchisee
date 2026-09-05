@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS franchise_inquiries (
   experience TEXT NOT NULL,
   message TEXT,
   broker_id VARCHAR(64),
+  attribution JSONB,
   payload JSONB NOT NULL,
   attempts INTEGER NOT NULL DEFAULT 1,
   last_error TEXT,
@@ -24,3 +25,5 @@ CREATE TABLE IF NOT EXISTS franchise_inquiries (
 CREATE INDEX IF NOT EXISTS idx_franchise_inquiries_email ON franchise_inquiries(email);
 CREATE INDEX IF NOT EXISTS idx_franchise_inquiries_status ON franchise_inquiries(delivery_status);
 CREATE INDEX IF NOT EXISTS idx_franchise_inquiries_classification ON franchise_inquiries(classification);
+
+ALTER TABLE franchise_inquiries ADD COLUMN IF NOT EXISTS attribution JSONB;

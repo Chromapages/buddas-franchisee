@@ -1,7 +1,9 @@
 import type { PortalRole } from "@/src/features/portal/types";
 import type { PortalSession } from "./auth-provider";
+import { randomUUID } from "node:crypto";
 
 export type SupabaseUserMetadata = {
+  displayName?: string;
   role?: PortalRole;
   locationId?: string;
   locationName?: string;
@@ -14,6 +16,10 @@ export type SupabaseUser = {
   user_metadata?: SupabaseUserMetadata;
   app_metadata?: {
     role?: string;
+    portal_access?: boolean;
+    location_id?: string;
+    location_name?: string;
+    managed_location_ids?: string[];
   };
 };
 
@@ -24,19 +30,36 @@ export const mapSupabaseUserToPortalSession = (
 ): PortalSession => {
   const metadata = user.user_metadata || {};
   const appMeta = user.app_metadata || {};
+  const email = user.email?.trim();
+  if (!email) throw new Error("Authenticated operators must have an email address.");
 
-  const role: PortalRole =
-    metadata.role === "admin" || appMeta.role === "admin"
-      ? "admin"
-      : "franchisee";
-
-  const locationId = metadata.locationId || defaultLocationId;
-  const locationName = metadata.locationName || defaultLocationName;
-  const managedLocationIds = metadata.managedLocationIds || [locationId];
+  if (appMeta.portal_access !== true) {
+    throw new Error("Authenticated user is not authorized for the Operator Workspace.");
+  }
+  if (
+    (appMeta.role !== "admin" && appMeta.role !== "franchisee")
+    || !appMeta.location_id
+    || !appMeta.location_name
+    || !Array.isArray(appMeta.managed_location_ids)
+    || !appMeta.managed_location_ids.includes(appMeta.location_id)
+  ) {
+    throw new Error("Operator Workspace access is not fully assigned.");
+  }
+  const role: PortalRole = appMeta.role;
+  const locationId = appMeta.location_id;
+  const locationName = appMeta.location_name;
+  const managedLocationIds = appMeta.managed_location_ids;
+  const displayName = typeof metadata.displayName === "string"
+    && metadata.displayName.trim().length > 0
+    && !metadata.displayName.includes("@")
+    ? metadata.displayName.trim()
+    : undefined;
 
   return {
+    sessionId: randomUUID(),
     userId: user.id,
-    email: user.email || "operator@buddasfranchise.com",
+    email,
+    displayName,
     role,
     locationId,
     locationName,

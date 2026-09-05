@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Lock, Sparkles, ShieldCheck } from "lucide-react";
+import React, { useRef, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Lock, Sparkles, ShieldCheck } from "lucide-react";
 
 interface SignalItem {
   readonly id: string;
@@ -20,7 +20,7 @@ const SIGNALS: readonly SignalItem[] = [
   {
     id: "instant-brochure",
     icon: Sparkles,
-    label: "Instant Digital Brochure via Email",
+    label: "Digital Brochure After Inquiry",
     highlight: "Immediate",
   },
   {
@@ -39,7 +39,7 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
   theme = "teal",
 }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const touchStartX = useRef<number | null>(null);
 
   const handleNext = useCallback(() => {
     setActiveIndex((prevIndex) => (prevIndex + 1) % SIGNALS.length);
@@ -49,20 +49,21 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
     setActiveIndex(index);
   };
 
-  const handleMouseEnter = () => {
-    setIsPaused(true);
+  const handlePrevious = () => {
+    setActiveIndex((prevIndex) => (prevIndex - 1 + SIGNALS.length) % SIGNALS.length);
   };
 
-  const handleMouseLeave = () => {
-    setIsPaused(false);
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
   };
 
-  const handleTouchStart = () => {
-    setIsPaused(true);
-  };
-
-  const handleTouchEnd = () => {
-    setIsPaused(false);
+  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const startX = touchStartX.current;
+    const endX = event.changedTouches[0]?.clientX;
+    touchStartX.current = null;
+    if (startX === null || endX === undefined || Math.abs(endX - startX) < 48) return;
+    if (endX < startX) handleNext();
+    else handlePrevious();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -73,38 +74,24 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
     }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      setActiveIndex((prevIndex) => (prevIndex - 1 + SIGNALS.length) % SIGNALS.length);
+      handlePrevious();
       return;
     }
+    if (event.key === "Home") setActiveIndex(0);
+    if (event.key === "End") setActiveIndex(SIGNALS.length - 1);
   };
-
-  useEffect(() => {
-    if (isPaused) {
-      return;
-    }
-
-    const timer = setInterval(() => {
-      handleNext();
-    }, 3500);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [isPaused, handleNext]);
 
   const textColorClass = theme === "teal" ? "text-bds-cream/85" : "text-brand-cream/85";
 
   return (
     <div className="w-full pt-1.5">
-      {/* Mobile: Automatic Flowing Carousel (< sm) */}
+      {/* Mobile: Manual swipe carousel (< sm) */}
       <div
         className="block sm:hidden w-full"
         role="region"
         aria-roledescription="carousel"
         aria-label="Workflow and reassurance highlights"
         tabIndex={0}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onKeyDown={handleKeyDown}
@@ -112,7 +99,8 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
         {/* Active Slide Display */}
         <div
           className="relative min-h-[44px] flex items-center justify-center px-4 py-2 bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm"
-          aria-live={isPaused ? "polite" : "off"}
+          aria-live="polite"
+          aria-atomic="true"
         >
           {SIGNALS.map((signal, index) => {
             const Icon = signal.icon;
@@ -135,8 +123,17 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
           })}
         </div>
 
-        {/* Carousel Pagination Indicator Dots */}
-        <div className="flex items-center justify-center gap-1.5 mt-2">
+        <div className="mt-2 grid grid-cols-[2.75rem_1fr_2.75rem] items-center">
+          <button
+            type="button"
+            onClick={handlePrevious}
+            className="touch-target inline-flex items-center justify-center rounded-full text-bds-gold hover:bg-white/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-gold"
+            aria-label="Previous reassurance highlight"
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          </button>
+          {/* Carousel Pagination Indicator Dots */}
+          <div className="flex items-center justify-center gap-1.5">
           {SIGNALS.map((signal, index) => {
             const isActive = index === activeIndex;
             return (
@@ -146,12 +143,25 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
                 onClick={() => handleDotClick(index)}
                 aria-label={`Slide ${index + 1}: ${signal.label.replace(/&bull;/g, "•")}`}
                 aria-current={isActive ? "true" : "false"}
-                className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold ${
-                  isActive ? "w-5 bg-bds-gold" : "w-1.5 bg-white/25 hover:bg-white/40"
-                }`}
-              />
+                className="touch-target flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-gold"
+              >
+                <span
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    isActive ? "w-5 bg-bds-gold" : "w-1.5 bg-bds-cream/80 hover:bg-bds-cream"
+                  }`}
+                />
+              </button>
             );
           })}
+          </div>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="touch-target inline-flex items-center justify-center rounded-full text-bds-gold hover:bg-white/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-gold"
+            aria-label="Next reassurance highlight"
+          >
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
+          </button>
         </div>
       </div>
 
@@ -164,7 +174,7 @@ export const WorkflowReassuranceCarousel: React.FC<WorkflowReassuranceCarouselPr
         <span className="text-bds-gold/40 hidden sm:inline" aria-hidden="true">&bull;</span>
         <span className="flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-bds-gold shrink-0" aria-hidden="true" />
-          <span>Instant Digital Brochure via Email</span>
+          <span>Digital Brochure After Inquiry</span>
         </span>
         <span className="text-bds-gold/40 hidden sm:inline" aria-hidden="true">&bull;</span>
         <span className="flex items-center gap-1.5">

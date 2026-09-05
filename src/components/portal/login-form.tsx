@@ -1,119 +1,53 @@
 "use client";
 
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { loginAction } from "@/src/features/auth/actions";
-import { Lock, Store, ShieldCheck, AlertCircle } from "lucide-react";
-import type { PortalLocation } from "@/src/features/portal/types";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { firebaseAuth, isFirebaseClientConfigured } from "@/src/lib/firebase/client";
 
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="btn-primary w-full py-4 text-base font-bold shadow-md hover:shadow-lg transition-all"
-    >
-      {pending ? "Authenticating..." : "Sign In to Operator Workspace"}
-    </button>
-  );
+const establishPortalSession = async (idToken: string) => {
+  const response = await fetch("/api/auth/firebase-session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ idToken }) });
+  if (!response.ok) throw new Error("Your account could not start an Operator Workspace session.");
 };
 
-export const LoginForm = ({ locations }: { locations: PortalLocation[] }) => {
-  const [state, formAction] = useActionState(loginAction, {
-    status: "idle",
-  });
+export const LoginForm = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [message, setMessage] = useState("");
 
-  return (
-    <form action={formAction} className="bg-white border border-brand-charcoal/10 rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
-      <div className="flex items-center gap-3 pb-4 border-b border-brand-sand">
-        <div className="w-10 h-10 rounded-xl bg-brand-sand flex items-center justify-center text-brand-clay">
-          <Lock className="w-5 h-5" aria-hidden="true" />
-        </div>
-        <div>
-          <h3 className="text-xl font-bold font-heading text-brand-charcoal">
-            Authorized Operator Access
-          </h3>
-          <p className="text-xs text-brand-charcoal/70">
-            Sign in to access wholesale ordering, resources, and unit operations.
-          </p>
-        </div>
-      </div>
+  const finishSignIn = async (getToken: () => Promise<string>) => {
+    setIsPending(true); setMessage("");
+    try { await establishPortalSession(await getToken()); router.replace("/portal"); router.refresh(); }
+    catch { setMessage("Sign-in succeeded, but this account is not authorized for the Operator Workspace."); }
+    finally { setIsPending(false); }
+  };
 
-      {state.status === "error" && state.message ? (
-        <div
-          role="alert"
-          className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold flex items-center gap-3"
-        >
-          <AlertCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-          <span>{state.message}</span>
-        </div>
-      ) : null}
+  const signInWithEmail = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!firebaseAuth) return setMessage("Firebase authentication is not configured.");
+    try { const credential = await signInWithEmailAndPassword(firebaseAuth, email.trim(), password); await finishSignIn(() => credential.user.getIdToken()); }
+    catch { setMessage("We could not sign you in with that email and password."); }
+  };
 
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-brand-charcoal mb-2">
-            Operator Email Address *
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            defaultValue="operator@buddasdemo.com"
-            className="w-full px-4 py-3.5 bg-brand-sand/50 border border-brand-charcoal/20 rounded-xl text-base font-semibold text-brand-charcoal focus:outline-none focus:ring-2 focus:ring-brand-clay"
-            placeholder="operator@buddasdemo.com"
-          />
-        </div>
+  const signInWithGoogle = async () => {
+    if (!firebaseAuth) return setMessage("Firebase authentication is not configured.");
+    try { const credential = await signInWithPopup(firebaseAuth, new GoogleAuthProvider()); await finishSignIn(() => credential.user.getIdToken()); }
+    catch { setMessage("Google sign-in was not completed."); }
+  };
 
-        <div>
-          <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-brand-charcoal mb-2">
-            Password *
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            defaultValue="AlohaBudda2026!"
-            className="w-full px-4 py-3.5 bg-brand-sand/50 border border-brand-charcoal/20 rounded-xl text-base font-semibold text-brand-charcoal focus:outline-none focus:ring-2 focus:ring-brand-clay"
-            placeholder="••••••••••••"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="locationId" className="block text-xs font-bold uppercase tracking-wider text-brand-charcoal mb-2">
-            Operating Unit (Store Location)
-          </label>
-          <select
-            id="locationId"
-            name="locationId"
-            defaultValue="HNL-014"
-            className="w-full px-4 py-3.5 bg-brand-sand/50 border border-brand-charcoal/20 rounded-xl text-base font-semibold text-brand-charcoal focus:outline-none focus:ring-2 focus:ring-brand-clay"
-          >
-            {locations.map((loc) => (
-              <option key={loc.id} value={loc.id}>
-                {loc.name} ({loc.city}, {loc.state}) — {loc.id}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <SubmitButton />
-
-      {/* Demo Credentials Box */}
-      <div className="p-4 rounded-2xl bg-brand-sand/60 border border-brand-charcoal/10 text-xs text-brand-charcoal/70 space-y-2">
-        <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-brand-clay text-[11px]">
-          <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
-          Demo Environment Credentials
-        </div>
-        <div className="space-y-1 font-mono text-[11px]">
-          <p><strong>Franchisee:</strong> operator@buddasdemo.com / AlohaBudda2026!</p>
-          <p><strong>Administrator:</strong> admin@buddasdemo.com / AlohaAdmin2026!</p>
-        </div>
-      </div>
-    </form>
-  );
+  return <form onSubmit={signInWithEmail} className="w-full rounded-2xl border border-bds-teal-dark/15 bg-white p-6 shadow-sm space-y-6 sm:p-8">
+    <p className="text-sm leading-relaxed text-bds-cocoa/80">Use the Firebase account assigned to your operator profile.</p>
+    {message ? <div role="alert" className="flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700"><AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />{message}</div> : null}
+    <div><label htmlFor="email" className="operator-login-label block mb-2">Operator Email Address *</label><input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="username" className="w-full rounded-xl border border-bds-teal-dark/20 bg-bds-cream/50 px-4 py-3.5 text-base font-semibold text-bds-teal-dark focus:outline-none focus:ring-2 focus:ring-bds-action-primary" placeholder="you@company.com" /></div>
+    <div><label htmlFor="password" className="operator-login-label block mb-2">Password *</label><div className="relative"><input id="password" type={isPasswordVisible ? "text" : "password"} required value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" className="w-full rounded-xl border border-bds-teal-dark/20 bg-bds-cream/50 px-4 py-3.5 pr-20 text-base font-semibold text-bds-teal-dark focus:outline-none focus:ring-2 focus:ring-bds-action-primary" /><button type="button" onClick={() => setIsPasswordVisible((value) => !value)} aria-label={isPasswordVisible ? "Hide password" : "Show password"} className="absolute right-2 top-1/2 -translate-y-1/2 min-h-11 min-w-11 text-bds-teal-dark">{isPasswordVisible ? <EyeOff className="mx-auto h-5 w-5" /> : <Eye className="mx-auto h-5 w-5" />}</button></div><Link href="/franchise/login/reset" className="mt-2 inline-flex text-sm font-semibold text-bds-teal-dark underline underline-offset-4">Forgot password?</Link></div>
+    <button type="submit" disabled={isPending || !isFirebaseClientConfigured()} className="btn-primary min-h-11 w-full py-3 text-base font-semibold">{isPending ? "Signing in…" : "Sign In"}</button>
+    <div className="relative text-center text-xs text-bds-cocoa/60 before:absolute before:inset-x-0 before:top-1/2 before:border-t before:border-bds-cream"><span className="relative bg-white px-3">or</span></div>
+    <button type="button" onClick={signInWithGoogle} disabled={isPending || !isFirebaseClientConfigured()} className="btn-outline min-h-11 w-full py-3 text-base font-semibold">Continue with Google</button>
+  </form>;
 };

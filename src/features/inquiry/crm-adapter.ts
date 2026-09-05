@@ -13,6 +13,12 @@ export type HubSpotContactProperties = {
   hospitality_experience: string;
   lead_classification: string;
   broker_referral_id?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  inquiry_source_page?: string;
   franchise_inquiry_id: string;
 };
 
@@ -38,6 +44,12 @@ export const formatHubSpotLead = (
   if (payload.brokerId) {
     properties.broker_referral_id = payload.brokerId;
   }
+  if (inquiry.attribution?.utmSource) properties.utm_source = inquiry.attribution.utmSource;
+  if (inquiry.attribution?.utmMedium) properties.utm_medium = inquiry.attribution.utmMedium;
+  if (inquiry.attribution?.utmCampaign) properties.utm_campaign = inquiry.attribution.utmCampaign;
+  if (inquiry.attribution?.utmContent) properties.utm_content = inquiry.attribution.utmContent;
+  if (inquiry.attribution?.utmTerm) properties.utm_term = inquiry.attribution.utmTerm;
+  if (inquiry.attribution?.sourcePage) properties.inquiry_source_page = inquiry.attribution.sourcePage;
 
   return { properties };
 };

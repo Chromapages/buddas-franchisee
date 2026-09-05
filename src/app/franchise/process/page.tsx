@@ -1,151 +1,159 @@
-import Link from "next/link";
-import { CheckCircle2, ArrowRight, FileCheck, Users, MapPin, Sparkles } from "lucide-react";
+import type { Metadata } from "next";
+import { ProcessDesktopDossier } from "@/src/components/public/process-desktop-dossier";
+import { ProcessClosingCta } from "@/src/components/public/process-closing-cta";
+import { ProcessInteractionAnalytics } from "@/src/components/public/process-interaction-analytics";
+import { ProcessStageDetails } from "@/src/components/public/process-stage-details";
+import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
+import { getPublicFranchiseProcessContent } from "@/src/features/franchise/process-content";
+
+const processContent = getPublicFranchiseProcessContent();
+
+export const metadata: Metadata = {
+  title: processContent.metadata.title,
+  description: processContent.metadata.description,
+  alternates: { canonical: processContent.metadata.canonicalPath },
+};
 
 export default function ProcessPage() {
-  const stages = [
-    {
-      number: "01",
-      title: "Initial Inquiry & Fit Evaluation",
-      owner: "Franchise Development Team",
-      input: "Online Inquiry Submission & Background Overview",
-      outcome: "Initial Qualification Screening",
-      description:
-        "Submit your contact details, operational background, and target market interest. Our team reviews your profile against our current development territory plan within 2 business days.",
-      icon: Users,
-    },
-    {
-      number: "02",
-      title: "Discovery Call & Capital Verification",
-      owner: "VP of Franchise Development",
-      input: "Confidential Franchise Application & Financial Verification",
-      outcome: "Mutual Mutual Fit Determination",
-      description:
-        "A structured 45-minute conversation to explore your restaurant background, business goals, and review preliminary territory availability and financial thresholds.",
-      icon: CheckCircle2,
-    },
-    {
-      number: "03",
-      title: "FDD Disclosure & Legal Review",
-      owner: "Franchise Compliance & Legal Counsel",
-      input: "Executed Item 23 Receipt (Mandatory 14-Day Review)",
-      outcome: "Completed Due Diligence & Validation Calls",
-      description:
-        "Receive the active Budda's Franchise Disclosure Document (FDD). You will sign the electronic Item 23 Receipt and enter the mandatory 14-day diligence hold period to review unit economics and speak with operating affiliates.",
-      icon: FileCheck,
-    },
-    {
-      number: "04",
-      title: "Discovery Day & Territory Award",
-      owner: "Executive Leadership & Founders",
-      input: "In-Person Visit to La'ie Flagship & Kitchen Tasting",
-      outcome: "Franchise Agreement Execution & Territory Award",
-      description:
-        "Visit our flagship bakery and kitchen in La'ie, Hawai'i. Meet the executive team, taste the full menu fresh from the steam ovens, and finalize territory agreements upon mutual approval.",
-      icon: Sparkles,
-    },
-  ];
-
   return (
-    <div className="space-y-20 pb-20">
-      {/* Hero Section */}
-      <section className="bg-brand-sand/40 border-b border-brand-charcoal/10 py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
-              The Path to Ownership
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-black font-heading text-brand-charcoal tracking-tight">
-              A Transparent, 4-Stage Mutual Evaluation Process.
-            </h1>
-            <p className="text-lg sm:text-xl text-brand-charcoal/80 leading-relaxed">
-              Awarding a franchise is a long-term partnership. Our structured process gives both parties the diligence, clarity, and time needed to ensure mutual success.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="page-rhythm">
+      <div className="lg:hidden">
+      <FranchisePageHeader
+        sectionClassName="bg-bds-cream/60 pt-12 pb-6"
+        containerClassName="process-content-grid"
+        eyebrow={{ label: processContent.framing.eyebrow }}
+        title={processContent.framing.title}
+        titleClassName="heading-page text-[clamp(1.875rem,8vw,2.25rem)]"
+        description={processContent.framing.description}
+      />
 
-      {/* 4 Stages Sequence */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-8">
-          {stages.map((stage) => {
-            const Icon = stage.icon;
-            return (
-              <div
-                key={stage.number}
-                className="bg-white border border-brand-charcoal/10 rounded-3xl p-8 sm:p-10 shadow-sm flex flex-col lg:flex-row items-start gap-8 hover:border-brand-mango transition-all"
-              >
-                <div className="flex items-center gap-4 shrink-0">
-                  <span className="text-4xl sm:text-5xl font-black font-heading text-brand-clay/30">
-                    {stage.number}
-                  </span>
-                  <div className="w-12 h-12 rounded-2xl bg-brand-sand flex items-center justify-center text-brand-clay">
-                    <Icon className="w-6 h-6" aria-hidden="true" />
-                  </div>
-                </div>
-
-                <div className="space-y-4 flex-1">
-                  <div>
-                    <h3 className="text-2xl font-bold font-heading text-brand-charcoal">
-                      {stage.title}
-                    </h3>
-                    <p className="text-sm text-brand-charcoal/70 mt-1 leading-relaxed">
-                      {stage.description}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-brand-sand text-xs">
-                    <div>
-                      <span className="font-bold uppercase tracking-wider text-brand-clay block">
-                        Stage Owner
-                      </span>
-                      <span className="text-brand-charcoal font-semibold mt-0.5 block">
-                        {stage.owner}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-bold uppercase tracking-wider text-brand-clay block">
-                        Key Input
-                      </span>
-                      <span className="text-brand-charcoal font-semibold mt-0.5 block">
-                        {stage.input}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-bold uppercase tracking-wider text-brand-clay block">
-                        Target Outcome
-                      </span>
-                      <span className="text-brand-charcoal font-semibold mt-0.5 block">
-                        {stage.outcome}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+      <section className="process-spine process-content-grid mt-6" aria-labelledby="process-spine-heading">
+        <h2 id="process-spine-heading" className="sr-only">
+          Detailed four-stage mutual evaluation process
+        </h2>
+        <ol className="space-y-0">
+          {processContent.stages.map((stage, index) => (
+            <li
+              id={stage.id}
+              key={stage.id}
+              className="process-spine-stage relative grid scroll-mt-24 grid-cols-[3rem_minmax(0,1fr)] gap-4 pb-8 last:pb-0 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-6"
+            >
+              <div className="relative flex justify-center" aria-hidden="true">
+                <span
+                  className={`absolute left-1/2 w-px -translate-x-1/2 bg-bds-teal-dark/25 ${
+                    index === 0
+                      ? "top-6 bottom-0"
+                      : index === processContent.stages.length - 1
+                        ? "top-0 bottom-[calc(100%-1.5rem)]"
+                        : "inset-y-0"
+                  }`}
+                />
+                <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-bds-teal-dark/70 bg-bds-cream font-heading text-lg font-black text-bds-teal-dark">
+                  {stage.number}
+                </span>
               </div>
-            );
-          })}
-        </div>
+              <article className="min-w-0 pb-1">
+                <p className="text-xs font-bold uppercase tracking-[0.1em] text-bds-teal-dark">
+                  Stage {stage.number}
+                </p>
+                <h3 className="mt-1 font-heading text-2xl font-bold leading-tight text-brand-charcoal sm:text-[1.625rem]">
+                  {stage.publicTitle}
+                </h3>
+                <section className="mt-3">
+                  <h4 className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">
+                    What happens
+                  </h4>
+                  <p className="mt-2 text-base leading-[1.6] text-bds-text-body/80">{stage.summary}</p>
+                </section>
+
+                <dl className="mt-5 grid gap-4 border-y border-bds-teal-dark/15 py-4 sm:grid-cols-2 sm:gap-6">
+                  <div>
+                    <dt className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">
+                      Budda&apos;s evaluates
+                    </dt>
+                    <dd className="mt-2 text-base leading-[1.6] text-brand-charcoal/80">
+                      {stage.buddasEvaluates}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">
+                      You evaluate
+                    </dt>
+                    <dd className="mt-2 text-base font-medium leading-[1.6] text-brand-charcoal">
+                      {stage.candidateEvaluates}
+                    </dd>
+                  </div>
+                </dl>
+
+                <section className="mt-4 border-l-2 border-bds-teal-dark/60 pl-4" aria-labelledby={`${stage.id}-decision`}>
+                  <h4
+                    id={`${stage.id}-decision`}
+                    className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark"
+                  >
+                    Decision gate: {stage.decisionGateLabel}
+                  </h4>
+                  <p className="mt-1 text-base font-semibold leading-[1.6] text-brand-charcoal">
+                    {stage.decisionGate}
+                  </p>
+                </section>
+
+                {stage.relatedLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    data-process-analytics="related-link"
+                    data-process-stage-id={stage.id}
+                    data-process-destination-id={link.destinationId}
+                    className="touch-target-inline mt-4 text-sm font-bold text-bds-teal-dark underline underline-offset-4 hover:text-brand-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-teal-dark focus-visible:ring-offset-2"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+
+                {stage.id === "fdd-disclosure" && processContent.legalGovernance.federalTiming ? (
+                  <section
+                    className="mt-5 border-y border-bds-teal-dark/20 py-4"
+                    aria-labelledby={`${stage.id}-federal-timing`}
+                  >
+                    <h4
+                      id={`${stage.id}-federal-timing`}
+                      className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark"
+                    >
+                      Federal timing
+                    </h4>
+                    <p className="mt-2 border-l-2 border-bds-gold pl-4 text-base font-semibold leading-[1.6] text-brand-charcoal">
+                      {processContent.legalGovernance.federalTiming}
+                    </p>
+                  </section>
+                ) : null}
+
+                {stage.detailDisclosureLabel && stage.optionalDetails.length > 0 ? (
+                  <ProcessStageDetails stageId={stage.id} label={stage.detailDisclosureLabel}>
+                    <dl className="grid gap-4 border-t border-bds-teal-dark/15 pt-4 sm:grid-cols-3">
+                      {stage.optionalDetails.map((detail) => (
+                        <div key={detail.id}>
+                          <dt className="text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-bds-teal-dark">
+                            {detail.label}
+                          </dt>
+                          <dd className="mt-1 text-base leading-[1.6] text-brand-charcoal/80">
+                            {detail.detail}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </ProcessStageDetails>
+                ) : null}
+              </article>
+            </li>
+          ))}
+        </ol>
       </section>
 
-      {/* Bottom CTA Box */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-brand-charcoal rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
-          <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl font-black font-heading">
-              Initiate Stage 01: Introductory Inquiry
-            </h3>
-            <p className="text-brand-cream/80 text-sm sm:text-base max-w-xl leading-relaxed">
-              Submit your preliminary background and territory of interest to begin our structured mutual evaluation.
-            </p>
-          </div>
-          <Link
-            href="/franchise/contact"
-            className="btn-primary !py-3.5 !px-8 text-base font-bold shrink-0 flex items-center gap-2"
-          >
-            Start Your Inquiry
-            <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
+      <ProcessClosingCta content={processContent.closing} />
+      </div>
+
+      <ProcessDesktopDossier content={processContent} />
+      <ProcessInteractionAnalytics />
     </div>
   );
 }

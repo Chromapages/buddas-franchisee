@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "expansionApplications",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "submittedAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

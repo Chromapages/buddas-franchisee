@@ -10,23 +10,23 @@ export default function AccessibilityPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main id="main-content" tabIndex={-1} className="flex-1 py-16 sm:py-20 max-w-4xl mx-auto px-4 sm:px-6 focus:outline-none">
-        <div className="space-y-8 bg-white border border-brand-charcoal/10 rounded-3xl p-8 sm:p-12 shadow-sm">
-          <div className="space-y-2 border-b border-brand-sand pb-6">
+      <main id="main-content" tabIndex={-1} className="content-narrow section-standard flex-1 focus:outline-none">
+        <div className="surface-legal space-y-8 bg-white border border-brand-charcoal/10 rounded-3xl shadow-sm">
+          <div className="space-y-3 border-b border-brand-sand pb-6">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-clay">
               Accessibility Commitment
             </span>
-            <h1 className="text-3xl sm:text-4xl font-black font-heading text-brand-charcoal">
+            <h1 className="heading-page text-brand-charcoal">
               Accessibility Statement
             </h1>
-            <p className="text-xs text-brand-charcoal/60">
+            <p className="support-copy text-brand-charcoal/60">
               Conforming Standard: WCAG 2.2 Level AA &bull; August 2026
             </p>
           </div>
 
-          <div className="space-y-6 text-sm text-brand-charcoal/80 leading-relaxed">
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+          <div className="space-y-6 text-sm lg:text-base text-brand-charcoal/80 leading-relaxed">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 1. Our Commitment
               </h2>
               <p>
@@ -34,8 +34,8 @@ export default function AccessibilityPage() {
               </p>
             </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 2. Technical Measures &amp; Standards
               </h2>
               <ul className="list-disc pl-5 space-y-1">
@@ -46,8 +46,8 @@ export default function AccessibilityPage() {
               </ul>
             </section>
 
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold font-heading text-brand-charcoal">
+            <section className="space-y-3">
+              <h2 className="heading-compact text-brand-charcoal">
                 3. Feedback &amp; Assistance
               </h2>
               <p>

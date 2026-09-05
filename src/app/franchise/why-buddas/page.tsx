@@ -1,8 +1,27 @@
-import Link from "next/link";
-import { MapPin, ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
+import { ArrowRight, MapPin } from "lucide-react";
 import { WhyBuddasPillars } from "@/src/components/public/why-buddas-pillars";
+import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
+import { FranchiseFinalCta } from "@/src/components/public/franchise-final-cta";
+import { getPublicWhyBuddasPillarsContent } from "@/src/features/why-buddas/pillars-config";
+
+export const metadata: Metadata = {
+  title: "Why Budda's | Hawaiian Bakery & Grill Franchise Concept",
+  description:
+    "Review the Budda Roll, bakery-and-grill format, daypart service, production approach, and hospitality standards behind the Budda's franchise concept.",
+  alternates: {
+    canonical: "/franchise/why-buddas",
+  },
+  openGraph: {
+    title: "Why Budda's | Hawaiian Bakery & Grill Franchise Concept",
+    description:
+      "Review the Budda Roll, bakery-and-grill format, daypart service, production approach, and hospitality standards behind the Budda's franchise concept.",
+    url: "/franchise/why-buddas",
+  },
+};
 
 export default function WhyBuddasPage() {
+  const pillarsContent = getPublicWhyBuddasPillarsContent();
   const verifiedLocations = [
     {
       name: "La'ie Origin Restaurant & Bakery",
@@ -22,45 +41,48 @@ export default function WhyBuddasPage() {
   ];
 
   return (
-    <div className="space-y-16 lg:space-y-24 pb-20">
-      {/* Hero Section */}
-      <section className="bg-bds-cream/60 border-b border-bds-teal-dark/10 py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-bds-action-primary">
-              The Concept &amp; Differentiation
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-heading text-bds-text-heading tracking-tight">
-              Why Budda&apos;s: The Power of Bakery + Grill All-Day Utility.
-            </h1>
-            <p className="text-lg sm:text-xl text-bds-text-body/80 leading-relaxed">
-              Most fast-casual concepts rely strictly on a 2-hour lunch rush. Budda&apos;s unlocks three distinct high-margin dayparts powered by our proprietary bakery engine and iconic butter roll.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="page-rhythm">
+      <FranchisePageHeader
+        eyebrow={{
+          label: "The Concept",
+        }}
+        title="Bakery + Grill Utility for Every Daypart."
+        description="See how product, systems, and hospitality work together across the day."
+        contextItems={[
+          { label: "Product", value: "Budda Roll" },
+          { label: "System", value: "Bakery + Grill" },
+          { label: "Experience", value: "All-day utility" },
+        ]}
+        actions={[
+          {
+            href: "#four-pillars",
+            label: "Explore the Four Pillars",
+            icon: <ArrowRight className="w-4 h-4" aria-hidden="true" />,
+          },
+        ]}
+      />
 
       {/* Main Interactive Four Pillars Showcase */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <WhyBuddasPillars />
+      <section id="four-pillars" className="content-default">
+        <WhyBuddasPillars {...pillarsContent} />
       </section>
 
       {/* Verified Restaurant Proof */}
-      <section className="bg-bds-cream/50 border-y border-bds-teal-dark/10 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-3 mb-10">
+      <section className="bg-bds-cream/50 border-y border-bds-teal-dark/10 section-standard">
+        <div className="content-default">
+          <div className="max-w-2xl space-y-3 mb-10">
             <span className="text-xs font-bold uppercase tracking-widest text-bds-action-primary">
               Verified Operating Proof
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black font-heading text-bds-text-heading">
+            <h2 className="heading-section text-bds-text-heading">
               Operating Track Record Across Island and Mainland Markets
             </h2>
-            <p className="text-base text-bds-text-body/80 leading-relaxed">
+            <p className="text-base text-bds-text-body/80 leading-relaxed prose-measure">
               Budda&apos;s has demonstrated strong unit economics and customer enthusiasm in both high-cost island markets and suburban mainland centers.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="fluid-card-grid">
             {verifiedLocations.map((loc) => (
               <div
                 key={loc.name}
@@ -73,7 +95,7 @@ export default function WhyBuddasPage() {
                   <span className="text-xs font-bold uppercase tracking-wider text-bds-action-primary">
                     {loc.role}
                   </span>
-                  <h3 className="text-lg font-bold font-heading text-bds-text-heading mt-1">
+                  <h3 className="heading-minor text-bds-text-heading mt-1">
                     {loc.name}
                   </h3>
                 </div>
@@ -84,26 +106,7 @@ export default function WhyBuddasPage() {
         </div>
       </section>
 
-      {/* High-Contrast Conversion CTA Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-bds-action-primary rounded-3xl p-8 sm:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
-          <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl font-black font-heading text-white">
-              Explore Investment &amp; Support Architecture
-            </h3>
-            <p className="text-bds-cream/80 text-sm sm:text-base max-w-xl leading-relaxed">
-              Review candidate criteria, Item 7 initial investment ranges, and our turnkey operating systems.
-            </p>
-          </div>
-          <Link
-            href="/franchise/the-opportunity"
-            className="btn-secondary !py-3.5 !px-8 text-base font-bold shrink-0 flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-bds-gold focus-visible:ring-offset-2"
-          >
-            Review the Opportunity
-            <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
+      <FranchiseFinalCta />
     </div>
   );
 }

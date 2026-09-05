@@ -1,10 +1,56 @@
 import type {
   FinancialThresholds,
+  FinancialDisclosureGovernance,
+  FinancialDisclosurePlacement,
   InvestmentItem,
   Item19PerformanceRow,
 } from "./types";
 
-export const PUBLISHED_FINANCIAL_THRESHOLDS: FinancialThresholds = {
+const UNAPPROVED_FINANCIAL_GOVERNANCE: FinancialDisclosureGovernance = {
+  fddEdition: null,
+  effectiveDate: null,
+  reviewStatus: "REQUIRES_LEGAL_AND_FRANCHISE_DEVELOPMENT_REVIEW",
+  reviewedBy: null,
+  reviewedAt: null,
+  approvalExpiresAt: null,
+  approvedPlacements: [],
+};
+
+const isCurrentApproval = (
+  governance: FinancialDisclosureGovernance,
+  asOf: Date,
+) => {
+  if (
+    governance.effectiveDate === null ||
+    governance.approvalExpiresAt === null
+  ) {
+    return false;
+  }
+
+  const effectiveAt = Date.parse(governance.effectiveDate);
+  const expiresAt = Date.parse(governance.approvalExpiresAt);
+
+  return Number.isFinite(effectiveAt) &&
+    Number.isFinite(expiresAt) &&
+    effectiveAt <= asOf.getTime() &&
+    asOf.getTime() <= expiresAt;
+};
+
+export const isApprovedPublicFinancialPlacement = (
+  governance: FinancialDisclosureGovernance,
+  placement: FinancialDisclosurePlacement,
+  asOf = new Date(),
+) =>
+  governance.reviewStatus === "APPROVED" &&
+  governance.fddEdition !== null &&
+  governance.effectiveDate !== null &&
+  governance.reviewedBy !== null &&
+  governance.reviewedAt !== null &&
+  isCurrentApproval(governance, asOf) &&
+  governance.approvedPlacements.includes(placement);
+
+/** Sensitive values retained for approved-placement release paths; not public by default. */
+export const UNAPPROVED_FINANCIAL_THRESHOLDS: FinancialThresholds = {
   initialFranchiseFee: 35_000,
   estimatedInvestmentLow: 425_000,
   estimatedInvestmentHigh: 875_000,
@@ -13,6 +59,87 @@ export const PUBLISHED_FINANCIAL_THRESHOLDS: FinancialThresholds = {
   royaltyFeePercent: 5.0,
   brandFundPercent: 1.5,
 };
+
+const formatCompactCurrency = (amount: number) => `$${Math.round(amount / 1_000)}K`;
+
+/**
+ * FDD Item 7-aligned investment disclosure. Legal and franchise-development
+ * approval is required before this value is published in any new placement.
+ */
+const formatInvestmentAmount = (amount: number) =>
+  `$${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount)}`;
+
+const estimatedInvestmentLow = formatInvestmentAmount(
+  UNAPPROVED_FINANCIAL_THRESHOLDS.estimatedInvestmentLow,
+);
+const estimatedInvestmentHigh = formatInvestmentAmount(
+  UNAPPROVED_FINANCIAL_THRESHOLDS.estimatedInvestmentHigh,
+);
+
+export const FRANCHISE_INVESTMENT_DISCLOSURE = {
+  displayRange: `${estimatedInvestmentLow} – ${estimatedInvestmentHigh}`,
+  inquiryOptions: [
+    `Under ${estimatedInvestmentLow}`,
+    `${estimatedInvestmentLow} – ${estimatedInvestmentHigh}`,
+    `${estimatedInvestmentHigh}+`,
+  ],
+  publicationStatus: "REQUIRES_LEGAL_AND_FRANCHISE_DEVELOPMENT_REVIEW",
+  governance: UNAPPROVED_FINANCIAL_GOVERNANCE,
+} as const;
+
+/**
+ * Canonical public-financial model. It deliberately keeps qualification,
+ * startup investment, and Item 19 performance data in separate domains.
+ * Missing or expired approval metadata must fail closed at each placement.
+ */
+export const PUBLIC_FRANCHISE_FINANCIAL_CONTENT = {
+  candidateQualification: {
+    liquidCapital: {
+      amount: UNAPPROVED_FINANCIAL_THRESHOLDS.liquidCapitalRequirement,
+      display: formatCompactCurrency(UNAPPROVED_FINANCIAL_THRESHOLDS.liquidCapitalRequirement),
+      qualifier: "Liquid capital",
+    },
+    netWorth: {
+      amount: UNAPPROVED_FINANCIAL_THRESHOLDS.minimumNetWorth,
+      display: formatCompactCurrency(UNAPPROVED_FINANCIAL_THRESHOLDS.minimumNetWorth),
+      qualifier: "Net worth",
+    },
+    language: "Required financial readiness for development.",
+    destination: "/franchise/the-opportunity#financial-requirements",
+    investmentRange: FRANCHISE_INVESTMENT_DISCLOSURE.displayRange,
+    disclosureStatus: FRANCHISE_INVESTMENT_DISCLOSURE.publicationStatus,
+    governance: FRANCHISE_INVESTMENT_DISCLOSURE.governance,
+    contentOwner: "Franchise Development",
+    qualificationBasis: {
+      applicantScope: null as "individual" | "entity" | "candidate-group" | null,
+      commitmentBasis: null as "per-unit" | "per-development-commitment" | null,
+      fundsCondition: null as "unencumbered" | "non-borrowed" | null,
+    },
+  },
+} as const;
+
+export const CANDIDATE_FINANCIAL_QUALIFICATION =
+  PUBLIC_FRANCHISE_FINANCIAL_CONTENT.candidateQualification;
+
+/** @deprecated Use UNAPPROVED_FINANCIAL_THRESHOLDS until a placement is approved. */
+export const PUBLISHED_FINANCIAL_THRESHOLDS = UNAPPROVED_FINANCIAL_THRESHOLDS;
+
+export const isCandidateProfileFinancialQualificationApproved =
+  isApprovedPublicFinancialPlacement(
+    CANDIDATE_FINANCIAL_QUALIFICATION.governance,
+    "candidate-profile",
+  );
+
+export const getApprovedCandidateProfileFinancialQualification = (
+  asOf = new Date(),
+) =>
+  isApprovedPublicFinancialPlacement(
+    CANDIDATE_FINANCIAL_QUALIFICATION.governance,
+    "candidate-profile",
+    asOf,
+  )
+    ? CANDIDATE_FINANCIAL_QUALIFICATION
+    : null;
 
 export const ESTIMATED_INITIAL_INVESTMENT_TABLE: InvestmentItem[] = [
   {
@@ -106,3 +233,8 @@ export const ITEM_19_FPR_DATA: Item19PerformanceRow[] = [
 
 export const ITEM_19_LEGAL_DISCLAIMER =
   "These figures are based on historical operating data of affiliate locations operating under the Budda's brand name. Some outlets have sold this amount. Your individual financial results may differ. There is no assurance that you'll sell as much. Written substantiation for the financial performance representation will be made available to prospective franchisees upon reasonable request.";
+
+export const ITEM_19_GOVERNANCE: FinancialDisclosureGovernance = {
+  ...UNAPPROVED_FINANCIAL_GOVERNANCE,
+  approvedPlacements: [],
+};

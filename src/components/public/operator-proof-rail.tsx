@@ -1,14 +1,23 @@
 import Image from "next/image";
+import { MobileOperatorDisclosureList } from "@/src/components/public/operator-proof-mobile-disclosure";
 
-type ProofPillar = {
+export type ProofPillar = {
   number: string;
   category: string;
-  headline: string;
+  proposition: string;
   description: string;
+  operationalFact?: {
+    label: string;
+    value: string;
+  };
   type: "image" | "icon";
   imageSrc?: string;
   imageAlt?: string;
   icon?: (props: { className?: string }) => React.JSX.Element;
+};
+
+type OperatorProofRailProps = {
+  ctaMicrocopy?: string;
 };
 
 const MonsteraIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
@@ -99,9 +108,8 @@ const proofPillars: ProofPillar[] = [
   {
     number: "01",
     category: "THE PRODUCT",
-    headline: "The Roll creates the pull.",
-    description:
-      "Budda Rolls give Budda's a distinctive reason for guests to visit—and come back.",
+    proposition: "The Roll sets Budda's apart.",
+    description: "The Budda Roll gives the menu a signature bakery-led identity.",
     type: "image",
     imageSrc: "/roll-icon.svg",
     imageAlt: "Classic Budda Roll with exposed soft crumb",
@@ -109,65 +117,80 @@ const proofPillars: ProofPillar[] = [
   {
     number: "02",
     category: "THE SYSTEM",
-    headline: "Built to repeat.",
-    description:
-      "Product standards, training, digital ordering, and operating discipline support consistent results across locations.",
+    proposition: "Consistency teams can follow.",
+    description: "Training, ordering, and clear standards support consistent execution.",
     type: "icon",
     icon: SystemStoreIcon,
   },
   {
     number: "03",
     category: "THE EXPERIENCE",
-    headline: "Warmth made teachable.",
-    description:
-      "Generous hospitality comes to life through clear behaviors that teams can learn and guests can feel.",
+    proposition: "Hospitality teams can learn.",
+    description: "Clear service behaviors make generous hospitality teachable.",
     type: "icon",
     icon: ExperienceCareIcon,
   },
   {
     number: "04",
     category: "THE GROWTH",
-    headline: "Expansion is earned.",
-    description:
-      "We grow when product, people, operations, supply, and demand are ready.",
+    proposition: "Ready first. Growth second.",
+    description: "Expansion follows readiness across the whole operation.",
+    operationalFact: {
+      label: "Readiness condition",
+      value: "We grow when product, people, operations, supply, and demand are ready.",
+    },
     type: "icon",
     icon: GrowthChartIcon,
   },
 ];
 
-export const OperatorProofRail = () => {
+export const OperatorProofRail = ({
+  ctaMicrocopy = "No obligation — takes under 2 minutes.",
+}: OperatorProofRailProps) => {
+  const mobilePillars = proofPillars.map(
+    ({ number, category, proposition, description, operationalFact }) => ({
+      number,
+      category,
+      proposition,
+      description,
+      operationalFact,
+    }),
+  );
+
   return (
     <section
       aria-label="The Budda's Advantage"
-      className="relative bg-white text-bds-teal-dark overflow-hidden py-10 sm:py-12 lg:py-14 border-b border-bds-teal-dark/10"
+      className="operator-proof-section relative bg-white text-bds-teal-dark overflow-hidden section-standard border-b border-bds-teal-dark/10"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="content-wide relative z-10">
         
         {/* =========================================================================
             1. CENTERED INTRODUCTION HIERARCHY (COMPACT)
            ========================================================================= */}
-        <header className="max-w-3xl mx-auto text-center space-y-2 sm:space-y-2.5">
+        <header className="max-w-3xl mx-auto text-left md:text-center space-y-0 md:space-y-2.5">
           
-          {/* Eyebrow Label with flanking thin horizontal rules & decorative gold mark */}
-          <div className="flex items-center justify-center gap-2.5 sm:gap-3 text-[#1C5F56]">
-            <span className="h-px w-6 sm:w-12 bg-[#1C5F56]/25" aria-hidden="true" />
-            <div className="inline-flex items-center gap-1.5">
-              <MonsteraIcon className="w-3.5 h-3.5 text-[#C47D2B] shrink-0" />
-              <span className="text-xs font-black uppercase tracking-[0.16em] text-[#1C5F56]">
-                THE BUDDA&apos;S ADVANTAGE
-              </span>
-              <MonsteraIcon className="w-3.5 h-3.5 text-[#C47D2B] shrink-0" />
-            </div>
-            <span className="h-px w-6 sm:w-12 bg-[#1C5F56]/25" aria-hidden="true" />
+          {/* Eyebrow label with flanking thin horizontal rules. */}
+          <div className="flex items-center justify-start md:justify-center gap-2.5 sm:gap-3 text-[#1C5F56]">
+            <span className="hidden md:block h-px w-6 sm:w-12 bg-[#1C5F56]/25" aria-hidden="true" />
+            <span className="homepage-section-eyebrow">
+              THE BUDDA&apos;S ADVANTAGE
+            </span>
+            <span className="hidden md:block h-px w-6 sm:w-12 bg-[#1C5F56]/25" aria-hidden="true" />
           </div>
 
           {/* Large Display Headline */}
-          <h2 className="text-2xl sm:text-4xl lg:text-[2.6rem] font-bold font-heading text-[#1C5F56] leading-[1.1] tracking-tight">
+          <h2 className="operator-proof-mobile-heading md:hidden homepage-section-heading">
+            Why the model works for operators.
+          </h2>
+          <h2 className="hidden md:block heading-section text-[#1C5F56] lg:text-[2.6rem] font-bold">
             Built for operators. Designed to grow.
           </h2>
 
-          {/* Centered Supporting Paragraph */}
-          <p className="text-xs sm:text-sm lg:text-base text-[#5A3A1F]/90 max-w-xl mx-auto leading-relaxed pt-0.5">
+          {/* Supporting Paragraph */}
+          <p className="operator-proof-mobile-subhead homepage-section-description prose-measure md:hidden">
+            A connected model: product demand, operating consistency, teachable hospitality, and readiness-led growth.
+          </p>
+          <p className="hidden md:block text-xs sm:text-sm lg:text-base text-[#5A3A1F]/90 max-w-xl prose-measure mx-auto leading-relaxed pt-0.5">
             Four connected strengths that make Budda&apos;s a proven opportunity
             and a partner you can build with for the long run.
           </p>
@@ -176,7 +199,7 @@ export const OperatorProofRail = () => {
         {/* =========================================================================
             2. FOUR-PART ADVANTAGE TIMELINE (COMPACT RAIL)
            ========================================================================= */}
-        <div className="mt-8 sm:mt-10 lg:mt-10 relative">
+        <div className="operator-proof-mobile-timeline md:mt-10 lg:mt-10 relative">
           
           {/* Continuous Connecting Rail Line (Desktop horizontal line through icon centers) */}
           <div
@@ -198,57 +221,51 @@ export const OperatorProofRail = () => {
             aria-hidden="true"
           />
 
-          {/* Four Advantage Pillars Ordered List */}
+          <MobileOperatorDisclosureList pillars={mobilePillars} ctaMicrocopy={ctaMicrocopy} />
+
+          {/* Desktop advantage pillars. Mobile disclosure content is isolated
+           * above so this static section does not hydrate on desktop. */}
           <ol
-            role="list"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7 md:gap-6 lg:gap-5 relative z-10"
+            className="operator-proof-grid hidden md:grid relative z-10"
+            aria-label="Operator model pillars"
           >
             {proofPillars.map((pillar) => {
               const IconComp = pillar.icon;
 
               return (
-                <li
-                  key={pillar.number}
-                  className="flex flex-col items-center text-center space-y-2 group"
-                >
-                  {/* Sequence Number */}
-                  <span className="text-lg sm:text-xl font-bold font-heading text-[#1C5F56] tracking-wider select-none">
-                    {pillar.number}
-                  </span>
-
-                  {/* Circular Icon Frame (Centered on connecting timeline) */}
-                  <div className="w-20 h-20 sm:w-22 sm:h-22 lg:w-24 lg:h-24 rounded-full border-2 border-[#1C5F56] bg-bds-cream flex items-center justify-center p-1.5 shadow-sm transition-transform duration-200 group-hover:scale-105">
-                    {pillar.type === "image" && pillar.imageSrc ? (
-                      <div className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 overflow-hidden">
-                        <Image
-                          src={pillar.imageSrc}
-                          alt={pillar.imageAlt || pillar.headline}
-                          fill
-                          sizes="(max-width: 768px) 44px, 48px"
-                          className="object-contain object-center"
-                        />
-                      </div>
-                    ) : IconComp ? (
-                      <IconComp className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 text-[#1C5F56]" />
-                    ) : null}
-                  </div>
-
-                  {/* Category Label */}
-                  <div className="pt-1">
-                    <span className="text-[11px] sm:text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56]">
-                      {pillar.category}
+                <li key={pillar.number} data-pillar-number={pillar.number}>
+                  <div className="flex flex-col items-center text-center space-y-2 group">
+                    <span className="text-lg sm:text-xl font-bold font-heading text-[#1C5F56] tracking-wider select-none">
+                      {pillar.number}
                     </span>
+                    <div className="w-20 h-20 sm:w-22 sm:h-22 lg:w-24 lg:h-24 rounded-full border-2 border-[#1C5F56] bg-bds-cream flex items-center justify-center p-1.5 shadow-sm transition-transform duration-200 group-hover:scale-105" aria-hidden="true">
+                      {pillar.type === "image" && pillar.imageSrc ? (
+                        <div className="relative w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 overflow-hidden">
+                          <Image
+                            src={pillar.imageSrc}
+                            alt=""
+                            fill
+                            sizes="(max-width: 768px) 44px, 48px"
+                            loading="lazy"
+                            className="object-contain object-center"
+                          />
+                        </div>
+                      ) : IconComp ? (
+                        <IconComp className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 text-[#1C5F56]" />
+                      ) : null}
+                    </div>
+                    <div className="pt-1">
+                      <span className="text-[11px] sm:text-xs font-black uppercase tracking-[0.14em] text-[#1C5F56]">
+                        {pillar.category}
+                      </span>
+                    </div>
+                      <h3 className="heading-compact text-[#1C5F56] max-w-[240px]">
+                      {pillar.proposition}
+                    </h3>
+                    <p className="support-copy text-[#5A3A1F]/85 max-w-[220px]">
+                      {pillar.description}
+                    </p>
                   </div>
-
-                  {/* Display-Style Subheadline */}
-                  <h3 className="text-base sm:text-lg font-bold font-heading text-[#1C5F56] leading-snug max-w-[220px]">
-                    {pillar.headline}
-                  </h3>
-
-                  {/* Supporting Paragraph */}
-                  <p className="text-xs sm:text-[13px] text-[#5A3A1F]/85 leading-relaxed max-w-[220px]">
-                    {pillar.description}
-                  </p>
                 </li>
               );
             })}

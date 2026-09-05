@@ -1,11 +1,8 @@
 import { z } from "zod";
+import { FRANCHISE_INVESTMENT_DISCLOSURE } from "../financials/financial-data.ts";
 
-export const investmentRangeOptions = [
-  "Under $250,000",
-  "$250,000 - $499,999",
-  "$500,000 - $999,999",
-  "$1,000,000+",
-] as const;
+export const investmentRangeOptions =
+  FRANCHISE_INVESTMENT_DISCLOSURE.inquiryOptions;
 
 export const preferredTimelineOptions = [
   "0 - 6 months",
@@ -25,6 +22,8 @@ export const inquiryFieldLimits = {
   message: 900,
   brokerId: 64,
 } as const;
+
+export const inquiryExperienceMinimumLength = 20;
 
 export const inquiryFieldNames = [
   "firstName",
@@ -94,10 +93,15 @@ const multilineText = (
     );
 
   if (options.required) {
-    return base.refine(
-      (value) => value.length > 0,
-      options.requiredMessage ?? "This response is required.",
-    );
+    return base
+      .refine(
+        (value) => value.length > 0,
+        options.requiredMessage ?? "This response is required.",
+      )
+      .refine(
+        (value) => value.length >= inquiryExperienceMinimumLength,
+        "Please provide at least " + inquiryExperienceMinimumLength + " characters of relevant experience.",
+      );
   }
 
   return base;
@@ -211,6 +215,14 @@ export const inquirySchema = z.object({
     invalid_type_error: "Consent is required before submitting the inquiry.",
   }),
 });
+
+export const validateInquiryField = (
+  field: (typeof inquiryFieldNames)[number],
+  value: string,
+): string | undefined => {
+  const result = inquirySchema.shape[field].safeParse(value);
+  return result.success ? undefined : result.error.issues[0]?.message;
+};
 
 export type InquiryValues = z.infer<typeof inquirySchema>;
 export type InquiryFieldName = keyof InquiryValues;
