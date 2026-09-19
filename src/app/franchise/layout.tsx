@@ -1,23 +1,23 @@
-import { Suspense, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Navbar } from "@/src/components/public/navbar";
 import { Footer } from "@/src/components/public/footer";
-import { StructuredData } from "@/src/components/public/structured-data";
 import { WebVitalsReporter } from "@/src/components/public/web-vitals-reporter";
+import { getSiteSettings } from "@/src/features/cms/content";
 
-export default function FranchiseLayout({
+export default async function FranchiseLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const settings = await getSiteSettings();
   return (
     <div className="flex flex-col min-h-screen">
-      <StructuredData />
       <WebVitalsReporter />
-      <Navbar />
+      <Navbar primaryItems={settings.primaryNavigation} utilityItems={settings.utilityNavigation} inquiryAction={settings.inquiryAction} />
       <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
-        <Suspense fallback={null}>{children}</Suspense>
+        {children}
       </main>
-      <Footer />
+      <Footer content={settings as never} />
     </div>
   );
 }

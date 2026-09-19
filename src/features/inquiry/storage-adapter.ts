@@ -2,6 +2,8 @@ import type {
   IInquiryStorage,
   InquiryClassification,
   InquiryDeliveryStatus,
+  InquiryRouting,
+  InquiryWorkflow,
   StoredInquiry,
 } from "./types.ts";
 import type { InquiryValues } from "./schema.ts";
@@ -39,11 +41,39 @@ export class InMemoryInquiryStorage implements IInquiryStorage {
   public async getAll(): Promise<StoredInquiry[]> {
     return Array.from(this.inquiries.values());
   }
+
+  public async updateRouting(id: string, expectedVersion: number, routing: InquiryRouting): Promise<StoredInquiry | null> {
+    const existing = this.inquiries.get(id);
+    if (!existing || existing.version !== expectedVersion) return null;
+    const next = { ...existing, routing, version: existing.version + 1 };
+    this.inquiries.set(id, next);
+    return { ...next };
+  }
+
+  public async updateWorkflow(id: string, expectedVersion: number, workflow: InquiryWorkflow): Promise<StoredInquiry | null> {
+    const existing = this.inquiries.get(id);
+    if (!existing || existing.version !== expectedVersion) return null;
+    const next = { ...existing, workflow, version: existing.version + 1 };
+    this.inquiries.set(id, next);
+    return { ...next };
+  }
+}
+
+class UnavailableInquiryStorage implements IInquiryStorage {
+  private unavailable(): never { throw new Error("Durable franchise inquiry storage is not configured."); }
+  async save(): Promise<void> { return this.unavailable(); }
+  async updateStatus(): Promise<void> { return this.unavailable(); }
+  async updateRouting(): Promise<StoredInquiry | null> { return this.unavailable(); }
+  async updateWorkflow(): Promise<StoredInquiry | null> { return this.unavailable(); }
+  async getById(): Promise<StoredInquiry | null> { return this.unavailable(); }
+  async getAll(): Promise<StoredInquiry[]> { return this.unavailable(); }
 }
 
 export const defaultInquiryStorage: IInquiryStorage = process.env.DATABASE_URL
   ? new DatabaseInquiryStorage()
-  : new InMemoryInquiryStorage();
+  : process.env.NODE_ENV === "development"
+    ? new InMemoryInquiryStorage()
+    : new UnavailableInquiryStorage();
 
 export const classifyInquiry = (
   inquiry: InquiryValues,

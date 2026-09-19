@@ -18,6 +18,7 @@ export const inquiryFieldLimits = {
   phone: 40,
   cityState: 120,
   marketInterest: 120,
+  targetState: 2,
   experience: 700,
   message: 900,
   brokerId: 64,
@@ -32,6 +33,7 @@ export const inquiryFieldNames = [
   "phone",
   "cityState",
   "marketInterest",
+  "targetState",
   "experience",
   "investmentRange",
   "preferredTimeline",
@@ -169,6 +171,16 @@ const phoneSchema = z
       ),
   );
 
+const usStateCodes = [
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID",
+  "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
+  "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK",
+  "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
+  "WI", "WY", "DC",
+] as const;
+
+export const targetStateOptions = usStateCodes;
+
 export const inquirySchema = z.object({
   firstName: requiredInlineText(
     "First name",
@@ -192,6 +204,13 @@ export const inquirySchema = z.object({
     inquiryFieldLimits.marketInterest,
     "Market or territory of interest is required.",
   ),
+  targetState: z
+    .string()
+    .transform((value) => normalizeText(value).toUpperCase())
+    .refine(
+      (value) => value.length === 0 || usStateCodes.includes(value as (typeof usStateCodes)[number]),
+      "Choose a U.S. state or leave this field blank.",
+    ),
   experience: multilineText(inquiryFieldLimits.experience, {
     required: true,
     requiredMessage: "Relevant business or hospitality experience is required.",

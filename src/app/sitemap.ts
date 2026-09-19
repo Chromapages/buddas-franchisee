@@ -4,7 +4,6 @@ const siteUrl = "https://buddasfranchise.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    "",
     "/franchise",
     "/franchise/about",
     "/franchise/why-buddas",

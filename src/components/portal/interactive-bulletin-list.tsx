@@ -7,15 +7,18 @@ import type { PortalBulletin } from "@/src/features/portal/types";
 import { acknowledgeBulletinAction } from "@/src/features/portal/actions";
 import { usePortalContext } from "@/src/features/portal/portal-context";
 import { formatAudienceBadgeText } from "@/src/features/portal/targeting";
+import { formatPortalDate } from "@/src/features/portal/date-time";
 
 export type InteractiveBulletinListProps = {
   bulletins: PortalBulletin[];
+  locationId: string;
 };
 
 export const InteractiveBulletinList = ({
   bulletins,
+  locationId,
 }: InteractiveBulletinListProps) => {
-  const { decrementCount, updateCount } = usePortalContext();
+  const { decrementCount } = usePortalContext();
   const [isPending, startTransition] = useTransition();
   const [pendingBulletinId, setPendingBulletinId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -38,41 +41,25 @@ export const InteractiveBulletinList = ({
       return;
     }
 
-    const todayIso = new Date().toISOString();
     const wasActionRequired =
       bulletin.priority === "ACTION_REQUIRED" ||
       bulletin.acknowledgement?.required;
 
-    // 1. Optimistic update local to this module
-    setAcknowledgedMap((prev) => ({
-      ...prev,
-      [bulletin.id]: todayIso,
-    }));
     setPendingBulletinId(bulletin.id);
-    setStatusMessage(`Acknowledged bulletin: ${bulletin.title}`);
 
-    // 2. Scoped global notification count decrement
-    if (wasActionRequired) {
-      decrementCount("actionRequiredBulletinCount");
-    }
-
-    // 3. Dispatch server action in non-blocking transition
     startTransition(async () => {
       try {
         const formData = new FormData();
         formData.append("bulletinId", bulletin.id);
-        await acknowledgeBulletinAction(formData);
-      } catch (error) {
-        console.error("Failed to acknowledge bulletin:", error);
-        // Rollback on failure
-        setAcknowledgedMap((prev) => {
-          const next = { ...prev };
-          delete next[bulletin.id];
-          return next;
-        });
-        if (wasActionRequired) {
-          updateCount("actionRequiredBulletinCount", (prev) => prev + 1);
+        const result = await acknowledgeBulletinAction(formData);
+        if (result.status !== "success" || !result.acknowledgedAt) {
+          setStatusMessage(result.message);
+          return;
         }
+        setAcknowledgedMap((prev) => ({ ...prev, [bulletin.id]: result.acknowledgedAt! }));
+        if (wasActionRequired) decrementCount("actionRequiredBulletinCount");
+        setStatusMessage(`Acknowledged bulletin: ${bulletin.title}`);
+      } catch (error) {
         setStatusMessage(`Failed to acknowledge: ${bulletin.title}. Please try again.`);
       } finally {
         setPendingBulletinId(null);
@@ -121,17 +108,17 @@ export const InteractiveBulletinList = ({
         return (
           <article
             key={bulletin.id}
-            className="rounded-2xl border border-bds-teal-dark/10 bg-bds-cream/40 p-4 transition-colors"
+            className="mobile-workspace-panel rounded-2xl border border-bds-teal-dark/10 bg-bds-cream/40 p-4 transition-colors"
           >
-            <div className="flex items-start justify-between gap-3">
-              <h4 className="heading-minor text-bds-teal-dark">
+            <div className="mobile-workspace-record-header flex items-start justify-between gap-3">
+              <h2 className="heading-minor text-bds-teal-dark">
                 {bulletin.title}
-              </h4>
+              </h2>
               <time
                 dateTime={bulletin.publishedAt}
                 className="shrink-0 text-[10px] text-bds-cocoa/60"
               >
-                Published {new Date(bulletin.publishedAt).toLocaleDateString()}
+                Published {formatPortalDate(bulletin.publishedAt, locationId)}
               </time>
             </div>
 
@@ -158,7 +145,7 @@ export const InteractiveBulletinList = ({
 
             {bulletin.effectiveAt ? (
               <p className="mt-2 text-xs font-semibold text-bds-cocoa/80">
-                Effective {new Date(bulletin.effectiveAt).toLocaleDateString()}
+                Effective {formatPortalDate(bulletin.effectiveAt, locationId)}
               </p>
             ) : null}
 
@@ -171,6 +158,10 @@ export const InteractiveBulletinList = ({
             {bulletin.priority === "ACTION_REQUIRED" && !acknowledgedAt ? (
               <p className="mt-2 text-xs font-bold text-bds-orange">
                 Action required
+              </p>
+            ) : bulletin.priority === "IMPORTANT" ? (
+              <p className="mt-2 text-xs font-semibold text-bds-cocoa/80">
+                Important
               </p>
             ) : null}
 
@@ -192,7 +183,7 @@ export const InteractiveBulletinList = ({
             {acknowledgedAt ? (
               <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
                 <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                Acknowledged on {new Date(acknowledgedAt).toLocaleDateString()}
+                Acknowledged on {formatPortalDate(acknowledgedAt, locationId)}
               </p>
             ) : requiresAck ? (
               <div className="mt-3">

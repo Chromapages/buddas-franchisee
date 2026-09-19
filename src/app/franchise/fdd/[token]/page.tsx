@@ -1,14 +1,18 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { defaultFddStorage } from "@/src/features/fdd/storage-adapter";
 import { FddReceiptForm } from "@/src/components/public/fdd-receipt-form";
 import { FileText, Download, ShieldCheck, CheckCircle2 } from "lucide-react";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Franchise Disclosure Document (FDD) & Item 23 Receipt — Budda's",
   robots: {
     index: false,
     follow: false,
+    nocache: true,
   },
+  openGraph: null,
+  twitter: null,
 };
 
 export default async function FddDetailPage({

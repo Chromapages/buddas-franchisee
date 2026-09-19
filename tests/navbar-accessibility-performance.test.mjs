@@ -23,5 +23,5 @@ test("accessibility: utility items specify valid external targets with security/
 
 test("performance: publicNavItems array is statically exportable and pure", () => {
   assert.equal(Array.isArray(publicNavItems), true);
-  assert.equal(publicNavItems.length, 4);
+  assert.equal(publicNavItems.length, 5);
 });

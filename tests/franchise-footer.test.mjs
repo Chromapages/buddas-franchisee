@@ -73,6 +73,14 @@ test("footer tracks non-identifying interaction milestones and honors motion and
   assert.ok(footer.includes("focus-visible:ring-2 focus-visible:ring-bds-action-primary"));
 });
 
+test("desktop footer keeps column spacing without vertical dividers", () => {
+  assert.doesNotMatch(footer, /\b(?:border-[lr]|divide-x)(?:\b|\[)/);
+  assert.ok(footer.includes('className="lg:order-last lg:pl-8"'));
+  assert.ok(footer.includes('className="pl-8" key={section.id}'));
+  assert.ok(footer.includes("lg:border-b lg:border-bds-teal-dark/25"));
+  assert.ok(footer.includes('className="border-b border-bds-teal-dark/15"'));
+});
+
 test("focused authentication routes do not render the marketing footer", () => {
   assert.ok(footer.includes('pathname === "/franchise/login"'));
   assert.ok(footer.includes('pathname === "/franchise/login/reset"'));

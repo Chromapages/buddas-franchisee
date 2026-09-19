@@ -1,10 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getPortalRuntimeEnvironment } from "../features/portal/environment.ts";
 
 export default function robots(): MetadataRoute.Robots {
-  const isNonPublicEnvironment =
-    process.env.NODE_ENV !== "production" ||
-    process.env.DEPLOYMENT_ENV === "staging" ||
-    process.env.DEPLOYMENT_ENV === "demo";
+  const isNonPublicEnvironment = getPortalRuntimeEnvironment() !== "production";
 
   return {
     rules: {
@@ -19,6 +17,10 @@ export default function robots(): MetadataRoute.Robots {
             "/portal/*",
             "/api/portal",
             "/api/portal/*",
+            "/corporate",
+            "/corporate/*",
+            "/api/corporate",
+            "/api/corporate/*",
           ],
     },
     sitemap: "https://buddasfranchise.com/sitemap.xml",

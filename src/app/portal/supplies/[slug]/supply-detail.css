@@ -1,0 +1,75 @@
+.supply-detail-page { width: 100%; max-width: 84rem; margin-inline: auto; gap: 1.25rem; font-family: var(--font-body), DM Sans, sans-serif; }
+.supply-detail-desktop { display: none; }
+.supply-detail-mobile { display: grid; gap: 1rem; }
+.supply-detail-back { display: inline-flex; width: fit-content; min-height: 2.75rem; align-items: center; gap: .5rem; color: var(--bds-color-brand-teal-dark); font-size: .8125rem; font-weight: 700; text-decoration: none; }
+.supply-detail-back:hover, .supply-detail-back:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+.supply-detail-layout { display: grid; gap: 1.5rem; }
+.supply-detail-product, .supply-detail-side { display: grid; min-width: 0; align-content: start; gap: 1rem; }
+.supply-detail-heading { display: grid; gap: .25rem; }
+.supply-detail-heading p { margin: 0; color: var(--bds-color-brand-teal-dark); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.supply-detail-title { margin: 0; color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.05; }
+.supply-detail-heading span { color: var(--bds-color-brand-cocoa); font-size: .875rem; }
+.supply-detail-page .catalog-detail-visual { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+.supply-detail-description { margin: 0; color: var(--bds-color-brand-cocoa); font-size: .875rem; line-height: 1.55; }
+.supply-detail-order-card { overflow: hidden; border: 1px solid var(--bds-workspace-border); border-radius: .875rem; background: white; }
+.supply-detail-status { display: flex; align-items: center; gap: .75rem; background: color-mix(in srgb, var(--bds-color-brand-teal) 9%, white); padding: 1rem; color: var(--bds-color-brand-teal-dark); }
+.supply-detail-status > span:last-child { color: var(--bds-color-brand-cocoa); font-size: .8125rem; }
+.supply-detail-pack { display: flex; align-items: center; gap: 1rem; margin-inline: 1rem; border-bottom: 1px solid var(--bds-workspace-border); padding-block: 1rem; color: var(--bds-color-brand-teal-dark); }
+.supply-detail-pack > svg { width: 1.75rem; height: 1.75rem; flex: 0 0 auto; }
+.supply-detail-pack > div { display: grid; gap: .125rem; }
+.supply-detail-pack span, .supply-detail-pack small { color: var(--bds-color-brand-cocoa); font-size: .75rem; }
+.supply-detail-pack strong { font-family: var(--font-heading), Poppins, sans-serif; font-size: 1rem; }
+.supply-detail-order-card > .supply-detail-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .5rem; margin: 0 1rem; border-bottom: 1px solid var(--bds-workspace-border); padding-block: 1rem; }
+.supply-detail-order-card > .supply-detail-price strong { color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: 2rem; line-height: 1; }
+.supply-detail-order-card > .supply-detail-price span { color: var(--bds-color-brand-cocoa); font-size: 1rem; font-weight: 700; }
+.supply-detail-order-card > .supply-detail-price small { width: 100%; color: var(--bds-color-brand-cocoa); font-size: .875rem; font-weight: 600; }
+.supply-detail-order-card .supply-purchase-dock { position: static; display: grid; grid-template-columns: 1fr; gap: .75rem; min-height: 0; border: 0; border-radius: 0; padding: 1rem; box-shadow: none; }
+.supply-detail-order-card .supply-purchase-summary { display: none; }
+.supply-detail-order-card .supply-purchase-quantity { display: grid; gap: .5rem; }
+.supply-detail-order-card .supply-purchase-quantity > span { color: var(--bds-color-brand-teal-dark); font-size: .8125rem; font-weight: 700; }
+.supply-detail-order-card .supply-purchase-stepper { display: grid; width: min(100%, 15rem); grid-column: auto; grid-row: auto; grid-template-columns: 3.25rem minmax(5rem, 1fr) 3.25rem; overflow: hidden; border: 1px solid var(--bds-workspace-border); border-radius: .625rem; background: white; }
+.supply-detail-order-card .supply-purchase-stepper :is(button, output) { display: grid; min-height: 3.25rem; place-items: center; color: var(--bds-color-brand-teal-dark); font-size: 1rem; font-weight: 700; }
+.supply-detail-order-card .supply-purchase-stepper output { border-inline: 1px solid var(--bds-workspace-border); font-variant-numeric: tabular-nums; }
+.supply-detail-order-card .supply-purchase-stepper button:disabled { cursor: not-allowed; opacity: .5; }
+.supply-detail-order-card .supply-purchase-quantity p { margin: 0; color: var(--bds-color-brand-cocoa); font-size: .875rem; font-weight: 600; }
+.supply-detail-order-card .supply-purchase-add { display: inline-flex; width: 100%; min-height: 3.25rem; grid-column: auto; grid-row: auto; align-items: center; justify-content: center; gap: .5rem; border-radius: .625rem; background: var(--bds-color-brand-teal-dark); padding-inline: 1rem; color: white; font-family: var(--font-heading), Poppins, sans-serif; font-size: .9375rem; font-weight: 700; }
+.supply-detail-order-card .supply-purchase-add:disabled { cursor: not-allowed; opacity: .65; }
+.supply-detail-order-card .supply-purchase-cart { display: inline-flex; width: fit-content; min-height: 2.5rem; align-items: center; color: var(--bds-color-brand-teal-dark); font-size: .8125rem; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
+.supply-detail-order-card .supply-purchase-notice { margin: 0; color: var(--bds-color-brand-cocoa); font-size: .75rem; line-height: 1.4; }
+.supply-detail-lower { display: grid; gap: 1rem; }
+.supply-detail-specs, .supply-detail-assistance { border: 1px solid var(--bds-workspace-border); border-radius: .75rem; background: white; }
+.supply-detail-specs { padding: 1rem; }
+.supply-detail-specs h2, .supply-detail-assistance h2 { margin: 0; color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: 1rem; }
+.supply-detail-specs dl { display: grid; margin: .75rem 0 0; }
+.supply-detail-specs dl > div { display: grid; grid-template-columns: minmax(6rem, .65fr) minmax(0, 1fr); gap: .75rem; border-top: 1px solid var(--bds-workspace-border); padding-block: .625rem; }
+.supply-detail-specs dt { color: var(--bds-color-brand-cocoa); font-size: .75rem; font-weight: 700; }
+.supply-detail-specs dd { margin: 0; overflow-wrap: anywhere; color: var(--bds-color-brand-teal-dark); font-size: .8125rem; }
+.supply-detail-assistance { display: grid; background: var(--bds-color-brand-cream); padding: 1rem; }
+.supply-detail-history, .supply-detail-help { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; border: 0; border-left: 0; background: transparent; padding: .75rem 0; }
+.supply-detail-history + .supply-detail-help { border-top: 1px solid var(--bds-workspace-border); }
+.supply-detail-history > svg, .supply-detail-help > svg { width: 1.5rem; height: 1.5rem; color: var(--bds-color-brand-teal-dark); }
+.supply-detail-history p, .supply-detail-help p { margin: .25rem 0 0; color: var(--bds-color-brand-cocoa); font-size: .8125rem; line-height: 1.45; }
+.supply-detail-history small { display: block; margin-top: .25rem; color: var(--bds-color-brand-cocoa); font-size: .75rem; }
+.supply-detail-help a { display: inline-flex; min-height: 2.5rem; align-items: center; gap: .35rem; color: var(--bds-color-brand-teal-dark); font-size: .8125rem; font-weight: 700; text-decoration: none; }
+.supply-detail-help a:hover, .supply-detail-help a:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+
+@media (min-width: 48rem) {
+  .supply-detail-lower { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+}
+
+@media (min-width: 64rem) {
+  .supply-detail-desktop { display: grid; gap: 1.25rem; }
+  .supply-detail-mobile { display: none; }
+  .supply-detail-layout { grid-template-columns: minmax(24rem, .95fr) minmax(28rem, 1.05fr); gap: 2rem; }
+  .supply-detail-side { padding-top: 1.75rem; }
+}
+
+@media (max-width: 47.999rem) {
+  .portal-shell-main .supply-detail-page:has(.supply-purchase-dock) { padding-bottom: 0; }
+  .portal-shell-main .supply-detail-page .supply-purchase-dock { position: static; right: auto; bottom: auto; left: auto; }
+  .supply-detail-lower { grid-template-columns: 1fr; }
+}
+
+@media (forced-colors: active) {
+  .supply-detail-order-card, .supply-detail-specs, .supply-detail-assistance, .supply-detail-order-card .supply-purchase-stepper { border-color: CanvasText; }
+}

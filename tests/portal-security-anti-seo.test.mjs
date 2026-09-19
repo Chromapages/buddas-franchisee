@@ -8,10 +8,11 @@ import robots from "../src/app/robots.ts";
 import { FOOTER_NAVIGATION } from "../src/features/footer/footer-content.ts";
 import { primaryNavItems, utilityNavItems } from "../src/features/navigation/nav-config.ts";
 import nextConfig from "../next.config.ts";
-import { metadata as portalMetadata } from "../src/app/portal/layout.tsx";
-import { metadata as loginMetadata } from "../src/app/franchise/login/page.tsx";
-import { metadata as resetMetadata } from "../src/app/franchise/login/reset/page.tsx";
-import { middleware } from "../src/middleware.ts";
+
+const restoreEnvironmentVariable = (name, value) => {
+  if (value === undefined) delete process.env[name];
+  else process.env[name] = value;
+};
 
 test("sitemap: strictly excludes all portal application routes from public sitemap", () => {
   const generatedSitemap = sitemap();
@@ -72,6 +73,27 @@ test("robots.ts: explicitly disallows all portal and authentication routes", () 
   );
 });
 
+test("robots.ts: blocks all crawling in preview and keeps public marketing routes crawlable in production", () => {
+  const previous = Object.fromEntries(["NODE_ENV", "DEPLOYMENT_ENV", "VERCEL_ENV"].map((name) => [name, process.env[name]]));
+  try {
+    process.env.NODE_ENV = "production";
+    delete process.env.DEPLOYMENT_ENV;
+    process.env.VERCEL_ENV = "preview";
+    const previewRules = robots().rules;
+    assert.equal(Array.isArray(previewRules) ? previewRules[0]?.disallow : previewRules.disallow, "/");
+
+    process.env.DEPLOYMENT_ENV = "production";
+    process.env.VERCEL_ENV = "production";
+    const productionRules = robots().rules;
+    const productionDisallows = Array.isArray(productionRules) ? productionRules[0]?.disallow : productionRules.disallow;
+    assert.ok(Array.isArray(productionDisallows));
+    assert.ok(productionDisallows.includes("/portal"));
+    assert.equal(productionDisallows.includes("/franchise"), false);
+  } finally {
+    for (const [name, value] of Object.entries(previous)) restoreEnvironmentVariable(name, value);
+  }
+});
+
 test("marketing navigation: excludes internal portal routes from public navbar and footer", () => {
   // 1. Navbar audit
   const allNavLinks = [...primaryNavItems, ...utilityNavItems];
@@ -123,75 +145,94 @@ test("next.config.ts: attaches X-Robots-Tag noindex and no-cache headers to port
   );
   assert.ok(cacheControl, "portal routes must include Cache-Control header");
   assert.ok(cacheControl.value.includes("no-store"));
+
+  for (const source of ["/franchise/login", "/franchise/login/:path*", "/franchise/fdd/:path*"]) {
+    const entry = headersConfig.find((candidate) => candidate.source === source);
+    assert.ok(entry, `${source} must have an explicit private-route header policy`);
+    assert.ok(entry.headers.find((header) => header.key.toLowerCase() === "x-robots-tag")?.value.includes("noindex"));
+    assert.ok(entry.headers.find((header) => header.key.toLowerCase() === "cache-control")?.value.includes("no-store"));
+  }
 });
 
-test("metadata directives: portal layout and login pages declare noindex, nofollow, nocache", () => {
-  // Portal Layout Metadata
-  assert.ok(portalMetadata.robots);
-  assert.equal(portalMetadata.robots.index, false);
-  assert.equal(portalMetadata.robots.follow, false);
-  assert.equal(portalMetadata.robots.nocache, true);
-  assert.equal(portalMetadata.robots.googleBot?.index, false);
-  assert.equal(portalMetadata.robots.googleBot?.follow, false);
-  assert.equal(portalMetadata.robots.googleBot?.noimageindex, true);
+test("metadata directives: private application and login surfaces declare noindex and clear social metadata", () => {
+  const portalLayout = fs.readFileSync(path.resolve("src/app/portal/layout.tsx"), "utf8");
+  const corporateLayout = fs.readFileSync(path.resolve("src/app/corporate/layout.tsx"), "utf8");
+  const loginPage = fs.readFileSync(path.resolve("src/app/franchise/login/page.tsx"), "utf8");
+  const resetPage = fs.readFileSync(path.resolve("src/app/franchise/login/reset/page.tsx"), "utf8");
+  const fddPage = fs.readFileSync(path.resolve("src/app/franchise/fdd/[token]/page.tsx"), "utf8");
 
-  // Login Page Metadata
-  assert.ok(loginMetadata.robots);
-  assert.equal(loginMetadata.robots.index, false);
-  assert.equal(loginMetadata.robots.follow, false);
-  assert.equal(loginMetadata.robots.nocache, true);
+  for (const [name, content] of [["portal", portalLayout], ["corporate", corporateLayout], ["login", loginPage], ["reset", resetPage], ["FDD", fddPage]]) {
+    assert.match(content, /index:\s*false/, `${name} metadata must be noindex`);
+    assert.match(content, /follow:\s*false/, `${name} metadata must be nofollow`);
+    assert.match(content, /openGraph:\s*null/, `${name} metadata must clear inherited Open Graph data`);
+    assert.match(content, /twitter:\s*null/, `${name} metadata must clear inherited Twitter data`);
+  }
 
-  // Reset Password Page Metadata
-  assert.ok(resetMetadata.robots);
-  assert.equal(resetMetadata.robots.index, false);
-  assert.equal(resetMetadata.robots.follow, false);
-  assert.equal(resetMetadata.robots.nocache, true);
+  assert.match(portalLayout, /default:\s*"Dashboard \| Budda's Operator Portal"/);
+  assert.match(portalLayout, /template:\s*"%s \| Budda's Operator Portal"/);
+  assert.match(loginPage, /corporate \? "Corporate Login \| Budda's Workspace" : "Operator Login \| Budda's Operator Portal"/);
 });
 
-test("middleware: intercepts unauthenticated requests to /portal with 307 redirect, noindex, and no-store", () => {
-  // Mock unauthenticated NextRequest
-  const mockUnauthRequest = {
-    nextUrl: { pathname: "/portal/orders" },
-    url: "https://buddasfranchise.com/portal/orders",
-    cookies: {
-      has: () => false,
-    },
-  };
+test("structured data appears on indexable marketing pages but not shared auth or private-document layouts", () => {
+  const franchiseLayout = fs.readFileSync(path.resolve("src/app/franchise/layout.tsx"), "utf8");
+  assert.equal(franchiseLayout.includes("StructuredData"), false);
 
-  // @ts-expect-error test mock
-  const unauthResponse = middleware(mockUnauthRequest);
-  assert.ok(unauthResponse);
-  assert.equal(unauthResponse.status, 307);
-  assert.ok(unauthResponse.headers.get("location")?.includes("/franchise/login"));
-  assert.equal(
-    unauthResponse.headers.get("x-robots-tag"),
-    "noindex, nofollow, noarchive, nosnippet",
-  );
-  assert.ok(unauthResponse.headers.get("cache-control")?.includes("no-store"));
+  for (const file of [
+    "src/app/franchise/login/page.tsx",
+    "src/app/franchise/login/reset/page.tsx",
+    "src/app/franchise/fdd/[token]/page.tsx",
+  ]) {
+    assert.equal(fs.readFileSync(path.resolve(file), "utf8").includes("<StructuredData"), false, `${file} must not emit public JSON-LD`);
+  }
 
-  // Mock authenticated NextRequest
-  const mockAuthRequest = {
-    nextUrl: { pathname: "/portal/supplies" },
-    url: "https://buddasfranchise.com/portal/supplies",
-    cookies: {
-      has: (name: string) => name === "buddas_portal_session",
-    },
-  };
+  for (const file of [
+    "src/app/franchise/page.tsx",
+    "src/app/franchise/about/page.tsx",
+    "src/app/franchise/contact/page.tsx",
+    "src/app/franchise/faq/page.tsx",
+    "src/app/franchise/process/page.tsx",
+    "src/app/franchise/the-opportunity/page.tsx",
+    "src/app/franchise/why-buddas/page.tsx",
+  ]) {
+    assert.ok(fs.readFileSync(path.resolve(file), "utf8").includes("<StructuredData"), `${file} must retain approved public JSON-LD`);
+  }
+});
 
-  // @ts-expect-error test mock
-  const authResponse = middleware(mockAuthRequest);
-  assert.ok(authResponse);
-  assert.equal(
-    authResponse.headers.get("x-robots-tag"),
-    "noindex, nofollow, noarchive, nosnippet",
-  );
-  assert.ok(authResponse.headers.get("cache-control")?.includes("no-store"));
+test("portal pages provide safe, route-specific titles without private record identifiers", () => {
+  const expectedTitles = new Map([
+    ["src/app/portal/account/page.tsx", "Account Profile"],
+    ["src/app/portal/bulletins/page.tsx", "Operations Bulletins"],
+    ["src/app/portal/cart/page.tsx", "Wholesale Cart"],
+    ["src/app/portal/checkout/page.tsx", "Review Supply Order"],
+    ["src/app/portal/checkout/confirmation/page.tsx", "Order Confirmation"],
+    ["src/app/portal/expansion/page.tsx", "Growth Requests"],
+    ["src/app/portal/orders/page.tsx", "Orders & Shipments"],
+    ["src/app/portal/resources/page.tsx", "Resource Center"],
+    ["src/app/portal/supplies/page.tsx", "Supplies Catalog"],
+    ["src/app/portal/supplies/[slug]/page.tsx", "Supply Item"],
+    ["src/app/portal/support/page.tsx", "Operations Support"],
+  ]);
+  for (const [file, title] of expectedTitles) {
+    const content = fs.readFileSync(path.resolve(file), "utf8");
+    assert.ok(content.includes(`export const metadata: Metadata = { title: "${title}" };`), `${file} must define its safe static title`);
+    assert.equal(content.includes("generateMetadata"), false, `${file} must not derive metadata from private route data`);
+  }
+});
+
+test("middleware: protects portal and corporate matchers and applies redirect/header contracts", () => {
+  const content = fs.readFileSync(path.resolve("src/middleware.ts"), "utf8");
+  assert.match(content, /pathname === "\/portal"/);
+  assert.match(content, /pathname\.startsWith\("\/portal\/"\)/);
+  assert.match(content, /NextResponse\.redirect\(loginUrl, 307\)/);
+  assert.match(content, /"noindex, nofollow, noarchive, nosnippet"/);
+  assert.match(content, /"no-store, no-cache, must-revalidate, max-age=0"/);
+  assert.match(content, /matcher: \["\/portal\/:path\*"/);
 });
 
 test("codebase audit: all portal pages strictly require authentication before executing data queries", () => {
   const portalDir = path.resolve(process.cwd(), "src/app/portal");
 
-  const checkDirectory = (dir: string) => {
+  const checkDirectory = (dir) => {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);

@@ -4,6 +4,7 @@ import { firebaseDb } from "../../lib/firebase/admin.ts";
 export type PortalAuditAction =
   | "SUPPLY_ORDER_ACCEPTED"
   | "ORDER_CANCELLED"
+  | "ORDER_CANCELLATION_REQUESTED"
   | "UNIT_CHANGED"
   | "SUPPORT_TICKET_CREATED"
   | "SUPPORT_TICKET_UPDATED"
@@ -16,6 +17,8 @@ export type PortalAuditAction =
   | "FINANCIAL_DOCUMENT_DOWNLOADED"
   | "FOOD_SAFETY_CREDENTIAL_SUBMITTED"
   | "BRAND_STANDARD_SIGNED"
+  | "RESOURCE_ACKNOWLEDGED"
+  | "RESOURCE_RETURN_SUBMITTED"
   | "EXPANSION_APPLICATION_SUBMITTED"
   | "EXPANSION_APPLICATION_STAGE_CHANGED"
   | "EXPANSION_UNIT_PROVISIONED";
@@ -43,6 +46,7 @@ export type PortalAuditRecord = {
 
 export type RecordPortalAuditParams = {
   actor: PortalSession | PortalAuditActor;
+  includeActorEmail?: boolean;
   action: PortalAuditAction;
   outcome: PortalAuditOutcome;
   unitId?: string;
@@ -97,6 +101,7 @@ export const clearPortalAuditTrailForTesting = (): void => {
 
 export const recordPortalAudit = async ({
   actor,
+  includeActorEmail = true,
   action,
   outcome,
   unitId,
@@ -107,7 +112,7 @@ export const recordPortalAudit = async ({
 }: RecordPortalAuditParams): Promise<PortalAuditRecord> => {
   const actorObj: PortalAuditActor = {
     userId: actor.userId,
-    email: actor.email,
+    ...(includeActorEmail && actor.email ? { email: actor.email } : {}),
     role: actor.role,
     locationId: actor.locationId,
   };

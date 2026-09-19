@@ -72,6 +72,8 @@ test("Operations Support Workflow: Complete Lifecycle (Create, View, Reply, Clos
     subject: "Proofer humidity sensor malfunction",
     topic: "Equipment & Steam Deck Oven Maintenance",
     details: "Proofer cabinet humidity reading fluctuates erratically between 40% and 95%.",
+    operationalImpact: "Operations are slowed",
+    relatedOrderId: "BD-5244",
   });
 
   // 2. View ticket
@@ -79,6 +81,8 @@ test("Operations Support Workflow: Complete Lifecycle (Create, View, Reply, Clos
   assert.ok(ticket, "Created ticket must be retrievable");
   assert.equal(ticket.status, "Open");
   assert.equal(ticket.operatorActionRequired, false, "Initial ticket is waiting on HQ, not operator action");
+  assert.equal(ticket.operationalImpact, "Operations are slowed");
+  assert.equal(ticket.relatedOrderId, "BD-5244");
   assert.ok(ticket.messages && ticket.messages.length === 1, "Initial issue should be recorded in messages history");
 
   // Simulate Operations Support replying with action-required

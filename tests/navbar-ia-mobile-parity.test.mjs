@@ -7,17 +7,18 @@ import {
   publicNavItems,
 } from "../src/features/navigation/nav-config.ts";
 
-test("primaryNavItems contains exactly 4 Mode-A safe educational links in approved sequence", () => {
-  assert.equal(primaryNavItems.length, 4);
+test("primaryNavItems starts with Home and keeps the approved educational links in sequence", () => {
+  assert.equal(primaryNavItems.length, 5);
 
   assert.deepEqual(
     primaryNavItems.map((item) => item.label),
-    ["Why Budda's", "The Opportunity", "How It Works", "FAQ"]
+    ["Home", "Why Budda's", "The Opportunity", "How It Works", "FAQ"]
   );
 
   assert.deepEqual(
     primaryNavItems.map((item) => item.href),
     [
+      "/franchise",
       "/franchise/why-buddas",
       "/franchise/the-opportunity",
       "/franchise/process",

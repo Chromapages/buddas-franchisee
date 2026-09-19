@@ -2,14 +2,22 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { submitSupportRequestAction } from "@/src/features/portal/actions";
-import { SUPPORT_TOPICS, SUPPORT_SUBJECT_LIMIT, SUPPORT_DETAILS_LIMIT } from "@/src/features/portal/support-form-options";
-import { AlertCircle, ArrowRight, CheckCircle2, Store, Send } from "lucide-react";
+import { SUPPORT_TOPICS, SUPPORT_SUBJECT_LIMIT, SUPPORT_DETAILS_LIMIT, SUPPORT_IMPACTS, type SupportImpact } from "@/src/features/portal/support-form-options";
+import { AlertCircle, ArrowLeft, ArrowRight, BookOpen, CheckCircle2, ClipboardList, Headphones, MapPin, Send, TimerReset } from "lucide-react";
 
-export const SupportForm = ({ locationId, locationName }: { locationId: string; locationName: string }) => {
-  const [state, formAction, pending] = useActionState(submitSupportRequestAction, { status: "error", message: "" });
-  const [topic, setTopic] = useState("");
-  const [subject, setSubject] = useState("");
-  const [details, setDetails] = useState("");
+export const SupportForm = ({ locationId, locationName, initialOrderId, onBack }: { locationId: string; locationName: string; initialOrderId?: string; onBack?: () => void }) => {
+  const creationIds = useRef(new Map<string, string>());
+  const [state, formAction, pending] = useActionState(async (previous: Awaited<ReturnType<typeof submitSupportRequestAction>>, formData: FormData) => {
+    const key = JSON.stringify([...formData.entries()]);
+    const requestId = creationIds.current.get(key) || crypto.randomUUID();
+    creationIds.current.set(key, requestId);
+    formData.set("requestId", requestId);
+    return submitSupportRequestAction(previous, formData);
+  }, { status: "error", message: "" });
+  const [topic, setTopic] = useState(initialOrderId ? "Supply Logistics & Freight" : "");
+  const [subject, setSubject] = useState(initialOrderId ? `Fulfillment update for order ${initialOrderId}` : "");
+  const [details, setDetails] = useState(initialOrderId ? `Requesting a fulfillment update for order ${initialOrderId}, which is processing beyond its stated fulfillment window.` : "");
+  const [impact, setImpact] = useState<SupportImpact>(SUPPORT_IMPACTS[0]);
   const [attempted, setAttempted] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
@@ -38,7 +46,10 @@ export const SupportForm = ({ locationId, locationName }: { locationId: string; 
   }
 
   return (
-    <form action={formAction} className="support-compose" noValidate onSubmit={(event) => {
+    <div className="support-intake">
+      <button type="button" onClick={onBack} className="support-intake-back"><ArrowLeft aria-hidden="true" />Back to support</button>
+      <header className="support-intake-heading"><p>Operations Support</p><h2>Open a support request</h2><span>Share the issue and operational impact so we can route it to the right team.</span></header>
+      <form action={formAction} className="support-compose support-intake-form" noValidate onSubmit={(event) => {
       setAttempted(true);
       if (invalid || pending) {
         event.preventDefault();
@@ -46,10 +57,10 @@ export const SupportForm = ({ locationId, locationName }: { locationId: string; 
       }
     }}>
       <input type="hidden" name="locationId" value={locationId} />
-      <header className="support-compose-header">
-        <div><p className="support-kicker">Operations Support</p><h2>Open a support ticket</h2><p>Tell us what’s happening and what help you need.</p></div>
-        <span className="support-required">All fields are required</span>
-      </header>
+      {initialOrderId ? <input type="hidden" name="relatedOrderId" value={initialOrderId} /> : null}
+      <div className="support-intake-main">
+      <section className="support-intake-card" aria-labelledby="support-details-title">
+      <header className="support-compose-header"><div><h3 id="support-details-title">Request details</h3><p>Share what happened so we can route this to the right people.</p></div></header>
       {(attempted && invalid) || state.message ? (
         <div className="support-form-error" ref={errorRef} tabIndex={-1} role="alert">
           <AlertCircle size={20} aria-hidden="true" />
@@ -58,15 +69,21 @@ export const SupportForm = ({ locationId, locationName }: { locationId: string; 
           </div>
         </div>
       ) : null}
-      <div className="support-compose-grid">
         <div className="support-compose-fields">
           <div className="support-field">
-            <label htmlFor="topic">What do you need help with?</label>
-            <p id="topic-hint">Choose the topic that best matches your request.</p>
+            <label htmlFor="topic">Support area</label>
+            <p id="topic-hint">Choose the area that best matches your request.</p>
             {topicError ? <p className="support-field-error" id="topic-error">Choose a support topic.</p> : null}
             <select id="topic" name="topic" value={topic} onChange={(event) => setTopic(event.target.value)} required disabled={pending} aria-invalid={topicError || undefined} aria-describedby={"topic-hint" + (topicError ? " topic-error" : "")}>
               <option value="">Select a support topic</option>
               {SUPPORT_TOPICS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
+          </div>
+          <div className="support-field">
+            <label htmlFor="impact">Operational impact</label>
+            <p id="impact-hint">Tell us how urgently this affects the unit.</p>
+            <select id="impact" name="impact" value={impact} onChange={(event) => setImpact(event.target.value as SupportImpact)} disabled={pending} aria-describedby="impact-hint">
+              {SUPPORT_IMPACTS.map((option) => <option key={option}>{option}</option>)}
             </select>
           </div>
           <div className="support-field">
@@ -83,20 +100,26 @@ export const SupportForm = ({ locationId, locationName }: { locationId: string; 
             <span id="details-count" className="support-character-count">{details.length.toLocaleString()} / {SUPPORT_DETAILS_LIMIT.toLocaleString()} characters</span>
           </div>
         </div>
-        <section className="support-compose-context" aria-labelledby="support-unit-title">
-          <div className="support-unit-panel"><Store size={20} aria-hidden="true" /><div><h3 id="support-unit-title">Ticket for</h3><p>{locationName}</p><span>Unit {locationId}</span></div></div>
-          <div className="support-writing-guide">
-            <h3>Help us understand the issue</h3>
-            <ul><li>Describe what happened and when.</li><li>Explain the effect on your operation.</li><li>Include relevant order or equipment references.</li><li>Tell us what you’ve already tried.</li></ul>
-          </div>
-          <div className="support-next"><h3>After you submit</h3><p>You’ll receive a ticket reference. Follow the conversation and add updates from Operations Support.</p></div>
-        </section>
-      </div>
       <footer className="support-compose-footer">
-        <p>This request will be filed for <strong>{locationName}</strong> ({locationId}).</p>
-        <button type="submit" disabled={pending} className="btn-primary"><Send size={17} aria-hidden="true" />{pending ? "Creating ticket…" : "Create support ticket"}</button>
+        <button type="button" onClick={onBack} className="support-intake-secondary"><ArrowLeft aria-hidden="true" />Back</button>
+        <button type="submit" disabled={pending} className="btn-primary"><Send size={17} aria-hidden="true" />{pending ? "Creating request…" : "Create request"}<ArrowRight size={17} aria-hidden="true" /></button>
       </footer>
+      </section>
+      <aside className="support-intake-summary" aria-labelledby="request-summary-title">
+        <header><h3 id="request-summary-title">Request summary</h3><p>Review the information that will be sent to Operations Support.</p></header>
+        <dl>
+          <div><ClipboardList aria-hidden="true" /><dt>Support area</dt><dd>{selectedTopic?.label || "Not selected"}</dd></div>
+          <div><TimerReset aria-hidden="true" /><dt>Operational impact</dt><dd>{impact}</dd></div>
+          <div><MapPin aria-hidden="true" /><dt>Store</dt><dd>{locationName}<small>{locationId}</small></dd></div>
+          {initialOrderId ? <div><ClipboardList aria-hidden="true" /><dt>Related order</dt><dd>{initialOrderId}</dd></div> : null}
+        </dl>
+        <section className="support-intake-assistance"><Headphones aria-hidden="true" /><div><h4>Immediate assistance</h4><p>If this issue is blocking normal operations, call Budda&rsquo;s support team.</p><a href="tel:+18017010617">(801) 701-0617</a></div></section>
+        <section className="support-intake-next"><h4>What happens next?</h4><ol><li>We&rsquo;ll create your request and route it to the right team.</li><li>You&rsquo;ll receive a ticket number.</li><li>Replies and status updates will appear in Support.</li></ol></section>
+        <a className="support-intake-resources" href="/portal/resources"><BookOpen aria-hidden="true" /><span><strong>Browse guides &amp; SOPs</strong><small>Find helpful resources while you wait.</small></span><ArrowRight aria-hidden="true" /></a>
+      </aside>
+      </div>
       <span className="sr-only" role="status" aria-live="polite">{pending ? "Creating your support ticket. Please wait." : ""}</span>
-    </form>
+      </form>
+    </div>
   );
 };

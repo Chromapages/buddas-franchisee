@@ -1,7 +1,7 @@
 # Launch the Budda’s franchise platform safely
 
 **Document:** Technical and launch checklist  
-**Product:** Budda’s franchise recruitment site and operator portal  
+**Product:** Budda’s franchise marketing website, operator portal, and corporate portal
 **Version:** 1.0  
 **Date:** August 21, 2026  
 **Status:** Proposed launch baseline  
@@ -34,13 +34,13 @@ Do not launch:
 - Franchise fee or financial-performance claims without approved Item 19 content
 - Public booking calendar
 - Public account creation
-- Production operator portal
+- Production operator or corporate portal outside the approved controlled pilot
 - Portal checkout with real billing or payment
 - Demo credentials or seeded franchisee data
 
 ### 1.3 Conditional pilot
 
-The operator portal may launch only as a controlled pilot after:
+The operator and corporate portals may launch only as a controlled pilot after:
 
 - Discovery Gate 3 approval
 - Production identity provider
@@ -49,6 +49,16 @@ The operator portal may launch only as a controlled pilot after:
 - Systems-of-record integration
 - Portal security review
 - Operator support and incident plan
+- Staff-only corporate authorization and audit review
+- A named owner, freshness target, retry policy, and reconciliation runbook for every authoritative integration
+- The order → supplier acknowledgment → corporate reconciliation loop passes end-to-end acceptance
+
+### 1.3.1 Three-product boundary
+
+- `/franchise` is public, indexable where approved, and measured as an evidence and inquiry funnel.
+- `/portal` is noindex, operator/location scoped, and measured by task completion, time, errors, abandonment, and recovery.
+- `/corporate` is noindex, staff/capability scoped, and measured by queue age, exception resolution, audit completeness, and authoritative data coverage.
+- Shared deployment or code does not relax session, authorization, analytics, or data-isolation boundaries.
 
 ### 1.4 Go or no-go authority
 
@@ -139,6 +149,41 @@ Requirements:
 - Separate administrative role
 - Connection pooling appropriate to serverless runtime
 - No production personal data in preview
+
+### 2.4.1 Systems-of-record register
+
+Production approval requires completed entries for provider, business owner, technical owner, record identifier, direction, freshness SLO, outage behavior, replay/idempotency, reconciliation, retention, and audit evidence.
+
+| Domain | Required authority | Launch proof |
+| --- | --- | --- |
+| POS sales | Approved POS provider | Signed/verified ingestion, location mapping, freshness and gap detection |
+| Inventory | Approved inventory or ERP provider | Server-side availability refresh and stale-data behavior |
+| Suppliers | Approved supplier/fulfillment system | Idempotent order submission and durable acknowledgment |
+| Payments/invoices | Approved processor or accounting/ERP system | Verified events/re-fetch and order-payment mismatch queue |
+| CRM | Approved CRM | Durable platform capture, idempotent delivery, disposition sync, replay |
+| Identity | Approved identity provider + platform grants | MFA/recovery/revocation plus role/capability/location denial tests |
+
+### 2.4.2 First closed production loop
+
+Before aggregate reporting is enabled, prove operator order → supplier acknowledgment → corporate reconciliation:
+
+- [ ] Server revalidates operator, location, catalog, price, and availability
+- [ ] Submission is durably persisted before supplier delivery
+- [ ] Idempotency prevents duplicate orders across retries and timeouts
+- [ ] Supplier acknowledgment stores supplier reference, accepted/rejected lines, quantities, prices, totals, and timestamp
+- [ ] Missing, partial, changed, duplicate, and rejected acknowledgments enter an owned exception queue
+- [ ] Corporate compares order and acknowledgment at line and total level
+- [ ] Operator sees acknowledged state or an accurate pending/exception state
+- [ ] Resolution records actor, reason, before/after state, and correlation identifiers
+- [ ] Reconciliation can be replayed without rewriting immutable provider evidence
+
+### 2.4.3 Aggregate reporting gate
+
+Do not publish a corporate aggregate unless every included measure has an authoritative source and tested reconciliation. Each tile/export must expose source, last successful refresh, included-location coverage, excluded/unreconciled count, and timezone/currency rules. Stale or incomplete data must be visibly labeled and excluded or segmented; it must never be coerced to zero. POS sales, inventory, supplier, payment, CRM, and identity metrics pass separate completeness checks.
+
+### 2.4.4 Operator workflow measurement
+
+Do not enforce a universal three-click limit. For each priority job, record the baseline and target for successful completion, median/P90 elapsed time, meaningful interactions, validation errors, abandonment, support escalation, and recovery success. Review telemetry with pilot operators; retain additional confirmation when it protects authorization, money, safety, or irreversible state.
 
 ### 2.5 Current-code gaps
 

@@ -1,17 +1,17 @@
-export const StructuredData = () => {
+export const StructuredData = ({ organizationName = "Budda's Hawaiian Bakery & Grill", siteUrl = "https://buddasfranchise.com", email = "buddasbakery@gmail.com", phoneHref = "tel:+18017010617" }: { organizationName?: string; siteUrl?: string; email?: string; phoneHref?: string }) => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://buddasfranchise.com/#organization",
-        name: "Budda's Hawaiian Bakery & Grill",
-        url: "https://buddasfranchise.com",
-        logo: "https://buddasfranchise.com/images/Logo.svg",
+        "@id": `${siteUrl}/#organization`,
+        name: organizationName,
+        url: siteUrl,
+        logo: `${siteUrl}/images/Logo.svg`,
         description:
-          "Home of the iconic Budda Roll. Modern Hawaiian bakery and grill franchise opportunities.",
-        email: "buddasbakery@gmail.com",
-        telephone: "+1-801-701-0617",
+          "Home of the Budda Roll. Budda's is a Hawaiian Bakery & Grill with public franchise opportunity information.",
+        email,
+        telephone: phoneHref.replace("tel:", ""),
         address: {
           "@type": "PostalAddress",
           addressLocality: "La'ie",
@@ -22,11 +22,11 @@ export const StructuredData = () => {
       },
       {
         "@type": "WebSite",
-        "@id": "https://buddasfranchise.com/#website",
-        url: "https://buddasfranchise.com",
-        name: "Budda's Franchise Opportunity",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: organizationName,
         publisher: {
-          "@id": "https://buddasfranchise.com/#organization",
+          "@id": `${siteUrl}/#organization`,
         },
       },
     ],

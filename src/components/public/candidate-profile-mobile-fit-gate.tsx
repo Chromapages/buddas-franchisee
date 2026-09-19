@@ -1,6 +1,8 @@
 export type CandidateFitPillar = {
+  id: string;
   number: string;
-  category: string;
+  frameworkTerm: string;
+  publicLabel: string;
   meaning: string;
   standard: string;
   supportingExpectation?: string;
@@ -19,32 +21,26 @@ export const CandidateProfileMobileFitGate = ({
 }) => (
   <ol
     aria-label="Operator standards"
-    className="md:hidden divide-y divide-[#1C5F56]/15 border-y border-[#1C5F56]/15"
+    className="candidate-standard-ledger lg:hidden divide-y divide-bds-teal-dark/30 border-y-2 border-bds-teal-dark/55"
   >
     {pillars.map((pillar) => (
       <li
-        key={pillar.number}
-        data-candidate-criterion={pillar.number}
-        className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 px-1 py-4"
+        key={pillar.id}
+        data-candidate-criterion={pillar.id}
+        className="px-4 py-6"
       >
-        <span className="pt-0.5 text-sm font-bold tabular-nums text-[#1C5F56]" aria-hidden="true">
-          {pillar.number}
-        </span>
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#1C5F56]">
-            {pillar.category}
-            <span className="font-medium normal-case tracking-normal text-bds-text-body/80">{" "}— {pillar.meaning}</span>
+        <p className="font-heading text-xs font-semibold uppercase leading-[1.5] tracking-[0.12em] text-bds-teal-dark">
+          <span className="tabular-nums">{pillar.number}</span><span aria-hidden="true"> · </span>{pillar.publicLabel}
+        </p>
+        <h3 className="mt-2 font-heading text-[18px] font-semibold leading-[1.25] text-bds-teal-dark">{pillar.standard}</h3>
+        {pillar.supportingExpectation ? (
+          <p className="mt-2 font-body text-[15px] leading-[1.5] text-bds-cocoa" data-candidate-supporting-expectation>
+            {pillar.supportingExpectation}
           </p>
-          <h3 className="mt-1 text-sm font-bold leading-snug text-[#1C5F56]">{pillar.standard}</h3>
-          {pillar.supportingExpectation ? (
-            <p className="mt-1 text-xs leading-relaxed text-bds-text-body/90" data-candidate-supporting-expectation>
-              {pillar.supportingExpectation}
-            </p>
-          ) : null}
-          {pillar.detailsHref && pillar.detailsLabel ? (
-            <CandidateProfileInvestmentLink href={pillar.detailsHref} label={pillar.detailsLabel} />
-          ) : null}
-        </div>
+        ) : null}
+        {pillar.detailsHref && pillar.detailsLabel ? (
+          <CandidateProfileInvestmentLink href={pillar.detailsHref} label={pillar.detailsLabel} />
+        ) : null}
       </li>
     ))}
   </ol>

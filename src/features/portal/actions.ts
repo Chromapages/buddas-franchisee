@@ -1,5 +1,9 @@
 "use server";
 
+import { createHash, randomUUID } from "node:crypto";
+import { FirestoreSupportRepository } from "../corporate/support/repository.ts";
+import type { SupportCommandKind } from "../corporate/support/model.ts";
+import { FirestorePortalStorage } from "./firestore-storage.ts";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { defaultPortalStorage } from "./storage-adapter.ts";
@@ -8,9 +12,10 @@ import { getPortalSession } from "../auth/session.ts";
 import { assertSessionLocationAccess, clearPortalCart, getPortalCart } from "./cart.ts";
 import { canTransitionOrderStatus, ORDER_STATUS } from "./order-status.ts";
 import { assertPortalPermission } from "./authorization.ts";
+import { isBulletinActionOutstanding } from "./bulletins.ts";
 import { recordPortalAudit } from "./audit.ts";
 import { getCheckoutFingerprint } from "./checkout-review";
-import { SUPPORT_TOPICS, SUPPORT_SUBJECT_LIMIT, SUPPORT_DETAILS_LIMIT } from "./support-form-options";
+import { SUPPORT_TOPICS, SUPPORT_SUBJECT_LIMIT, SUPPORT_DETAILS_LIMIT, SUPPORT_IMPACTS, type SupportImpact } from "./support-form-options";
 import { firebaseDb } from "@/src/lib/firebase/admin";
 import { getBrandSignoffRequirement } from "./compliance-records";
 
@@ -80,10 +85,12 @@ export const checkoutFormAction = async (formData: FormData): Promise<void | { m
 
   assertSessionLocationAccess(session);
   assertPortalPermission(session, "CREATE_ORDER");
+  assertPortalPermission(session, "VIEW_WHOLESALE_PRICING");
 
   if (formData.get("destinationConfirmation") !== session.locationId) {
     await recordPortalAudit({
       actor: session,
+      includeActorEmail: false,
       action: "SUPPLY_ORDER_ACCEPTED",
       outcome: "DENIED",
       unitId: session.locationId,
@@ -99,6 +106,9 @@ export const checkoutFormAction = async (formData: FormData): Promise<void | { m
     if (cart.length === 0) {
       return { message: "Your cart is empty or its items are no longer available. Return to the cart to review your supplies." };
     }
+    if (cart.some((item) => !item.product.isAvailable)) {
+      return { message: "One or more approved supplies are no longer available for this location. Return to the cart to remove or review those items before placing your order." };
+    }
 
     const items: PortalOrder["items"] = cart.map((item) => ({
       sku: item.product.sku,
@@ -112,8 +122,9 @@ export const checkoutFormAction = async (formData: FormData): Promise<void | { m
     }
 
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    orderId = `BD-${Math.floor(1000 + Math.random() * 9000)}`;
-    const invoiceId = `INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderNonce = randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
+    orderId = `BD-${orderNonce}`;
+    const invoiceId = `INV-${new Date().getFullYear()}-${orderNonce}`;
 
     const newOrder: PortalOrder = {
       id: orderId,
@@ -129,31 +140,31 @@ export const checkoutFormAction = async (formData: FormData): Promise<void | { m
     await defaultPortalStorage.createOrder(newOrder);
     await recordPortalAudit({
       actor: session,
+      includeActorEmail: false,
       action: "SUPPLY_ORDER_ACCEPTED",
       outcome: "SUCCESS",
       unitId: session.locationId,
       resourceType: "portal_order",
       resourceId: newOrder.id,
       metadata: {
-        total: newOrder.total,
         itemCount: items.length,
-        invoiceId: newOrder.invoiceId,
       },
     });
-    await clearPortalCart(session.locationId);
+    await clearPortalCart(session.userId, session.locationId);
     revalidatePath("/portal/orders");
     revalidatePath("/portal");
     revalidatePath("/portal/cart");
     revalidatePath("/portal/checkout");
-  } catch (error) {
+  } catch {
     console.error("Supply order completion failed.");
     await recordPortalAudit({
       actor: session,
+      includeActorEmail: false,
       action: "SUPPLY_ORDER_ACCEPTED",
       outcome: "FAILURE",
       unitId: session.locationId,
       resourceType: "portal_order",
-      metadata: { error: String(error) },
+      metadata: { reason: "ORDER_COMPLETION_FAILED" },
     });
     return { message: "We couldn’t confirm order completion. Check Orders & Shipments before trying again to avoid a duplicate order." };
   }
@@ -166,53 +177,60 @@ export const submitReviewedOrderAction = async (_state: { message: string }, for
   return result ?? { message: "We couldn’t complete the order. Review your cart before trying again." };
 };
 
-export const cancelPortalOrderAction = async (formData: FormData): Promise<void> => {
+export type CancelPortalOrderResult = { status: "success" | "error"; message: string };
+
+export const cancelPortalOrderAction = async (formData: FormData): Promise<CancelPortalOrderResult> => {
   const session = await getPortalSession();
   if (!session) {
-    return;
+    return { status: "error", message: "Your session has expired. Sign in again before requesting cancellation." };
   }
 
-  assertSessionLocationAccess(session);
-  assertPortalPermission(session, "CREATE_ORDER");
+  try {
+    assertSessionLocationAccess(session);
+    assertPortalPermission(session, "REQUEST_ORDER_CANCELLATION");
+  } catch {
+    return { status: "error", message: "You do not have permission to request cancellation for the active unit." };
+  }
 
   const orderId = String(formData.get("orderId") ?? "").trim();
   const reason = String(formData.get("reason") ?? "").trim();
 
   if (!orderId) {
-    return;
+    return { status: "error", message: "The order could not be identified. Reload Orders & Shipments and try again." };
   }
+  if (!reason || reason.length > 500) return { status: "error", message: "Enter a cancellation reason of up to 500 characters." };
 
   try {
-    const order = await defaultPortalStorage.getOrderById(orderId);
+    const order = (await defaultPortalStorage.getOrdersByLocation(session.locationId)).find((item) => item.id === orderId) || null;
     if (!order) {
       await recordPortalAudit({
         actor: session,
-        action: "ORDER_CANCELLED",
+        action: "ORDER_CANCELLATION_REQUESTED",
         outcome: "FAILURE",
         resourceType: "portal_order",
         resourceId: orderId,
         metadata: { reason: "ORDER_NOT_FOUND" },
       });
-      return;
+      return { status: "error", message: "This order is not available for the active unit." };
     }
 
     if (order.locationId !== session.locationId && !session.managedLocationIds.includes(order.locationId)) {
       await recordPortalAudit({
         actor: session,
-        action: "ORDER_CANCELLED",
+        action: "ORDER_CANCELLATION_REQUESTED",
         outcome: "DENIED",
         unitId: order.locationId,
         resourceType: "portal_order",
         resourceId: orderId,
         metadata: { reason: "LOCATION_MISMATCH" },
       });
-      return;
+      return { status: "error", message: "The active unit changed. Reload the order before requesting cancellation." };
     }
 
-    if (!canTransitionOrderStatus(order.status, "CANCELLED")) {
+    if (!canTransitionOrderStatus(order.status, "CANCELLATION_REQUESTED")) {
       await recordPortalAudit({
         actor: session,
-        action: "ORDER_CANCELLED",
+        action: "ORDER_CANCELLATION_REQUESTED",
         outcome: "DENIED",
         unitId: order.locationId,
         resourceType: "portal_order",
@@ -222,57 +240,63 @@ export const cancelPortalOrderAction = async (formData: FormData): Promise<void>
           reason: "INVALID_STATUS_TRANSITION",
         },
       });
-      return;
+      return { status: "error", message: "This order can no longer accept a cancellation request." };
     }
 
-    await defaultPortalStorage.cancelOrder(orderId, reason);
+    await defaultPortalStorage.cancelOrder(orderId, reason, order.locationId);
     await recordPortalAudit({
       actor: session,
-      action: "ORDER_CANCELLED",
+      action: "ORDER_CANCELLATION_REQUESTED",
       outcome: "SUCCESS",
       unitId: order.locationId,
       resourceType: "portal_order",
       resourceId: orderId,
       metadata: {
         previousStatus: order.status,
-        cancellationReason: reason || "Operator cancellation requested",
+        reasonProvided: true,
+        reasonLength: reason.length,
+        outcomePending: true,
       },
     });
 
     revalidatePath("/portal/orders");
     revalidatePath("/portal");
-    return;
+    return { status: "success", message: `The fulfillment owner will review the cancellation request for order ${order.id}. The order is not cancelled until an outcome is recorded.` };
   } catch (error) {
     console.error("Order cancellation error:", error);
     await recordPortalAudit({
       actor: session,
-      action: "ORDER_CANCELLED",
+      action: "ORDER_CANCELLATION_REQUESTED",
       outcome: "FAILURE",
       unitId: session.locationId,
       resourceType: "portal_order",
       resourceId: orderId,
       metadata: { error: String(error) },
     });
-    return;
+    return { status: "error", message: "The cancellation request was not recorded. Check your connection and try again." };
   }
 };
 
-export const acknowledgeBulletinAction = async (formData: FormData): Promise<void> => {
+export const acknowledgeBulletinAction = async (formData: FormData): Promise<{ status: "success" | "error"; acknowledgedAt?: string; message: string }> => {
   const session = await getPortalSession();
   if (!session) {
-    return;
+    return { status: "error", message: "Your session has expired. Sign in again before acknowledging this update." };
   }
 
   assertSessionLocationAccess(session);
-  assertPortalPermission(session, "ACCESS_WORKSPACE");
+  assertPortalPermission(session, "ACKNOWLEDGE_BRAND_STANDARDS");
 
   const bulletinId = String(formData.get("bulletinId") ?? "").trim();
   if (!bulletinId) {
-    return;
+    return { status: "error", message: "This operations update could not be identified." };
   }
 
   try {
-    await defaultPortalStorage.acknowledgeBulletin(bulletinId, session.userId);
+    const bulletin = (await defaultPortalStorage.getBulletinsForSession(session)).find((candidate) => candidate.id === bulletinId);
+    if (!bulletin || (!isBulletinActionOutstanding(bulletin) && !bulletin.currentUserState?.acknowledgedAt)) {
+      return { status: "error", message: "This update is no longer available for acknowledgement." };
+    }
+    const acknowledgedAt = bulletin.currentUserState?.acknowledgedAt || await defaultPortalStorage.acknowledgeBulletin(bulletinId, session.userId);
     await recordPortalAudit({
       actor: session,
       action: "BULLETIN_ACKNOWLEDGED",
@@ -282,9 +306,9 @@ export const acknowledgeBulletinAction = async (formData: FormData): Promise<voi
       resourceId: bulletinId,
     });
 
-    // Revalidate resources page; dashboard maintains optimistic local state without full reload
+    revalidatePath("/portal");
     revalidatePath("/portal/resources");
-    return;
+    return { status: "success", acknowledgedAt, message: "Operations update acknowledged." };
   } catch (error) {
     console.error("Bulletin acknowledgement error:", error);
     await recordPortalAudit({
@@ -296,262 +320,57 @@ export const acknowledgeBulletinAction = async (formData: FormData): Promise<voi
       resourceId: bulletinId,
       metadata: { error: String(error) },
     });
-    return;
+    return { status: "error", message: "The acknowledgement could not be recorded. Try again." };
   }
 };
 
-export const updateSupportCaseStatusAction = async (
-  caseId: string,
-  newStatus: "Open" | "In Review" | "Resolved",
-): Promise<void> => {
+// Every operator update uses the same append-only conversation as Corporate Support.
+const operatorSupportCommand = async (formData: FormData, kind: SupportCommandKind): Promise<{ status: "success" | "error"; message: string }> => {
   const session = await getPortalSession();
-  if (!session) {
-    redirect("/franchise/login");
-  }
-
+  if (!session) return { status: "error", message: "Your session has expired. Please log in." };
   assertSessionLocationAccess(session);
   assertPortalPermission(session, "CREATE_SUPPORT");
-
-  // Prevent cross-unit IDOR: verify ticket belongs to active session location
-  const ticket = await defaultPortalStorage.getSupportCaseById(caseId, session.locationId);
-  if (!ticket || ticket.locationId !== session.locationId) {
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "DENIED",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { reason: "IDOR_CROSS_UNIT_ATTEMPT", attemptedStatus: newStatus },
-    });
-    throw new Error("Ticket not found or unauthorized for this unit.");
-  }
-
+  const caseId = String(formData.get("caseId") || "").trim();
+  const unitId = String(formData.get("locationId") || "");
+  if (unitId !== session.locationId) return { status: "error", message: "Your working unit changed. Reload the ticket before submitting." };
+  const message = String(formData.get(kind === "RESOLVE" ? "note" : kind === "REOPEN" ? "reason" : "message") || "").trim();
+  const expectedVersionText = formData.get("expectedVersion");
+  const expectedVersion = typeof expectedVersionText === "string" && /^\d+$/.test(expectedVersionText) ? Number(expectedVersionText) : NaN;
+  const commandId = String(formData.get("commandId") || "");
   try {
-    await defaultPortalStorage.updateSupportCaseStatus(caseId, newStatus, session.locationId);
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "SUCCESS",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { newStatus },
-    });
+    const ticket = await defaultPortalStorage.getSupportCaseById(caseId, session.locationId);
+    if (!ticket || ticket.locationId !== session.locationId) throw new Error("Ticket not found for this unit.");
+    if (defaultPortalStorage instanceof FirestorePortalStorage && firebaseDb) {
+      await new FirestoreSupportRepository(firebaseDb).execute({ commandId, unitId, caseId, expectedVersion, kind, message: message || (kind === "RESOLVE" ? "Resolved by the operator." : "") }, {
+        userId: session.userId, email: session.email, displayName: session.displayName, corporate: false,
+      });
+    } else {
+      // Retain the explicitly selected legacy development adapter; never fall back after a live failure.
+      if (!Number.isSafeInteger(expectedVersion) || expectedVersion !== (ticket.version ?? 0)) throw new Error("This ticket changed. Reload before updating.");
+      if (kind === "REPLY") {
+        if (!message || message.length > 10000 || ticket.status === "Resolved") throw new Error("Enter a valid reply on an open ticket.");
+        await defaultPortalStorage.replySupportCase(caseId, unitId, { authorEmail: session.email, authorName: session.displayName || session.email, authorRole: "OPERATOR", message });
+      } else if (kind === "RESOLVE") await defaultPortalStorage.closeSupportCase(caseId, unitId, message);
+      else if (kind === "REOPEN") {
+        if (!message || ticket.status !== "Resolved") throw new Error("Enter a reason to reopen a resolved ticket.");
+        await defaultPortalStorage.reopenSupportCase(caseId, unitId, message);
+      }
+    }
     revalidatePath("/portal/support");
     revalidatePath("/portal");
+    revalidatePath("/corporate/support");
+    return { status: "success", message: kind === "RESOLVE" ? "Support ticket resolved." : kind === "REOPEN" ? "Support ticket reopened." : "Reply recorded in Operations Support." };
   } catch (error) {
-    console.error("Support case status update error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "FAILURE",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { error: String(error) },
-    });
-    throw error;
+    return { status: "error", message: error instanceof Error ? error.message : "The update was not confirmed. Reload the ticket before trying again." };
   }
 };
 
-export const replySupportCaseAction = async (
-  formData: FormData,
-): Promise<{ status: "success" | "error"; message: string }> => {
-  const session = await getPortalSession();
-  if (!session) {
-    return { status: "error", message: "Your session has expired. Please log in." };
-  }
-
-  assertSessionLocationAccess(session);
-  assertPortalPermission(session, "CREATE_SUPPORT");
-
-  const caseId = (formData.get("caseId") as string)?.trim();
-  const message = (formData.get("message") as string)?.trim();
-
-  if (!caseId || !message) {
-    return { status: "error", message: "Please provide a valid reply message." };
-  }
-
-  // Enforce strict multi-tenant unit isolation (prevent IDOR)
-  const ticket = await defaultPortalStorage.getSupportCaseById(caseId, session.locationId);
-  if (!ticket || ticket.locationId !== session.locationId) {
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "DENIED",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { reason: "IDOR_CROSS_UNIT_REPLY_ATTEMPT" },
-    });
-    return { status: "error", message: "Ticket not found or unauthorized for this unit." };
-  }
-
-  try {
-    await defaultPortalStorage.replySupportCase(caseId, session.locationId, {
-      authorEmail: session.email,
-      authorRole: "OPERATOR",
-      authorName: session.displayName || "Store Operator",
-      message,
-    });
-
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "SUCCESS",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { action: "REPLY", messageLength: message.length },
-    });
-
-    revalidatePath("/portal/support");
-    revalidatePath("/portal");
-    return { status: "success", message: "Reply posted to Operations Support." };
-  } catch (error) {
-    console.error("Support case reply error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "FAILURE",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { error: String(error) },
-    });
-    return { status: "error", message: "Could not post reply. Please try again." };
-  }
+export const replySupportCaseAction = async (formData: FormData) => operatorSupportCommand(formData, "REPLY");
+export const closeSupportCaseAction = async (formData: FormData) => operatorSupportCommand(formData, "RESOLVE");
+export const reopenSupportCaseAction = async (formData: FormData) => operatorSupportCommand(formData, "REOPEN");
+export const updateSupportCaseStatusAction = async (_caseId: string, _newStatus: "Open" | "In Review" | "Resolved"): Promise<void> => {
+  throw new Error("Use the ticket's versioned resolve or reopen action.");
 };
-
-export const closeSupportCaseAction = async (
-  formData: FormData,
-): Promise<{ status: "success" | "error"; message: string }> => {
-  const session = await getPortalSession();
-  if (!session) {
-    return { status: "error", message: "Your session has expired. Please log in." };
-  }
-
-  assertSessionLocationAccess(session);
-  assertPortalPermission(session, "CREATE_SUPPORT");
-
-  const caseId = (formData.get("caseId") as string)?.trim();
-  const note = (formData.get("note") as string)?.trim();
-
-  if (!caseId) {
-    return { status: "error", message: "Invalid ticket reference." };
-  }
-
-  // Enforce strict multi-tenant unit isolation (prevent IDOR)
-  const ticket = await defaultPortalStorage.getSupportCaseById(caseId, session.locationId);
-  if (!ticket || ticket.locationId !== session.locationId) {
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "DENIED",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { reason: "IDOR_CROSS_UNIT_CLOSE_ATTEMPT" },
-    });
-    return { status: "error", message: "Ticket not found or unauthorized for this unit." };
-  }
-
-  try {
-    await defaultPortalStorage.closeSupportCase(caseId, session.locationId, note);
-
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "SUCCESS",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { action: "CLOSE", note: note || "Resolved by operator" },
-    });
-
-    revalidatePath("/portal/support");
-    revalidatePath("/portal");
-    return { status: "success", message: "Support ticket marked as resolved." };
-  } catch (error) {
-    console.error("Support case close error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "FAILURE",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { error: String(error) },
-    });
-    return { status: "error", message: "Could not resolve ticket. Please try again." };
-  }
-};
-
-export const reopenSupportCaseAction = async (
-  formData: FormData,
-): Promise<{ status: "success" | "error"; message: string }> => {
-  const session = await getPortalSession();
-  if (!session) {
-    return { status: "error", message: "Your session has expired. Please log in." };
-  }
-
-  assertSessionLocationAccess(session);
-  assertPortalPermission(session, "CREATE_SUPPORT");
-
-  const caseId = (formData.get("caseId") as string)?.trim();
-  const reason = (formData.get("reason") as string)?.trim();
-
-  if (!caseId || !reason) {
-    return { status: "error", message: "Please provide a reason for reopening this ticket." };
-  }
-
-  // Enforce strict multi-tenant unit isolation (prevent IDOR)
-  const ticket = await defaultPortalStorage.getSupportCaseById(caseId, session.locationId);
-  if (!ticket || ticket.locationId !== session.locationId) {
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "DENIED",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { reason: "IDOR_CROSS_UNIT_REOPEN_ATTEMPT" },
-    });
-    return { status: "error", message: "Ticket not found or unauthorized for this unit." };
-  }
-
-  try {
-    await defaultPortalStorage.reopenSupportCase(caseId, session.locationId, reason);
-
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "SUCCESS",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { action: "REOPEN", reason },
-    });
-
-    revalidatePath("/portal/support");
-    revalidatePath("/portal");
-    return { status: "success", message: "Support ticket reopened." };
-  } catch (error) {
-    console.error("Support case reopen error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "SUPPORT_TICKET_UPDATED",
-      outcome: "FAILURE",
-      unitId: session.locationId,
-      resourceType: "portal_support_case",
-      resourceId: caseId,
-      metadata: { error: String(error) },
-    });
-    return { status: "error", message: "Could not reopen ticket. Please try again." };
-  }
-};
-
 export const updateOperatorPermissionsAction = async (formData: FormData): Promise<UpdateOperatorPermissionsResult> => {
   const session = await getPortalSession();
   if (!session) {
@@ -560,9 +379,6 @@ export const updateOperatorPermissionsAction = async (formData: FormData): Promi
 
   const targetUserId = String(formData.get("targetUserId") ?? "").trim();
   const targetRole = String(formData.get("role") ?? "").trim();
-  const managedUnitsRaw = String(formData.get("managedLocationIds") ?? "").trim();
-  const managedUnits = managedUnitsRaw ? managedUnitsRaw.split(",").map((s) => s.trim()) : [];
-
   if (session.role !== "admin") {
     await recordPortalAudit({
       actor: session,
@@ -579,33 +395,10 @@ export const updateOperatorPermissionsAction = async (formData: FormData): Promi
     return { status: "error", message: "Invalid target user or role specified." };
   }
 
-  try {
-    await recordPortalAudit({
-      actor: session,
-      action: "ROLE_PERMISSION_CHANGED",
-      outcome: "SUCCESS",
-      resourceType: "portal_operator",
-      resourceId: targetUserId,
-      metadata: {
-        newRole: targetRole,
-        managedUnitIds: managedUnits,
-      },
-    });
-
-    revalidatePath("/portal/account");
-    return { status: "success", message: `Updated operator permissions for ${targetUserId}.` };
-  } catch (error) {
-    console.error("Operator permissions update error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "ROLE_PERMISSION_CHANGED",
-      outcome: "FAILURE",
-      resourceType: "portal_operator",
-      resourceId: targetUserId,
-      metadata: { error: String(error) },
-    });
-    return { status: "error", message: "Failed to update operator permissions." };
-  }
+  return {
+    status: "error",
+    message: "Operator permission changes are not available from the legacy portal action. Use the reviewed corporate access process; no access was changed.",
+  };
 };
 
 export const updateOperatorAccountAction = async (formData: FormData): Promise<UpdateAccountResult> => {
@@ -617,34 +410,11 @@ export const updateOperatorAccountAction = async (formData: FormData): Promise<U
   assertSessionLocationAccess(session);
   assertPortalPermission(session, "VIEW_ACCOUNT");
 
-  try {
-    await recordPortalAudit({
-      actor: session,
-      action: "ACCOUNT_CHANGED",
-      outcome: "SUCCESS",
-      unitId: session.locationId,
-      resourceType: "portal_account",
-      resourceId: session.userId,
-      metadata: {
-        updatedFields: ["displayName", "phone"].filter((field) => Boolean(formData.get(field))),
-      },
-    });
-
-    revalidatePath("/portal/account");
-    return { status: "success", message: "Account profile updated successfully." };
-  } catch (error) {
-    console.error("Operator account update error:", error);
-    await recordPortalAudit({
-      actor: session,
-      action: "ACCOUNT_CHANGED",
-      outcome: "FAILURE",
-      unitId: session.locationId,
-      resourceType: "portal_account",
-      resourceId: session.userId,
-      metadata: { error: String(error) },
-    });
-    return { status: "error", message: "Failed to update account." };
-  }
+  void formData;
+  return {
+    status: "error",
+    message: "Account corrections are handled through Operations Support until an authoritative profile source is configured. No account data was changed.",
+  };
 };
 
 export const submitSupportRequestAction = async (
@@ -669,6 +439,8 @@ export const submitSupportRequestAction = async (
   const subject = readText("subject");
   const topic = readText("topic");
   const details = readText("details");
+  const operationalImpact = readText("impact");
+  const relatedOrderId = readText("relatedOrderId");
 
   if (!subject || !topic || !details) {
     return {
@@ -677,11 +449,19 @@ export const submitSupportRequestAction = async (
     };
   }
 
-  if (!SUPPORT_TOPICS.some((option) => option.value === topic) || subject.length > SUPPORT_SUBJECT_LIMIT || details.length > SUPPORT_DETAILS_LIMIT) {
+  if (!SUPPORT_TOPICS.some((option) => option.value === topic) || !SUPPORT_IMPACTS.some((option) => option === operationalImpact) || subject.length > SUPPORT_SUBJECT_LIMIT || details.length > SUPPORT_DETAILS_LIMIT) {
     return { status: "error", message: `Choose a listed topic and keep the subject under ${SUPPORT_SUBJECT_LIMIT + 1} characters and description under ${SUPPORT_DETAILS_LIMIT + 1} characters.` };
   }
 
-  const caseId = `SUP-${Math.floor(100000 + Math.random() * 900000)}`;
+  if (relatedOrderId) {
+    if (!/^[A-Za-z0-9-]{1,64}$/.test(relatedOrderId) || !(await defaultPortalStorage.getOrderById(relatedOrderId, locationId))) {
+      return { status: "error", message: "The related order is not available for this unit. Reload the order before requesting support." };
+    }
+  }
+
+  const requestId = readText("requestId");
+  if (!/^[A-Za-z0-9_-]{16,128}$/.test(requestId)) return { status: "error", message: "Reload the support form before submitting this request." };
+  const caseId = `SUP-${createHash("sha256").update(`${session.userId}:${requestId}`).digest("hex").slice(0, 32)}`;
 
   try {
     await defaultPortalStorage.createSupportCase({
@@ -692,6 +472,8 @@ export const submitSupportRequestAction = async (
       subject,
       topic,
       details,
+      operationalImpact: operationalImpact as SupportImpact,
+      ...(relatedOrderId ? { relatedOrderId } : {}),
     });
     await recordPortalAudit({
       actor: session,
@@ -702,6 +484,8 @@ export const submitSupportRequestAction = async (
       resourceId: caseId,
       metadata: {
         topic,
+        operationalImpact,
+        ...(relatedOrderId ? { relatedOrderId } : {}),
       },
     });
 

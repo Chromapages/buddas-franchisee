@@ -202,9 +202,9 @@ test("the client-facing pillar model excludes withheld claims and review metadat
   assert.equal(publicContent.pillars.length, 4);
   assert.deepEqual(contextualLinks, [
     {
-      href: "/franchise/the-opportunity#opportunity-thesis",
-      label: "Review the operator's bakery-and-grill model",
-      destinationId: "opportunity-thesis",
+      href: "/franchise/the-opportunity",
+      label: "Explore the franchise opportunity",
+      destinationId: "franchise-opportunity",
     },
   ]);
   assert.doesNotMatch(
@@ -213,23 +213,26 @@ test("the client-facing pillar model excludes withheld claims and review metadat
   );
 });
 
-test("the proof rail uses a vertical, manually activated tab structure", async () => {
-  const component = await readFile(
-    new URL("../src/components/public/why-buddas-pillars.tsx", import.meta.url),
-    "utf8"
-  );
+test("desktop and mobile pillar presentations keep all four pillars readable", async () => {
+  const [root, desktop, mobile, proof] = await Promise.all([
+    readFile(new URL("../src/components/public/why-buddas-pillars.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/public/why-buddas-pillars-desktop.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/public/why-buddas-pillars-mobile.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/public/why-buddas-pillar-proof.tsx", import.meta.url), "utf8"),
+  ]);
 
-  assert.match(component, /role="tablist"/);
-  assert.match(component, /aria-orientation="vertical"/);
-  assert.match(component, /role="tab"/);
-  assert.match(component, /role="tabpanel"/);
-  assert.match(component, /hidden=!isActive/);
-  assert.match(component, /event\.key === "Enter" \|\| event\.key === " "/);
-  assert.match(component, /section\.publicHeading\.text/);
-  assert.match(component, /pillars\.map/);
-  assert.match(component, /href=\{pillar\.contextualLink\.href\}/);
-  assert.match(component, /why_buddas_pillar_selected/);
-  assert.match(component, /why_buddas_pillar_resource_open/);
-  assert.doesNotMatch(component, /Why Budda's Outperforms Conventional Fast-Casual/);
-  assert.doesNotMatch(component, /\/images\/buddas-hero\.png|SUPPORTING_IMAGE|\$28\+|\+\$14/);
+  assert.match(root, /WhyBuddasPillarsDesktop/);
+  assert.match(root, /WhyBuddasPillarsMobile/);
+  assert.match(root, /useSyncExternalStore/);
+  assert.match(desktop, /<ol className=\{styles\.modelPillars\}>/);
+  assert.match(desktop, /The Budda&apos;s/);
+  assert.match(desktop, /One operating model\. Four connected responsibilities\./);
+  assert.doesNotMatch(desktop, /role="tab"|role="tabpanel"|hidden=!isActive/);
+  assert.match(mobile, /<ol className=\{styles\.mobileList\}>/);
+  assert.match(mobile, /<section id=\{pillar\.id\}/);
+  assert.doesNotMatch(mobile, /role="tab"|role="tabpanel"/);
+  assert.match(proof, /href=\{pillar\.contextualLink\.href\}/);
+  assert.match(proof, /why_buddas_pillar_resource_open/);
+  assert.doesNotMatch(`${root}${desktop}${mobile}${proof}`, /Why Budda's Outperforms Conventional Fast-Casual/);
+  assert.doesNotMatch(`${root}${desktop}${mobile}${proof}`, /\/images\/buddas-hero\.png|SUPPORTING_IMAGE|\$28\+|\+\$14/);
 });

@@ -9,12 +9,16 @@ import {
   createSignedPortalSession,
   getPortalSession,
   invalidatePortalSession,
+  OPERATOR_FIREBASE_SESSION_COOKIE,
+  CORPORATE_FIREBASE_SESSION_COOKIE,
+  LEGACY_FIREBASE_SESSION_COOKIE,
 } from "./session";
 import { canAccessLocation, type PortalSession } from "@/src/lib/auth/auth-provider";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
 import { assertPortalPermission } from "@/src/features/portal/authorization";
 import { recordPortalAudit } from "@/src/features/portal/audit";
-import { firebaseDb } from "@/src/lib/firebase/admin";
+import { firebaseAdminAuth, firebaseDb } from "@/src/lib/firebase/admin";
+import { getPortalCart, rememberPortalCartLocationSwitch } from "@/src/features/portal/cart";
 
 export type LoginActionResult = {
   status: "idle" | "error" | "success";
@@ -137,18 +141,34 @@ export const loginAction = async (
 
 export const logoutAction = async (): Promise<void> => {
   const session = await getPortalSession();
+  const cookieStore = await cookies();
+  const firebaseCookie = cookieStore.get(OPERATOR_FIREBASE_SESSION_COOKIE)?.value || cookieStore.get(CORPORATE_FIREBASE_SESSION_COOKIE)?.value || cookieStore.get(LEGACY_FIREBASE_SESSION_COOKIE)?.value;
+  // Clear local authority first, including corporate-only Firebase sessions.
+  cookieStore.delete(PORTAL_SESSION_COOKIE);
+  cookieStore.delete("sb-access-token");
+  cookieStore.delete(OPERATOR_FIREBASE_SESSION_COOKIE);
+  cookieStore.delete(CORPORATE_FIREBASE_SESSION_COOKIE);
+  cookieStore.delete(LEGACY_FIREBASE_SESSION_COOKIE);
+  let providerRevoked = true;
+  if (firebaseCookie && firebaseAdminAuth) {
+    try {
+      const token = await firebaseAdminAuth.verifySessionCookie(firebaseCookie);
+      await firebaseAdminAuth.revokeRefreshTokens(token.uid);
+    } catch {
+      providerRevoked = false;
+      console.error("Signed out locally; Firebase session revocation needs follow-up.");
+    }
+  }
   if (session) {
     invalidatePortalSession(session.sessionId);
     await recordPortalAudit({
       actor: session,
       action: "OPERATOR_LOGGED_OUT",
-      outcome: "SUCCESS",
+      outcome: providerRevoked ? "SUCCESS" : "FAILURE",
       unitId: session.locationId,
+      metadata: { localSessionCleared: true, providerRevoked },
     });
   }
-  const cookieStore = await cookies();
-  cookieStore.delete(PORTAL_SESSION_COOKIE);
-  cookieStore.delete("sb-access-token");
   redirect("/franchise/login");
 };
 
@@ -158,6 +178,10 @@ export const switchPortalLocationAction = async (formData: FormData): Promise<vo
   assertPortalPermission(session, "ACCESS_WORKSPACE");
 
   const locationId = formData.get("locationId");
+  const requestedReturnTo = formData.get("returnTo");
+  const returnTo = typeof requestedReturnTo === "string" && requestedReturnTo.startsWith("/portal") && !requestedReturnTo.startsWith("//")
+    ? requestedReturnTo
+    : "/portal";
   if (typeof locationId !== "string" || !canAccessLocation(session, locationId)) {
     await recordPortalAudit({
       actor: session,
@@ -166,12 +190,14 @@ export const switchPortalLocationAction = async (formData: FormData): Promise<vo
       unitId: typeof locationId === "string" ? locationId : undefined,
       metadata: { reason: "LOCATION_ACCESS_DENIED" },
     });
-    redirect("/portal/account");
+    redirect(returnTo);
   }
 
   const location = await defaultPortalStorage.getLocationById(locationId);
-  if (!location) redirect("/portal/account");
+  if (!location) redirect(returnTo);
   assertPortalPermission(session, "ACCESS_WORKSPACE", location.id);
+  const existingCartCount = (await getPortalCart(session).catch(() => [])).reduce((total, item) => total + item.quantity, 0);
+  await rememberPortalCartLocationSwitch(session, location.id, existingCartCount);
   await recordPortalAudit({
     actor: session,
     action: "UNIT_CHANGED",
@@ -195,7 +221,8 @@ export const switchPortalLocationAction = async (formData: FormData): Promise<vo
       updatedAt: new Date().toISOString(),
     });
     revalidatePath("/portal", "layout");
-    redirect("/portal");
+    revalidatePath(returnTo);
+    redirect(returnTo);
   }
 
   const token = createSignedPortalSession({
@@ -213,5 +240,7 @@ export const switchPortalLocationAction = async (formData: FormData): Promise<vo
     maxAge: Math.max(0, Math.floor((session.expiresAt - Date.now()) / 1000)),
   });
 
-  redirect("/portal");
+  revalidatePath("/portal", "layout");
+  revalidatePath(returnTo);
+  redirect(returnTo);
 };

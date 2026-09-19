@@ -1,33 +1,43 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { SupportWorkspace } from "@/src/components/portal/support-workspace";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
 import { PortalDataBoundary } from "@/src/components/portal/portal-data-boundary";
 import { loadPortalModule } from "@/src/features/portal/module-loader";
 import { assertPortalPermission } from "@/src/features/portal/authorization";
 import { requirePortalPermission } from "@/src/features/portal/authorization-server";
+import type { SupportViewMode } from "@/src/features/portal/saved-views";
+import { MapPin } from "lucide-react";
+import "./support-page.css";
+
+export const metadata: Metadata = { title: "Operations Support" };
 
 type SupportPageProps = {
-  searchParams: Promise<{ ticketId?: string }>;
+  searchParams: Promise<{ ticketId?: string; view?: string; orderId?: string }>;
 };
 
 export default async function SupportPage({ searchParams }: SupportPageProps) {
   const session = await requirePortalPermission("VIEW_SUPPORT");
   assertPortalPermission(session, "CREATE_SUPPORT");
-  const { ticketId } = await searchParams;
+  const { ticketId, view, orderId } = await searchParams;
+  const initialView: SupportViewMode | undefined = view === "needs-attention" || view === "open" || view === "resolved" || view === "all" ? view : undefined;
+  const initialOrderId = orderId && /^[A-Za-z0-9-]{1,64}$/.test(orderId) ? orderId : undefined;
 
   return (
-    <div className="portal-page-stack">
-      <div className="portal-page-header">
+    <div className="support-page portal-page-stack">
+      <header className="support-page-heading">
         <span className="portal-page-eyebrow">
-          Field Operations Desk
+          Operations Support
         </span>
         <h1 className="portal-page-title">
-          Operations Support &amp; Ticketing
+          Operations Support
         </h1>
-        <p className="text-sm text-bds-cocoa/80">
-          Direct assistance with bakery equipment, supply logistics, or recipe standards for <strong>{session.locationName}</strong>.
-        </p>
-      </div>
+        <p>Get help with bakery equipment, supply logistics, or recipe standards.</p>
+        <div className="support-location" aria-label={`Support requests for ${session.locationName}, unit ${session.locationId}`}>
+          <MapPin aria-hidden="true" />
+          <span><strong>{session.locationName}</strong><small>{session.locationId}</small></span>
+        </div>
+      </header>
 
       <PortalDataBoundary
         title="Operations Support workspace could not be loaded"
@@ -39,6 +49,8 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
             locationId={session.locationId}
             locationName={session.locationName}
             initialTicketId={ticketId}
+            initialView={initialView}
+            initialOrderId={initialOrderId}
           />
         </Suspense>
       </PortalDataBoundary>
@@ -50,10 +62,14 @@ const SupportWorkspaceModule = async ({
   locationId,
   locationName,
   initialTicketId,
+  initialView,
+  initialOrderId,
 }: {
   locationId: string;
   locationName: string;
   initialTicketId?: string;
+  initialView?: SupportViewMode;
+  initialOrderId?: string;
 }) => {
   const supportCases = await loadPortalModule("support-ticket history", () =>
     defaultPortalStorage.getSupportCasesByLocation(locationId),
@@ -64,6 +80,8 @@ const SupportWorkspaceModule = async ({
       locationId={locationId}
       locationName={locationName}
       initialTicketId={initialTicketId}
+      initialView={initialView}
+      initialOrderId={initialOrderId}
     />
   );
 };

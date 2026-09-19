@@ -1,3 +1,5 @@
+import "server-only";
+
 import type {
   PortalBulletin,
   PortalLocation,
@@ -19,7 +21,7 @@ import {
 import { DatabasePortalStorage } from "./db-storage.ts";
 import { FirestorePortalStorage } from "./firestore-storage.ts";
 import { firebaseDb } from "../../lib/firebase/admin.ts";
-import { canUseSeedPortalData } from "./environment.ts";
+import { canUseDevelopmentSeedData, canUseSeedPortalData } from "./environment.ts";
 import { getVisibleBulletins } from "./bulletins.ts";
 import { buildAudienceContext, evaluateAudienceTargeting } from "./targeting.ts";
 import type { PortalSession } from "../../lib/auth/auth-provider.ts";
@@ -29,9 +31,9 @@ export interface IPortalStorage {
   getLocationById(id: string): Promise<PortalLocation | null>;
   getProductsByLocation(locationId: string): Promise<PortalProduct[]>;
   getOrdersByLocation(locationId: string): Promise<PortalOrder[]>;
-  getOrderById(orderId: string): Promise<PortalOrder | null>;
+  getOrderById(orderId: string, locationId: string): Promise<PortalOrder | null>;
   createOrder(order: PortalOrder): Promise<void>;
-  cancelOrder(orderId: string, reason?: string): Promise<PortalOrder | null>;
+  cancelOrder(orderId: string, reason: string | undefined, locationId: string): Promise<PortalOrder | null>;
   getResourcesByLocation(locationId: string, role?: PortalRole): Promise<PortalResource[]>;
   getSupportCasesByLocation(locationId: string): Promise<PortalSupportCase[]>;
   getSupportCaseById(caseId: string, locationId: string): Promise<PortalSupportCase | null>;
@@ -43,6 +45,8 @@ export interface IPortalStorage {
     subject: string;
     topic: string;
     details: string;
+    operationalImpact?: PortalSupportCase["operationalImpact"];
+    relatedOrderId?: string;
   }): Promise<void>;
   updateSupportCaseStatus(
     caseId: string,
@@ -70,7 +74,7 @@ export interface IPortalStorage {
     reason: string,
   ): Promise<PortalSupportCase | null>;
   getBulletinsForSession(session: PortalSession): Promise<PortalBulletin[]>;
-  acknowledgeBulletin(bulletinId: string, userId: string): Promise<void>;
+  acknowledgeBulletin(bulletinId: string, userId: string): Promise<string>;
   explainBulletinForUnit(
     bulletinId: string,
     locationId: string,
@@ -234,8 +238,8 @@ export class InMemoryPortalStorage implements IPortalStorage {
     return this.orders.filter((o) => o.locationId === locationId);
   }
 
-  public async getOrderById(orderId: string): Promise<PortalOrder | null> {
-    const order = this.orders.find((o) => o.id === orderId);
+  public async getOrderById(orderId: string, locationId: string): Promise<PortalOrder | null> {
+    const order = this.orders.find((o) => o.id === orderId && o.locationId === locationId);
     return order ? { ...order } : null;
   }
 
@@ -243,10 +247,10 @@ export class InMemoryPortalStorage implements IPortalStorage {
     this.orders.unshift({ ...order });
   }
 
-  public async cancelOrder(orderId: string, _reason?: string): Promise<PortalOrder | null> {
-    const order = this.orders.find((o) => o.id === orderId);
+  public async cancelOrder(orderId: string, _reason: string | undefined, locationId: string): Promise<PortalOrder | null> {
+    const order = this.orders.find((o) => o.id === orderId && o.locationId === locationId);
     if (!order) return null;
-    order.status = "CANCELLED";
+    order.status = "CANCELLATION_REQUESTED";
     return { ...order };
   }
 
@@ -289,6 +293,8 @@ export class InMemoryPortalStorage implements IPortalStorage {
     subject: string;
     topic: string;
     details: string;
+    operationalImpact?: PortalSupportCase["operationalImpact"];
+    relatedOrderId?: string;
   }): Promise<void> {
     const now = new Date().toISOString();
     const initialMessage: PortalSupportMessage = {
@@ -441,14 +447,17 @@ export class InMemoryPortalStorage implements IPortalStorage {
     return getVisibleBulletins(this.bulletins, context);
   }
 
-  public async acknowledgeBulletin(bulletinId: string, _userId: string): Promise<void> {
+  public async acknowledgeBulletin(bulletinId: string, _userId: string): Promise<string> {
     const bulletin = this.bulletins.find((b) => b.id === bulletinId);
     if (bulletin) {
+      const acknowledgedAt = new Date().toISOString();
       bulletin.currentUserState = {
         ...bulletin.currentUserState,
-        acknowledgedAt: new Date().toISOString(),
+        acknowledgedAt,
       };
+      return acknowledgedAt;
     }
+    throw new Error("Bulletin was not found.");
   }
 
   public async explainBulletinForUnit(
@@ -501,9 +510,9 @@ class UnconfiguredPortalStorage implements IPortalStorage {
   public async getLocationById(): Promise<PortalLocation | null> { return this.fail(); }
   public async getProductsByLocation(): Promise<PortalProduct[]> { return this.fail(); }
   public async getOrdersByLocation(): Promise<PortalOrder[]> { return this.fail(); }
-  public async getOrderById(): Promise<PortalOrder | null> { return this.fail(); }
+  public async getOrderById(_orderId: string, _locationId: string): Promise<PortalOrder | null> { return this.fail(); }
   public async createOrder(): Promise<void> { return this.fail(); }
-  public async cancelOrder(): Promise<PortalOrder | null> { return this.fail(); }
+  public async cancelOrder(_orderId: string, _reason: string | undefined, _locationId: string): Promise<PortalOrder | null> { return this.fail(); }
   public async getResourcesByLocation(): Promise<PortalResource[]> { return this.fail(); }
   public async getSupportCasesByLocation(): Promise<PortalSupportCase[]> { return this.fail(); }
   public async getSupportCaseById(): Promise<PortalSupportCase | null> { return this.fail(); }
@@ -513,19 +522,20 @@ class UnconfiguredPortalStorage implements IPortalStorage {
   public async closeSupportCase(): Promise<PortalSupportCase | null> { return this.fail(); }
   public async reopenSupportCase(): Promise<PortalSupportCase | null> { return this.fail(); }
   public async getBulletinsForSession(): Promise<PortalBulletin[]> { return this.fail(); }
-  public async acknowledgeBulletin(): Promise<void> { return this.fail(); }
+  public async acknowledgeBulletin(): Promise<string> { return this.fail(); }
   public async explainBulletinForUnit(): Promise<TargetingEvaluation | null> { return this.fail(); }
   public async explainResourceForUnit(): Promise<TargetingEvaluation | null> { return this.fail(); }
 }
 
 const hasDatabaseStorage = Boolean(process.env.DATABASE_URL);
+const useDevelopmentSeedStorage = !firebaseDb && process.env.PORTAL_USE_SEED_DATA === "true" && canUseDevelopmentSeedData();
 
-export const defaultPortalStorage: IPortalStorage = hasDatabaseStorage
+export const defaultPortalStorage: IPortalStorage = firebaseDb
+  ? new FirestorePortalStorage()
+  : hasDatabaseStorage
   ? (new DatabasePortalStorage() as unknown as IPortalStorage)
-  : firebaseDb
-    ? new FirestorePortalStorage()
-    : process.env.PORTAL_USE_SEED_DATA === "true" && canUseSeedPortalData()
+  : useDevelopmentSeedStorage || (process.env.PORTAL_USE_SEED_DATA === "true" && canUseSeedPortalData())
     ? new InMemoryPortalStorage()
     : new UnconfiguredPortalStorage();
 
-export const isUsingInMemoryPortalStorage = !hasDatabaseStorage && canUseSeedPortalData();
+export const isUsingInMemoryPortalStorage = !firebaseDb && (useDevelopmentSeedStorage || (!hasDatabaseStorage && canUseSeedPortalData()));

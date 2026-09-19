@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { FaqExplorer, type FaqRetrievalConfig } from "@/src/components/public/faq-explorer";
 import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
+import { StructuredData } from "@/src/components/public/structured-data";
 import { FAQ_RETRIEVAL_CONFIG, getPublicFranchiseFaqItems } from "@/src/features/franchise/faq-content";
 import "./faq.css";
 
@@ -21,7 +22,7 @@ export default function FaqPage() {
   const faqs = getPublicFranchiseFaqItems();
 
   return (
-    <div className="faq-page faq-evaluation-desk">
+    <><StructuredData /><div className="faq-page faq-evaluation-desk">
       <FranchisePageHeader
         sectionClassName="faq-hero"
         containerClassName="faq-frame"
@@ -37,6 +38,6 @@ export default function FaqPage() {
           <FaqExplorer faqs={faqs} retrieval={FAQ_RETRIEVAL} />
         </Suspense>
       </section>
-    </div>
+    </div></>
   );
 }

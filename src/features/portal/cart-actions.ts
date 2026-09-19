@@ -30,6 +30,7 @@ const getSessionOrThrow = async () => {
   if (!session) throw new Error("Your session has expired.");
   assertSessionLocationAccess(session);
   assertPortalPermission(session, "MANAGE_CART");
+  assertPortalPermission(session, "VIEW_WHOLESALE_PRICING");
   return session;
 };
 
@@ -43,15 +44,17 @@ const refreshCartViews = () => {
 const resolveCartCount = (items: Awaited<ReturnType<typeof getPortalCart>>) =>
   items.reduce((total, item) => total + item.quantity, 0);
 
-const resolveAuthoritativeCart = async (locationId: string, sku: string, quantity: number) => {
+const resolveAuthoritativeCart = async (userId: string, locationId: string, sku: string, quantity: number) => {
   if (quantity > 0) {
     const products = await defaultPortalStorage.getProductsByLocation(locationId);
-    if (!products.some((product) => product.sku === sku && product.isAvailable)) {
+    const product = products.find((candidate) => candidate.sku === sku);
+    if (!product || !product.isAvailable || !Number.isFinite(product.price) || product.price < 0) {
       throw new Error("This supply item is no longer available for the active unit.");
     }
+    await setPortalCartQuantity(userId, locationId, sku, quantity, { price: product.price, packSize: product.packSize });
+    return;
   }
-
-  await setPortalCartQuantity(locationId, sku, quantity);
+  await setPortalCartQuantity(userId, locationId, sku, quantity);
 };
 
 export const mutatePortalCartAction = async (input: {
@@ -80,7 +83,7 @@ export const mutatePortalCartAction = async (input: {
     }
 
     const previous = quantity === 0 ? (await getPortalCart(session)).find((item) => item.sku === normalizedSku) : null;
-    await resolveAuthoritativeCart(session.locationId, normalizedSku, quantity);
+    await resolveAuthoritativeCart(session.userId, session.locationId, normalizedSku, quantity);
     if (previous) await rememberPortalCartRemoval(session, { sku: previous.sku, quantity: previous.quantity });
     if (quantity > 0 && (await getPortalCartRemoval(session))?.sku === normalizedSku) await clearPortalCartRemoval();
     const items = await getPortalCart(session);
@@ -97,10 +100,12 @@ export const mutatePortalCartAction = async (input: {
   }
 };
 
-export const addPortalCartItemAction = async (sku: string) => {
+export const addPortalCartItemAction = async (sku: string, expectedLocationId?: string) => {
   const session = await getSessionOrThrow();
+  if (expectedLocationId !== undefined && expectedLocationId !== session.locationId) throw new Error("The working unit changed. Reload the catalog before adding supplies.");
   const cart = await getPortalCart(session);
   const existing = cart.find((item) => item.sku === sku);
+  if ((existing?.quantity ?? 0) >= MAX_CART_QUANTITY) throw new Error("The maximum quantity is already in the cart.");
   const result = await mutatePortalCartAction({
     locationId: session.locationId,
     sku,

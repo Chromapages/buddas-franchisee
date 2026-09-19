@@ -1,5 +1,6 @@
 import type { InquiryValues } from "./schema";
 import type { StoredInquiry } from "./types";
+import { PUBLIC_INITIAL_INQUIRY_CONTENT } from "./public-inquiry-content";
 
 export type EmailMessage = {
   to: string;
@@ -51,7 +52,7 @@ export const generateCandidateConfirmationEmail = (
         <div style="background-color: #FAF6F0; border-left: 4px solid #EFA43A; padding: 16px; margin: 24px 0; border-radius: 4px;">
           <h3 style="margin: 0 0 8px 0; font-size: 14px; text-transform: uppercase; color: #C4522A; letter-spacing: 0.5px;">What Happens Next</h3>
           <p style="margin: 0; line-height: 1.5; font-size: 14px; color: #1C1A17;">
-            If your experience and market align with our current development phase, a member of our team will reach out within 2–3 business days to schedule an introductory discovery conversation.
+            If your experience and market align with our current development phase, a member of our team will reach out ${PUBLIC_INITIAL_INQUIRY_CONTENT.responseTarget.value} to schedule an introductory discovery conversation.
           </p>
         </div>
         <p style="line-height: 1.6; color: #4A4640; font-size: 15px;">
@@ -74,7 +75,7 @@ export const generateCandidateConfirmationEmail = (
 </html>
   `.trim();
 
-  const text = `Aloha ${inquiry.firstName},\n\nThank you for submitting your franchise inquiry for ${inquiry.marketInterest}. Our team is reviewing your background and will follow up within 2–3 business days.\n\nMahalo,\nThe Budda's Franchise Team`;
+  const text = `Aloha ${inquiry.firstName},\n\nThank you for submitting your franchise inquiry for ${inquiry.marketInterest}. Our team is reviewing your background and will follow up ${PUBLIC_INITIAL_INQUIRY_CONTENT.responseTarget.value}.\n\nMahalo,\nThe Budda's Franchise Team`;
 
   return {
     to: inquiry.email,

@@ -6,8 +6,11 @@ type ValidCategory = PortalProduct["category"];
 
 const VALID_CATEGORIES: ValidCategory[] = [
   "Bakery & Dough",
-  "Packaging",
-  "Signage & Uniforms",
+  "Packaging & Paper",
+  "Food Safety & PPE",
+  "Uniforms",
+  "Brand Materials",
+  "Cleaning & Sanitation",
   "Equipment",
 ];
 
@@ -19,7 +22,7 @@ Usage:
 Required Options:
   --sku <sku>               Product SKU code (e.g. ING-GLZ10)
   --name <name>             Product display name (e.g. "Artisan Vanilla Glaze")
-  --category <category>     "Bakery & Dough" | "Packaging" | "Signage & Uniforms" | "Equipment"
+  --category <category>     Canonical supply category
   --price <price>           Wholesale price in USD (e.g. 46.50)
   --packSize <packSize>     Packaging description (e.g. "10 lb pail", "Case of 200")
 
@@ -29,7 +32,9 @@ Optional Options:
   --leadTimeDays <days>     Freight / production lead time in days (default: 3)
   --isAvailable <true|false>Availability flag (default: true)
   --slug <slug>             Custom URL slug (default: auto-generated from name)
-  --imageUrl <path>         Image asset path (e.g. "/images/classic-budda-roll.png")
+  --imageUrl <path>         SKU-verified catalog image path or Firebase Storage URL
+  --imageAlt <text>         Product-identifying image alt text (required with --imageUrl)
+  --imageVerified <true>    Confirms the image is the exact SKU/package (required with --imageUrl)
   --id <id>                 Custom product ID (default: auto-generated from sku/slug)
   --json <json-string>      Full product JSON string
 
@@ -119,7 +124,17 @@ const run = async () => {
   const slug = flags.slug || productPayload.slug || slugify(name);
   const id = flags.id || productPayload.id || `prod-${slugify(sku)}`;
   const description = flags.description || productPayload.description || `${name} (${packSize}) for commercial franchise kitchen operations.`;
-  const imageUrl = flags.imageUrl || productPayload.imageUrl || "/images/classic-budda-roll.png";
+  const candidateImageUrl = flags.imageUrl || productPayload.imageUrl;
+  const candidateImageAlt = flags.imageAlt || productPayload.imageAlt;
+  const candidateImageVerified = flags.imageVerified === "true" || productPayload.imageVerified === true;
+  const verifiedImage = typeof candidateImageUrl === "string"
+    && (candidateImageUrl.startsWith("/images/catalog/") || /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/[A-Za-z0-9._-]+\/o\/catalog-images%2F/.test(candidateImageUrl))
+    && typeof candidateImageAlt === "string"
+    && candidateImageAlt.trim().length > 0
+    && candidateImageVerified;
+  if (candidateImageUrl && !verifiedImage) {
+    throw new Error("Catalog images require an approved catalog path or Firebase Storage URL, identifying --imageAlt text, and --imageVerified true. Omit the image to use the category placeholder.");
+  }
 
   const product: PortalProduct = {
     id,
@@ -132,7 +147,7 @@ const run = async () => {
     isAvailable,
     price,
     slug,
-    imageUrl,
+    ...(verifiedImage ? { imageUrl: candidateImageUrl as string, imageAlt: (candidateImageAlt as string).trim(), imageVerified: true } : {}),
   };
 
   const targetUnits = targetUnitId === "ALL"

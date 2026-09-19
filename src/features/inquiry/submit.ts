@@ -19,13 +19,14 @@ import {
 } from "./email-service";
 import {
   getInquiryProtectionResult,
-  markInquiryRetryable,
   releaseInquiryReservation,
   recordDeliveredInquiry,
   reserveInquiry,
 } from "./protection";
 import type { InquiryActionState } from "./state";
 import type { InquiryAttribution } from "./types";
+import { resolveInquiryRouting } from "./routing";
+import { PUBLIC_INITIAL_INQUIRY_CONTENT } from "./public-inquiry-content";
 
 const WEBHOOK_TIMEOUT_MS = 10_000;
 
@@ -99,7 +100,7 @@ const acceptedState = (): InquiryActionState => {
     status: "success",
     submittedAt: new Date().toISOString(),
     message:
-      "Thank you. Your inquiry has been submitted for internal review. A member of our franchise development team will contact you within 2 business days if there appears to be a potential fit.",
+      `Thank you. Your inquiry has been submitted for internal review. A member of our franchise development team will contact you ${PUBLIC_INITIAL_INQUIRY_CONTENT.responseTarget.value} if there appears to be a potential fit.`,
     fieldErrors: {},
     values: {},
   };
@@ -172,6 +173,7 @@ export const submitFranchiseInquiry = async (
         phone: fieldErrors.phone?.[0],
         cityState: fieldErrors.cityState?.[0],
         marketInterest: fieldErrors.marketInterest?.[0],
+        targetState: fieldErrors.targetState?.[0],
         experience: fieldErrors.experience?.[0],
         investmentRange: fieldErrors.investmentRange?.[0],
         preferredTimeline: fieldErrors.preferredTimeline?.[0],
@@ -179,16 +181,6 @@ export const submitFranchiseInquiry = async (
         brokerId: fieldErrors.brokerId?.[0],
         consent: fieldErrors.consent?.[0],
       },
-    };
-  }
-
-  const deliveryUrl = getInquiryDeliveryUrl();
-  if (!deliveryUrl) {
-    return {
-      status: "error",
-      message: "We cannot accept franchise inquiries right now. Please email buddasbakery@gmail.com.",
-      fieldErrors: {},
-      values,
     };
   }
 
@@ -224,17 +216,52 @@ export const submitFranchiseInquiry = async (
   const inquiryId = protection.inquiryId;
   const classification = classifyInquiry(parsed.data);
   const submissionTimestamp = new Date().toISOString();
+  const routing = await resolveInquiryRouting(parsed.data, submissionTimestamp);
 
-  await defaultInquiryStorage.save({
-    id: inquiryId,
-    submittedAt: submissionTimestamp,
-    classification,
-    deliveryStatus: "PENDING",
-    payload: parsed.data,
-    attempts: 1,
-    brokerId: parsed.data.brokerId,
-    attribution,
-  });
+  try {
+    await defaultInquiryStorage.save({
+      id: inquiryId,
+      submittedAt: submissionTimestamp,
+      classification,
+      deliveryStatus: "PENDING",
+      routing,
+      workflow: {
+        status: "NEW",
+        decision: "PENDING",
+        nextAction: routing.status === "ROUTED" ? "Claim and review inquiry" : "Review routing and assign an owner",
+        updatedAt: submissionTimestamp,
+        history: [{
+          id: `submitted-${inquiryId}`,
+          action: "SUBMITTED",
+          actorId: "candidate",
+          actorName: "Candidate",
+          occurredAt: submissionTimestamp,
+        }],
+      },
+      version: 1,
+      payload: parsed.data,
+      attempts: 1,
+      brokerId: parsed.data.brokerId,
+      attribution,
+    });
+  } catch {
+    releaseInquiryReservation(protection);
+    return {
+      status: "error",
+      message: "We cannot securely accept franchise inquiries right now. Please contact Budda's directly.",
+      fieldErrors: {},
+      values,
+    };
+  }
+
+  // A durable inquiry is accepted even when CRM/webhook delivery is unavailable.
+  // Delivery remains an owned recovery state for the corporate inquiry queue.
+  const deliveryUrl = getInquiryDeliveryUrl();
+  if (!deliveryUrl) {
+    recordDeliveredInquiry(protection);
+    await defaultInquiryStorage.updateStatus(inquiryId, "FAILED", "Inquiry webhook is not configured.");
+    return acceptedState();
+  }
 
   try {
     const response = await fetch(deliveryUrl, {
@@ -259,39 +286,21 @@ export const submitFranchiseInquiry = async (
     });
 
     if (!response.ok) {
-      releaseInquiryReservation(protection);
       await defaultInquiryStorage.updateStatus(
         inquiryId,
         "FAILED",
         `HTTP ${response.status}`,
       );
-      return {
-        status: "error",
-        message: "We could not submit your inquiry. Please try again or contact Budda's directly.",
-        fieldErrors: {},
-        values,
-      };
+      recordDeliveredInquiry(protection);
+      return acceptedState();
     }
   } catch (error) {
     const timedOut = error instanceof DOMException && error.name === "TimeoutError";
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
-    if (timedOut) {
-      markInquiryRetryable(protection);
-      await defaultInquiryStorage.updateStatus(inquiryId, "RETRYING", errorMessage);
-    } else {
-      releaseInquiryReservation(protection);
-      await defaultInquiryStorage.updateStatus(inquiryId, "FAILED", errorMessage);
-    }
-
-    return {
-      status: "error",
-      message: timedOut
-        ? "We could not confirm delivery. Please do not submit again right away; our team is processing your request."
-        : "We could not submit your inquiry. Please try again or contact Budda's directly.",
-      fieldErrors: {},
-      values,
-    };
+    await defaultInquiryStorage.updateStatus(inquiryId, timedOut ? "RETRYING" : "FAILED", errorMessage);
+    recordDeliveredInquiry(protection);
+    return acceptedState();
   }
 
   recordDeliveredInquiry(protection);

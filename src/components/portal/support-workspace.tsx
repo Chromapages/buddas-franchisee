@@ -1,20 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import {
   AlertCircle,
+  ArrowRight,
   Bookmark,
   BookmarkPlus,
   CheckCircle2,
   Clock,
   HelpCircle,
+  Headphones,
+  ChefHat,
+  FileText,
   MessageSquare,
+  Package,
   PlusCircle,
   RotateCcw,
   Search,
   Send,
   User,
+  Wrench,
   X,
   XCircle,
 } from "lucide-react";
@@ -27,7 +33,7 @@ import {
   reopenSupportCaseAction,
   replySupportCaseAction,
 } from "@/src/features/portal/actions";
-import { usePortalContext } from "@/src/features/portal/portal-context";
+import { useRouter } from "next/navigation";
 import {
   areSupportCriteriaEqual,
   deleteCustomView,
@@ -41,6 +47,7 @@ import {
 import { SupportForm } from "./support-form";
 import { TableLine } from "@/src/components/portal/table-line";
 import { formatPortalDate, formatPortalDateTime } from "@/src/features/portal/date-time";
+import { SUPPORT_MESSAGE_LIMIT } from "@/src/features/portal/support-form-options";
 
 type SupportViewFilter = SupportViewMode;
 
@@ -49,6 +56,8 @@ type SupportWorkspaceProps = {
   locationId: string;
   locationName: string;
   initialTicketId?: string;
+  initialView?: SupportViewFilter;
+  initialOrderId?: string;
 };
 
 const ReplySubmitButton = () => {
@@ -98,8 +107,11 @@ export const SupportWorkspace = ({
   locationId,
   locationName,
   initialTicketId,
+  initialView,
+  initialOrderId,
 }: SupportWorkspaceProps) => {
-  const { decrementCount } = usePortalContext();
+  const router = useRouter();
+  const commandIds = useRef(new Map<string, string>());
   const [ticketsList, setTicketsList] = useState<PortalSupportCase[]>(tickets);
 
   useEffect(() => {
@@ -115,13 +127,17 @@ export const SupportWorkspace = ({
 
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(safeInitialId);
   const [filter, setFilter] = useState<SupportViewFilter>(
-    initialTicketId && ticketsList.some((t) => t.id === initialTicketId && t.operatorActionRequired)
-      ? "needs-attention"
-      : "all",
+    initialView ?? (
+      initialTicketId && ticketsList.some((t) => t.id === initialTicketId && t.operatorActionRequired)
+        ? "needs-attention"
+        : "all"
+    ),
   );
   const [query, setQuery] = useState("");
-  const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [isCreatingNew, setIsCreatingNew] = useState(Boolean(initialOrderId));
   const [actionFeedback, setActionFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [replyMessage, setReplyMessage] = useState("");
+  const [reopenReason, setReopenReason] = useState("");
 
   const [customViews, setCustomViews] = useState<SavedSupportView[]>([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -188,6 +204,11 @@ export const SupportWorkspace = ({
     };
 
     const updated = saveCustomView<SavedSupportView>("support", locationId, newView);
+    const persisted = loadCustomViews<SavedSupportView>("support", locationId).some((view) => view.id === newView.id);
+    if (!persisted) {
+      setUndoNotice("This view could not be saved in this browser.");
+      return;
+    }
     setCustomViews(updated);
     handleCloseSaveModal();
   };
@@ -196,6 +217,10 @@ export const SupportWorkspace = ({
     event.stopPropagation();
     const target = customViews.find((v) => v.id === viewId);
     const updated = deleteCustomView<SavedSupportView>("support", locationId, viewId);
+    if (loadCustomViews<SavedSupportView>("support", locationId).some((view) => view.id === viewId)) {
+      setUndoNotice("This view could not be removed from browser storage.");
+      return;
+    }
     setCustomViews(updated);
     if (target) {
       setLastDeletedView(target);
@@ -206,6 +231,10 @@ export const SupportWorkspace = ({
   const handleUndoDeleteView = () => {
     if (!lastDeletedView) return;
     const restored = saveCustomView<SavedSupportView>("support", locationId, lastDeletedView);
+    if (!loadCustomViews<SavedSupportView>("support", locationId).some((view) => view.id === lastDeletedView.id)) {
+      setUndoNotice(`View "${lastDeletedView.name}" could not be restored.`);
+      return;
+    }
     setCustomViews(restored);
     setUndoNotice(`Restored view "${lastDeletedView.name}".`);
     setLastDeletedView(null);
@@ -239,19 +268,27 @@ export const SupportWorkspace = ({
   }, [ticketsList, filter, query]);
 
   const selectedTicket = useMemo(() => {
-    if (!selectedTicketId) return null;
-    return ticketsList.find((t) => t.id === selectedTicketId) || null;
-  }, [ticketsList, selectedTicketId]);
+    if (filteredTickets.length === 0) return null;
+    return filteredTickets.find((ticket) => ticket.id === selectedTicketId) ?? filteredTickets[0];
+  }, [filteredTickets, selectedTicketId]);
 
   const needsAttentionCount = useMemo(
     () => ticketsList.filter((t) => t.operatorActionRequired && t.status !== "Resolved").length,
     [ticketsList],
   );
+  const statusCounts = useMemo(() => ({
+    open: ticketsList.filter((ticket) => ticket.status !== "Resolved").length,
+    waiting: ticketsList.filter((ticket) => ticket.status === "Waiting" || (ticket.operatorActionRequired && ticket.status !== "Resolved")).length,
+    inProgress: ticketsList.filter((ticket) => ticket.status === "In Review").length,
+    resolved: ticketsList.filter((ticket) => ticket.status === "Resolved").length,
+  }), [ticketsList]);
 
   const handleSelectTicket = (ticketId: string) => {
     setSelectedTicketId(ticketId);
     setIsCreatingNew(false);
     setActionFeedback(null);
+    setReplyMessage("");
+    setReopenReason("");
   };
 
   const handleOpenCreateForm = () => {
@@ -263,156 +300,82 @@ export const SupportWorkspace = ({
     setIsCreatingNew(false);
   };
 
-  const handleReplyAction = async (formData: FormData) => {
+  const submitTicketUpdate = async (formData: FormData, action: typeof replySupportCaseAction, kind: string) => {
     setActionFeedback(null);
-    const caseId = (formData.get("caseId") as string)?.trim();
-    const message = (formData.get("message") as string)?.trim();
-
-    if (caseId && message) {
-      setTicketsList((prev) =>
-        prev.map((ticket) => {
-          if (ticket.id !== caseId) return ticket;
-          if (ticket.operatorActionRequired) {
-            decrementCount("actionRequiredSupportCount");
-          }
-          const newMessage: PortalSupportMessage = {
-            id: `msg-opt-${Date.now()}`,
-            caseId,
-            locationId,
-            authorEmail: ticket.userEmail,
-            authorRole: "OPERATOR",
-            authorName: "Store Operator",
-            message,
-            createdAt: new Date().toISOString(),
-          };
-          return {
-            ...ticket,
-            operatorActionRequired: false,
-            updatedAt: new Date().toISOString(),
-            messages: [...(ticket.messages ?? []), newMessage],
-          };
-        }),
-      );
+    const payloadKey = JSON.stringify([kind, ...formData.entries()]);
+    const commandId = commandIds.current.get(payloadKey) || crypto.randomUUID();
+    commandIds.current.set(payloadKey, commandId);
+    formData.set("commandId", commandId);
+    try {
+      const result = await action(formData);
+      setActionFeedback({ type: result.status, message: result.message });
+      if (result.status === "success") {
+        if (kind === "REPLY") setReplyMessage("");
+        if (kind === "REOPEN") setReopenReason("");
+        router.refresh();
+      }
+    } catch {
+      setActionFeedback({ type: "error", message: "This update was not confirmed. Reload the ticket to check its recorded state before retrying." });
     }
-
-    const result = await replySupportCaseAction(formData);
-    setActionFeedback({
-      type: result.status,
-      message: result.message,
-    });
   };
-
-  const handleCloseAction = async (formData: FormData) => {
-    setActionFeedback(null);
-    const caseId = (formData.get("caseId") as string)?.trim();
-
-    if (caseId) {
-      setTicketsList((prev) =>
-        prev.map((ticket) => {
-          if (ticket.id !== caseId) return ticket;
-          if (ticket.operatorActionRequired) {
-            decrementCount("actionRequiredSupportCount");
-          }
-          return {
-            ...ticket,
-            status: "Resolved" as const,
-            operatorActionRequired: false,
-            resolvedAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-        }),
-      );
-    }
-
-    const result = await closeSupportCaseAction(formData);
-    setActionFeedback({
-      type: result.status,
-      message: result.message,
-    });
-  };
-
-  const handleReopenAction = async (formData: FormData) => {
-    setActionFeedback(null);
-    const caseId = (formData.get("caseId") as string)?.trim();
-    const reason = (formData.get("reason") as string)?.trim();
-
-    if (caseId) {
-      setTicketsList((prev) =>
-        prev.map((ticket) => {
-          if (ticket.id !== caseId) return ticket;
-          const reopenMsg: PortalSupportMessage = {
-            id: `msg-opt-${Date.now()}`,
-            caseId,
-            locationId,
-            authorEmail: ticket.userEmail,
-            authorRole: "OPERATOR",
-            authorName: "Store Operator",
-            message: reason ? `[Ticket Reopened] Reason: ${reason}` : "[Ticket Reopened by Operator]",
-            createdAt: new Date().toISOString(),
-          };
-          return {
-            ...ticket,
-            status: "Open" as const,
-            reopenedAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            messages: [...(ticket.messages ?? []), reopenMsg],
-          };
-        }),
-      );
-    }
-
-    const result = await reopenSupportCaseAction(formData);
-    setActionFeedback({
-      type: result.status,
-      message: result.message,
-    });
-  };
-
+  const handleReplyAction = async (formData: FormData) => submitTicketUpdate(formData, replySupportCaseAction, "REPLY");
+  const handleCloseAction = async (formData: FormData) => submitTicketUpdate(formData, closeSupportCaseAction, "RESOLVE");
+  const handleReopenAction = async (formData: FormData) => submitTicketUpdate(formData, reopenSupportCaseAction, "REOPEN");
   return (
-    <div className="space-y-6">
-      {/* Top action header */}
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="support-workspace">
+      <section className="support-primary-actions" aria-label="Operations Support contact options">
+        <div>
           {!isCreatingNew ? <button
             type="button"
             onClick={handleOpenCreateForm}
-            className={`touch-target inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
-              isCreatingNew
-                ? "bg-bds-teal-dark text-white shadow-sm"
-                : "bg-white border border-bds-teal-dark/15 text-bds-teal-dark hover:bg-bds-cream"
-            }`}
+            className="support-open-request"
           >
             <PlusCircle className="h-4 w-4" aria-hidden="true" />
-            Open New Ticket
+            Open support request
           </button> : null}
           {isCreatingNew ? (
             <button
               type="button"
               onClick={handleCloseCreateForm}
-              className="touch-target-inline text-xs font-bold uppercase tracking-wider text-bds-cocoa/70 hover:text-bds-teal-dark"
+              className="support-back-link"
             >
-              &larr; Back to tickets list
+              &larr; Back to support requests
             </button>
           ) : null}
         </div>
+        <a className="support-callout" href="tel:+18017010617">
+          <Headphones aria-hidden="true" />
+          <span><strong>Need immediate assistance?</strong><small>Call Budda&rsquo;s support team</small><b>(801) 701-0617</b></span>
+        </a>
+      </section>
 
-      </div>
+      {!isCreatingNew ? <section className="support-metrics" aria-label="Support request summary">
+        <article><strong>{statusCounts.open}</strong><span><b>Open</b><small>Active requests</small></span></article>
+        <article className="support-metric-waiting"><strong>{statusCounts.waiting}</strong><span><b>Waiting on you</b><small>Needs your response</small></span></article>
+        <article className="support-metric-progress"><strong>{statusCounts.inProgress}</strong><span><b>In progress</b><small>Our team is working on it</small></span></article>
+        <article className="support-metric-resolved"><strong>{statusCounts.resolved}</strong><span><b>Resolved</b><small>Completed requests</small></span></article>
+      </section> : null}
 
       {isCreatingNew ? (
         <div className="support-compose-container">
-          <SupportForm key={locationId} locationId={locationId} locationName={locationName} />
+          <SupportForm key={`${locationId}:${initialOrderId || "new"}`} locationId={locationId} locationName={locationName} initialOrderId={initialOrderId} onBack={handleCloseCreateForm} />
         </div>
-      ) : ticketsList.length === 0 ? (
-        <section role="status" className="portal-empty-state space-y-1">
-          <h2 className="heading-minor text-bds-teal-dark">No support tickets yet</h2>
-          <p className="text-sm text-bds-cocoa/80">Requests opened for this unit will appear here with their conversation history and status.</p>
-        </section>
       ) : (
         <>
+          <section className="support-request-panel" aria-labelledby="support-requests-title">
+            <header className="support-request-panel-heading">
+              <div><h2 id="support-requests-title">Your support requests</h2><p>View and manage all support requests for this unit.</p></div>
+            </header>
+          {ticketsList.length === 0 ? <div role="status" className="support-empty-state">
+            <span aria-hidden="true"><FileText /></span>
+            <h3>No support requests yet</h3>
+            <p>When you contact Operations Support, requests and replies will appear here with their conversation history and status.</p>
+            <button type="button" onClick={handleOpenCreateForm} className="support-empty-action"><PlusCircle aria-hidden="true" />Open your first support request</button>
+          </div> : <>
           {/* Controls Bar */}
           <section
             aria-label="Support ticket controls"
-            className="space-y-4 rounded-2xl border border-bds-teal-dark/15 bg-white p-4 shadow-sm sm:p-5"
+            className="mobile-workspace-panel space-y-4 rounded-2xl border border-bds-teal-dark/15 bg-white p-4 shadow-sm sm:p-5"
           >
             {/* Saved Views / System Presets Rail */}
             <div className="flex flex-col gap-3 pb-3 border-b border-bds-teal-dark/10 sm:flex-row sm:items-center sm:justify-between">
@@ -688,7 +651,7 @@ export const SupportWorkspace = ({
               className="lg:col-span-3"
             >
               {selectedTicket ? (
-                <div className="space-y-6 rounded-2xl border border-bds-teal-dark/15 bg-white p-6 sm:p-8 shadow-sm">
+                <div className="mobile-workspace-panel space-y-6 rounded-2xl border border-bds-teal-dark/15 bg-white p-6 sm:p-8 shadow-sm">
                   {/* Feedback notification */}
                   {actionFeedback ? (
                     <div
@@ -768,6 +731,8 @@ export const SupportWorkspace = ({
                     <p className="text-sm text-bds-cocoa/90 leading-relaxed whitespace-pre-wrap">
                       {selectedTicket.details}
                     </p>
+                    {selectedTicket.operationalImpact ? <p className="text-xs text-bds-cocoa/80"><strong>Operational impact:</strong> {selectedTicket.operationalImpact}</p> : null}
+                    {selectedTicket.relatedOrderId ? <p className="text-xs text-bds-cocoa/80"><strong>Related order:</strong> {selectedTicket.relatedOrderId}</p> : null}
                     <div className="pt-2 text-[11px] text-bds-cocoa/60 flex items-center gap-1.5">
                       <Clock className="h-3 w-3" aria-hidden="true" />
                       <span>Filed on {formatPortalDateTime(selectedTicket.createdAt, locationId)}</span>
@@ -836,6 +801,8 @@ export const SupportWorkspace = ({
                         {/* Reply Form */}
                         <form action={handleReplyAction} className="space-y-3">
                           <input type="hidden" name="caseId" value={selectedTicket.id} />
+                          <input type="hidden" name="locationId" value={locationId} />
+                          <input type="hidden" name="expectedVersion" value={selectedTicket.version ?? 0} />
                           <label htmlFor="reply-message" className="block text-xs font-bold uppercase tracking-wider text-bds-teal-dark">
                             Reply to Operations Support
                           </label>
@@ -844,9 +811,13 @@ export const SupportWorkspace = ({
                             name="message"
                             rows={3}
                             required
+                            maxLength={SUPPORT_MESSAGE_LIMIT}
+                            value={replyMessage}
+                            onChange={(event) => setReplyMessage(event.target.value)}
                             placeholder="Add additional details, answers to questions, or update notes..."
                             className="w-full rounded-2xl border border-bds-teal-dark/20 bg-white p-3.5 text-sm text-bds-teal-dark placeholder:text-bds-cocoa/50 outline-none focus:ring-2 focus:ring-bds-teal"
                           />
+                          <span className="block text-right text-[11px] text-bds-cocoa/60">{replyMessage.length.toLocaleString()} / {SUPPORT_MESSAGE_LIMIT.toLocaleString()} characters</span>
                           <div className="flex items-center justify-between gap-3">
                             <ReplySubmitButton />
                           </div>
@@ -856,6 +827,8 @@ export const SupportWorkspace = ({
                         <div className="border-t border-bds-teal-dark/10 pt-4">
                           <form action={handleCloseAction} className="flex flex-wrap items-center justify-between gap-3">
                             <input type="hidden" name="caseId" value={selectedTicket.id} />
+                          <input type="hidden" name="locationId" value={locationId} />
+                          <input type="hidden" name="expectedVersion" value={selectedTicket.version ?? 0} />
                             <div className="flex-1 min-w-[15rem]">
                               <label htmlFor="close-note" className="sr-only">
                                 Optional resolution note
@@ -891,6 +864,8 @@ export const SupportWorkspace = ({
 
                         <form action={handleReopenAction} className="space-y-2">
                           <input type="hidden" name="caseId" value={selectedTicket.id} />
+                          <input type="hidden" name="locationId" value={locationId} />
+                          <input type="hidden" name="expectedVersion" value={selectedTicket.version ?? 0} />
                           <label htmlFor="reopen-reason" className="block text-xs font-bold uppercase tracking-wider text-bds-teal-dark">
                             Reason for reopening *
                           </label>
@@ -899,9 +874,13 @@ export const SupportWorkspace = ({
                             name="reason"
                             rows={2}
                             required
+                            maxLength={SUPPORT_MESSAGE_LIMIT}
+                            value={reopenReason}
+                            onChange={(event) => setReopenReason(event.target.value)}
                             placeholder="Explain why this issue requires further operations assistance..."
                             className="w-full rounded-xl border border-bds-teal-dark/20 bg-white p-3 text-xs text-bds-teal-dark placeholder:text-bds-cocoa/50 outline-none focus:ring-2 focus:ring-bds-teal"
                           />
+                          <span className="block text-right text-[11px] text-bds-cocoa/60">{reopenReason.length.toLocaleString()} / {SUPPORT_MESSAGE_LIMIT.toLocaleString()} characters</span>
                           <ReopenSubmitButton />
                         </form>
                       </div>
@@ -912,6 +891,18 @@ export const SupportWorkspace = ({
             </section>
             ) : null}
           </div>
+          </>}
+          </section>
+
+          <section className="support-quick-answers" aria-labelledby="support-quick-title">
+            <header><div><h2 id="support-quick-title">Need a quick answer?</h2><p>Browse common topics or visit the full resource library.</p></div><a href="/portal/resources">View all resources <ArrowRight aria-hidden="true" /></a></header>
+            <div>
+              <a className="support-answer-equipment" href="/portal/resources?q=equipment"><Wrench aria-hidden="true" /><span><strong>Equipment Support</strong><small>Troubleshooting, maintenance, and operation guides.</small></span><ArrowRight aria-hidden="true" /></a>
+              <a href="/portal/resources?q=logistics"><Package aria-hidden="true" /><span><strong>Supply &amp; Delivery</strong><small>Orders, shipments, and supply-related questions.</small></span><ArrowRight aria-hidden="true" /></a>
+              <a className="support-answer-recipe" href="/portal/resources?q=baking"><ChefHat aria-hidden="true" /><span><strong>Recipe &amp; Standards</strong><small>Preparation guides, product standards, and SOPs.</small></span><ArrowRight aria-hidden="true" /></a>
+            </div>
+          </section>
+          <footer className="support-page-footer"><HelpCircle aria-hidden="true" /><span>Still need help? <button type="button" onClick={handleOpenCreateForm}>Open a support request</button> or call <a href="tel:+18017010617">(801) 701-0617</a>.</span></footer>
         </>
       )}
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { trackFunnelEvent } from "@/src/lib/analytics";
+import { useEffect, useRef } from "react";
+import { trackFranchiseFunnelEvent, trackFunnelEvent } from "@/src/lib/analytics";
 
 const currentLinkClasses = [
   "font-bold",
@@ -21,7 +21,14 @@ const setClassState = (element: Element, classes: string[], enabled: boolean) =>
  * while normal anchors remain the sole source of fragment/history changes.
  */
 export const OpportunityIndexEnhancer = () => {
+  const hasTrackedOpportunityView = useRef(false);
+
   useEffect(() => {
+    if (!hasTrackedOpportunityView.current) {
+      hasTrackedOpportunityView.current = true;
+      trackFranchiseFunnelEvent("franchise_opportunity_viewed");
+    }
+
     const dossier = document.querySelector<HTMLElement>("[data-opportunity-dossier]");
     const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-opportunity-index-link]")];
     const targetIds = [...new Set(links
@@ -136,7 +143,7 @@ export const OpportunityIndexEnhancer = () => {
 
         const targetRect = target.getBoundingClientRect();
         const obstructors = [...document.querySelectorAll<HTMLElement>(
-          '[role="banner"], [data-sticky-focus-obstructor], .opportunity-dossier-spine, .mobile-sticky-franchise-cta',
+          '[role="banner"], [data-sticky-focus-obstructor], .opportunity-dossier-spine',
         )].filter((element) => {
           const { opacity, position, visibility } = window.getComputedStyle(element);
           const rect = element.getBoundingClientRect();

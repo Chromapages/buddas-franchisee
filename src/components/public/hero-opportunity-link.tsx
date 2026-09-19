@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import Link from "next/link";
-import { trackFunnelEvent } from "@/src/lib/analytics";
+import { trackFranchiseFunnelEvent } from "@/src/lib/analytics";
 
 type HeroOpportunityLinkProps = ComponentProps<typeof Link>;
 
@@ -11,7 +11,7 @@ export const HeroOpportunityLink = ({ onClick, ...props }: HeroOpportunityLinkPr
     {...props}
     onClick={(event) => {
       onClick?.(event);
-      trackFunnelEvent("hero_opportunity_cta_click", { cta_location: "homepage_hero" });
+      trackFranchiseFunnelEvent("franchise_hero_primary_clicked");
     }}
   />
 );

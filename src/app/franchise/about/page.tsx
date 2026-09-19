@@ -1,11 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, Compass, CheckCircle2, ArrowRight } from "lucide-react";
 import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
+import { StructuredData } from "@/src/components/public/structured-data";
+
+export const metadata: Metadata = {
+  title: "About Budda's | Hawaiian Bakery & Grill",
+  description: "Learn about Budda's Hawaiian Bakery & Grill, its family roots, hospitality values, and approach to responsible franchise growth.",
+  alternates: { canonical: "/franchise/about" },
+};
 
 export default function AboutPage() {
   return (
-    <div className="page-rhythm">
+    <><StructuredData /><div className="page-rhythm">
       <FranchisePageHeader
         eyebrow={{
           label: "Our Heritage & Culture",
@@ -118,6 +126,6 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
-    </div>
+    </div></>
   );
 }

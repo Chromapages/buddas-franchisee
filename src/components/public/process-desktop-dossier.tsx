@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { PublicFranchiseProcessContent, PublicProcessStage } from "@/src/features/franchise/process-content";
 import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
 import { ProcessStageDetails } from "@/src/components/public/process-stage-details";
@@ -114,7 +115,9 @@ export const ProcessDesktopDossier = ({
         ))}
       </ol>
 
-      <ProcessDesktopClosingCta content={content.closing} />
+      <Suspense fallback={null}>
+        <ProcessDesktopClosingCta content={content.closing} />
+      </Suspense>
     </div>
     </section>
   </div>

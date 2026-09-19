@@ -67,6 +67,7 @@ export const submitExpansionApplicationAction = async (
 
   try {
     if (!firebaseDb) throw new Error("Firestore is not configured.");
+    const database = firebaseDb;
     const entityId = await ensureFranchiseEntity(session);
     const normalizedTargetMarket = parsed.data.targetMarket.toLocaleLowerCase("en-US").replace(/\s+/g, " ").trim();
     if (await hasOpenMarketRequest(entityId, normalizedTargetMarket)) {
@@ -74,9 +75,9 @@ export const submitExpansionApplicationAction = async (
     }
     const applicationId = `EXP-${randomUUID().slice(0, 8).toUpperCase()}`;
     const now = new Date().toISOString();
-    const applicationRef = firebaseDb.collection("franchiseEntities").doc(entityId).collection("expansionApplications").doc(applicationId);
-    await firebaseDb.runTransaction(async (transaction) => {
-      const operator = await transaction.get(firebaseDb.collection("operators").doc(session.userId));
+    const applicationRef = database.collection("franchiseEntities").doc(entityId).collection("expansionApplications").doc(applicationId);
+    await database.runTransaction(async (transaction) => {
+      const operator = await transaction.get(database.collection("operators").doc(session.userId));
       const operatorData = operator.data() as Record<string, unknown> | undefined;
       if (!operator.exists || operatorData?.franchiseEntityId !== entityId || !Array.isArray(operatorData.managedUnitIds) || !operatorData.managedUnitIds.includes(session.locationId)) throw new Error("Operator scope changed before submission.");
       transaction.create(applicationRef, {

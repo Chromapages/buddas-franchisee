@@ -177,20 +177,11 @@ export const evaluateAudienceTargeting = (
   }
 
   const unitMatches = unmatchedRules.length === 0;
-  const isAdmin = context.role === "admin";
-  const isTargeted = unitMatches || isAdmin;
-
-  if (isAdmin && !unitMatches) {
-    reasons.push(
-      "Bypassed by corporate administrator privilege: administrators retain full visibility across all operational communications.",
-    );
-  }
+  const isTargeted = unitMatches;
 
   const summary = unitMatches
     ? `Targeted match on ${matchedRules.map((r) => r.dimension).join(", ")}.`
-    : isAdmin
-      ? `Visible to administrator (unit requirements not met: ${unmatchedRules.map((r) => r.dimension).join(", ")}).`
-      : `Excluded: ${unmatchedRules.map((r) => r.dimension).join(", ")} requirements not met.`;
+    : `Excluded: ${unmatchedRules.map((r) => r.dimension).join(", ")} requirements not met.`;
 
   return {
     isTargeted,

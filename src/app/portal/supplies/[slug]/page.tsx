@@ -1,10 +1,35 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
-import Link from "next/link";
-import { ArrowLeft, Package, Clock } from "lucide-react";
 import { requirePortalPermission } from "@/src/features/portal/authorization-server";
+import { SupplyDetailDesktop, type SupplyDetailViewProps } from "@/src/components/portal/supply-detail-desktop";
+import { SupplyDetailMobile } from "@/src/components/portal/supply-detail-mobile";
+import { getPortalCart } from "@/src/features/portal/cart";
+import { getSupplyCapabilities } from "@/src/features/portal/authorization";
+import { formatPortalDate } from "@/src/features/portal/date-time";
+import { OperatorEventOnMount } from "@/src/components/portal/operator-analytics";
+import { resolveCatalogProductState } from "@/src/features/portal/catalog-product-state";
+import { canonicalizeSupplyCategory } from "@/src/features/portal/catalog-taxonomy";
+import "./supply-detail.css";
 
-import Image from "next/image";
+const unitsPerPurchase = (packSize: string) => {
+  const match = packSize.match(/(?:pack|case|set|kit|box|dozen)\s+of\s+(\d+)|^(\d+)\s+per\s+(?:case|pack|set|kit|box|dozen)/i);
+  const count = Number(match?.[1] || match?.[2]);
+  return Number.isInteger(count) && count > 1 ? count : null;
+};
+
+const purchaseUnitLabel = (packSize: string) => {
+  const normalized = packSize.toLocaleLowerCase();
+  for (const unit of ["case", "pack", "set", "bag", "pail", "box", "roll", "kit", "dozen", "each"]) {
+    if (normalized.includes(unit)) return unit;
+  }
+  return "purchase unit";
+};
+
+export const metadata: Metadata = {
+  title: "Supply Item",
+  robots: { index: false, follow: false, nocache: true },
+};
 
 export default async function SupplyDetailPage({
   params,
@@ -13,95 +38,60 @@ export default async function SupplyDetailPage({
 }) {
   const { slug } = await params;
   const session = await requirePortalPermission("VIEW_CATALOG");
-  const products = await defaultPortalStorage.getProductsByLocation(session.locationId);
-  const product = products.find((p) => p.slug === slug);
+  const capabilities = getSupplyCapabilities(session);
+  const [products, cart, orders] = await Promise.all([
+    defaultPortalStorage.getProductsByLocation(session.locationId),
+    capabilities.canManageCart ? getPortalCart(session).catch(() => []) : Promise.resolve([]),
+    capabilities.canViewOrderHistory ? defaultPortalStorage.getOrdersByLocation(session.locationId).catch(() => []) : Promise.resolve([]),
+  ]);
+  const sourceProduct = products.find((p) => p.slug === slug);
 
-  if (!product) {
+  if (!sourceProduct) {
     notFound();
   }
+  const product = canonicalizeSupplyCategory(sourceProduct);
+
+  const currentQuantity = cart.find((item) => item.sku === product.sku)?.quantity ?? 0;
+  const productOrders = orders
+    .filter((order) => order.status !== "CANCELLED" && order.status !== "CANCELLATION_REQUESTED" && Number.isFinite(Date.parse(order.createdAt)))
+    .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+    .flatMap((order) => order.items.map((item) => ({ order, item })))
+    .filter(({ item }) => item.sku === product.sku && Number.isInteger(item.quantity) && item.quantity > 0);
+  const latestPurchase = productOrders[0];
+  const productState = resolveCatalogProductState(product);
+  const itemCount = unitsPerPurchase(product.packSize);
+  const purchaseUnit = purchaseUnitLabel(product.packSize);
+  const currency = Number.isFinite(product.price) && product.price >= 0
+    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
+    : null;
+  const leadTime = Number.isFinite(product.leadTimeDays) && product.leadTimeDays >= 0
+    ? `${product.leadTimeDays} business day${product.leadTimeDays === 1 ? "" : "s"}`
+    : "Lead time unavailable";
+  const viewProps: SupplyDetailViewProps = {
+    product,
+    locationId: session.locationId,
+    currentQuantity,
+    canManageCart: capabilities.canManageCart && capabilities.canViewWholesalePricing,
+    itemCount,
+    purchaseUnit,
+    priceLabel: currency?.format(product.price) ?? null,
+    unitPriceLabel: currency && itemCount ? currency.format(product.price / itemCount) : null,
+    leadTime,
+    productCanOrder: productState.canOrder,
+    productStateDescription: productState.description,
+    latestPurchase: latestPurchase ? {
+      dateLabel: formatPortalDate(latestPurchase.order.createdAt, session.locationId),
+      quantity: latestPurchase.item.quantity,
+      orderCount: productOrders.length,
+    } : null,
+  };
 
   return (
-    <div className="workspace-detail portal-page-stack">
-      <Link
-        href="/portal/supplies"
-        className="touch-target-inline gap-2 text-xs font-bold uppercase tracking-wider text-bds-cocoa/80 hover:text-bds-teal-dark transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-        Back to Supplies Catalog
-      </Link>
-
-      <div className="space-y-6 rounded-2xl border border-bds-teal-dark/15 bg-white p-5 shadow-sm sm:p-7">
-        <div className="flex flex-col items-start justify-between gap-4 border-b border-bds-teal-dark/10 pb-5 sm:flex-row sm:items-center">
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-bds-teal-dark">
-              {product.category} &bull; {product.sku}
-            </span>
-            <h1 className="portal-page-title">
-              {product.name}
-            </h1>
-          </div>
-          <div className="text-right">
-            <span className="text-xs text-bds-cocoa/70 block">Wholesale Price</span>
-            <span className="text-2xl font-black font-heading text-bds-teal-dark">
-              ${product.price.toFixed(2)}
-            </span>
-          </div>
-        </div>
-
-        {product.imageUrl ? (
-          <div className="relative h-64 sm:h-80 w-full overflow-hidden rounded-xl bg-bds-cream/60 border border-bds-teal-dark/10">
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1024px) 100vw, 800px"
-            />
-          </div>
-        ) : null}
-
-        <div className="space-y-4">
-          <h2 className="heading-panel text-bds-teal-dark">
-            Product Specification &amp; Operating Role
-          </h2>
-          <p className="text-base text-bds-cocoa/80 leading-relaxed">
-            {product.description}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-bds-cream/50 border border-bds-teal-dark/10 flex items-center gap-3">
-            <Package className="w-5 h-5 text-bds-teal-dark" aria-hidden="true" />
-            <div>
-              <span className="text-xs text-bds-cocoa/70 font-semibold block">
-                Pack / Case Size
-              </span>
-              <span className="text-sm font-bold text-bds-teal-dark">
-                {product.packSize}
-              </span>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-bds-cream/50 border border-bds-teal-dark/10 flex items-center gap-3">
-            <Clock className="w-5 h-5 text-bds-teal-dark" aria-hidden="true" />
-            <div>
-              <span className="text-xs text-bds-cocoa/70 font-semibold block">
-                Logistics Lead Time
-              </span>
-              <span className="text-sm font-bold text-bds-teal-dark">
-                {product.leadTimeDays} Business Days
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-end border-t border-bds-teal-dark/10 pt-4">
-          <Link href="/portal/supplies" className="btn-primary text-xs font-bold uppercase tracking-wider">
-            Order in Catalog Browser
-          </Link>
-        </div>
-      </div>
+    <div className="workspace-detail supply-detail-page portal-page-stack">
+      <OperatorEventOnMount event="operator_supply_product_opened" properties={{ route: "/portal/supplies", location_scope: "active_unit", category: product.category, sku: product.sku, availability_state: productState.code, lead_time_bucket: product.leadTimeDays <= 3 ? "up_to_3_days" : "4_plus_days", purchase_path: latestPurchase ? "repeat" : "discovery" }} />
+      <h1 id="supply-detail-title" className="sr-only">{product.name}</h1>
+      <SupplyDetailDesktop {...viewProps} />
+      <SupplyDetailMobile {...viewProps} />
     </div>
   );
 }

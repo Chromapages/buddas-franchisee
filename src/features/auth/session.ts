@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { cache } from "react";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { PortalSession } from "@/src/lib/auth/auth-provider";
 import {
@@ -9,7 +10,9 @@ import { firebaseAdminAuth, firebaseDb, isFirebaseAdminConfigured } from "@/src/
 
 export const PORTAL_SESSION_COOKIE = "buddas_portal_session";
 export const SUPABASE_ACCESS_TOKEN_COOKIE = "sb-access-token";
-export const FIREBASE_SESSION_COOKIE = "buddas_firebase_session";
+export const OPERATOR_FIREBASE_SESSION_COOKIE = "buddas_operator_session";
+export const CORPORATE_FIREBASE_SESSION_COOKIE = "buddas_corporate_session";
+export const LEGACY_FIREBASE_SESSION_COOKIE = "buddas_firebase_session";
 const revokedSessionIds = new Set<string>();
 
 export const invalidatePortalSession = (sessionId: string) => {
@@ -82,16 +85,36 @@ export const verifySignedPortalSession = (
   }
 };
 
-export const getPortalSession = async (): Promise<PortalSession | null> => {
+export const getPortalSession = cache(async (): Promise<PortalSession | null> => {
   const cookieStore = await cookies();
-  const firebaseCookie = cookieStore.get(FIREBASE_SESSION_COOKIE)?.value;
-  if (firebaseCookie && firebaseAdminAuth && firebaseDb) {
+  const firebaseCookie = cookieStore.get(OPERATOR_FIREBASE_SESSION_COOKIE)?.value;
+  const adminAuth = firebaseAdminAuth;
+  const adminDb = firebaseDb;
+  if (firebaseCookie && adminAuth && adminDb) {
     try {
-      const token = await firebaseAdminAuth.verifySessionCookie(firebaseCookie, true);
-      const operator = await firebaseDb.collection("operators").doc(token.uid).get();
+      const token = await adminAuth.verifySessionCookie(firebaseCookie, true);
+      const [operator, corporate] = await Promise.all([
+        adminDb.collection("operators").doc(token.uid).get(),
+        adminDb.collection("corporateStaff").doc(token.uid).get(),
+      ]);
       const data = operator.data();
-      if (!data || (data.role !== "admin" && data.role !== "franchisee") || !Array.isArray(data.managedUnitIds) || !data.activeUnitId || !data.managedUnitIds.includes(data.activeUnitId)) return null;
-      return { sessionId: token.session_id || token.uid, userId: token.uid, email: token.email || "", displayName: data.displayName, role: data.role, locationId: data.activeUnitId, locationName: data.activeUnitName || data.activeUnitId, managedLocationIds: data.managedUnitIds, expiresAt: (token.exp || 0) * 1000 };
+      const corporateData = corporate.data();
+      const hasActiveCorporateMembership = corporate.exists && corporateData?.status === "ACTIVE" && Array.isArray(corporateData.memberships) && corporateData.memberships.length > 0;
+      if (hasActiveCorporateMembership || !data || data.status === "SUSPENDED" || data.status === "DISABLED" || (data.role !== "admin" && data.role !== "franchisee") || !Array.isArray(data.managedUnitIds) || !data.activeUnitId || !data.managedUnitIds.includes(data.activeUnitId)) return null;
+      const unit = await adminDb.collection("units").doc(data.activeUnitId).get();
+      const unitData = unit.data();
+      const operatingStatus = unitData?.operatingStatus || unitData?.storeStatus;
+      if (operatingStatus === "SUSPENDED" || operatingStatus === "CLOSED") {
+        const alternatives = await Promise.all(data.managedUnitIds.filter((unitId: string) => unitId !== data.activeUnitId).map(async (unitId: string) => {
+          const candidate = await adminDb.collection("units").doc(unitId).get();
+          const status = candidate.data()?.operatingStatus || candidate.data()?.storeStatus;
+          return status !== "SUSPENDED" && status !== "CLOSED" ? { id: unitId, name: candidate.data()?.name || unitId } : null;
+        }));
+        const alternative = alternatives.find((item): item is { id: string; name: string } => Boolean(item));
+        if (!alternative) return null;
+        return { sessionId: token.session_id || token.uid, userId: token.uid, email: token.email || "", displayName: data.displayName, role: data.role, locationId: alternative.id, locationName: alternative.name, managedLocationIds: data.managedUnitIds, expiresAt: (token.exp || 0) * 1000 };
+      }
+      return { sessionId: token.session_id || token.uid, userId: token.uid, email: token.email || "", displayName: data.displayName, role: data.role, locationId: data.activeUnitId, locationName: typeof unitData?.name === "string" && unitData.name.trim() ? unitData.name : data.activeUnitName || data.activeUnitId, managedLocationIds: data.managedUnitIds, expiresAt: (token.exp || 0) * 1000 };
     } catch { return null; }
   }
   if (isFirebaseAdminConfigured()) return null;
@@ -108,4 +131,4 @@ export const getPortalSession = async (): Promise<PortalSession | null> => {
   // 2. Fall back to signed HMAC session cookie
   const token = cookieStore.get(PORTAL_SESSION_COOKIE)?.value;
   return verifySignedPortalSession(token);
-};
+});

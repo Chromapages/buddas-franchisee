@@ -1,28 +1,30 @@
 # Map the Budda’s franchise platform sitemap and user flows
 
 **Document:** Sitemap and user flows  
-**Product:** Budda’s franchise recruitment site and operator portal  
+**Product:** Budda’s franchise marketing website, operator portal, and corporate portal
 **Version:** 1.0  
 **Date:** August 21, 2026  
 **Status:** Proposed interaction baseline  
 **Primary audience:** Product, franchise development, operations, design, engineering, legal, and quality assurance  
 **Source documents:** Discovery Brief v1.0, Scope and Requirements v1.0, Franchise Website PRD v1.0  
 
-This document defines the site hierarchy, navigation, user journeys, system handoffs, state transitions, analytics, and acceptance criteria for franchise lead capture, qualified booking, operator account activation, and portal checkout.
+This document defines the site hierarchy, navigation, user journeys, system handoffs, state transitions, analytics, and acceptance criteria for the franchise marketing website, operator portal, and corporate portal.
 
 ## 1. Executive summary
 
-The platform has two navigation environments:
+The platform has three navigation environments:
 
 1. **Public franchise site:** Educates prospects, establishes fit, and captures qualified interest
 2. **Protected operator portal:** Supports approved operators with supplies, orders, resources, support, and account context
+3. **Protected corporate portal:** Supports staff with inquiry disposition, work queues, order reconciliation, support, requests, publishing, directory, access, integrations, and audit
 
-Four flow rules govern the system:
+Five flow rules govern the system:
 
 - **Lead capture:** Public and available to eligible visitors
 - **Booking:** Private and available only after qualification or human review
 - **Account creation:** Invite-only after operator and location approval
 - **Checkout:** Protected and available only to an authenticated user with an authorized location
+- **Corporate action:** Protected by staff identity and the specific capability required for the record and action
 
 The public site does not collect franchise payments, reserve territories, create portal accounts, or guarantee meetings. The portal does not use public prospect identity or share data across locations.
 
@@ -83,6 +85,10 @@ Every flow defines:
 - Manual recovery
 - Safe user message
 
+### 2.6 Fewest practical steps
+
+Operator journeys minimize avoidable navigation and repeated entry, but no universal click ceiling applies. Each priority workflow has a baseline and target for task completion rate, median and 90th-percentile completion time, interaction count, validation-error rate, abandonment, support escalation, and successful recovery. Additional confirmation is justified when it protects safety, money, authorization, or irreversible state.
+
 ## 3. Sitemap
 
 ### 3.1 ASCII page hierarchy
@@ -115,6 +121,23 @@ Protected operator portal (/portal)
 ├── Support (/portal/support)
 └── Account (/portal/account)
 
+Protected corporate portal (/corporate)
+├── Dashboard and aggregate reporting (/corporate)
+├── Work queue (/corporate/work)
+├── Inquiries (/corporate/inquiries, /corporate/inquiries/[inquiryId])
+├── Orders and reconciliation (/corporate/orders, /corporate/orders/[orderId])
+├── Support (/corporate/support, /corporate/support/[caseId])
+├── Requests (/corporate/requests, /corporate/requests/[requestId])
+├── Catalog (/corporate/catalog)
+├── Resources (/corporate/resources)
+├── Directory (/corporate/directory)
+└── Administration (/corporate/administration)
+    ├── Access
+    ├── Audit
+    ├── Integrations
+    ├── Notifications
+    └── Routing
+
 External or non-indexed service states
 ├── Qualified booking link (scheduling provider or signed redirect)
 ├── Operator invitation (identity provider)
@@ -122,6 +145,39 @@ External or non-indexed service states
 ├── Multi-factor enrollment (identity provider)
 └── Payment page when approved (payment provider)
 ```
+
+### 3.1.1 Authority and reporting boundaries
+
+| Data shown | System of record | Allowed portal behavior |
+| --- | --- | --- |
+| POS sales | Approved POS provider | Read-only reconciled projection with freshness and coverage |
+| Inventory | Approved inventory/ERP provider | Revalidate availability before order acceptance |
+| Supplier fulfillment | Approved supplier system | Show acknowledged state, supplier reference, discrepancies, and exceptions |
+| Payment/invoice | Approved processor or accounting/ERP system | Show verified provider state; never infer success from redirect |
+| Lead disposition | Approved CRM after platform capture | Synchronize disposition while retaining canonical submission/consent evidence |
+| Authentication | Approved identity provider | Use provider identity plus server-enforced platform grants |
+
+Corporate aggregates render only from authoritative or reconciled records. A metric must disclose source, last refresh, coverage, and exception count. Missing, stale, or unreconciled records are excluded or visibly segmented, never silently treated as zero.
+
+### 3.1.2 First closed production flow: operator order to reconciliation
+
+```mermaid
+sequenceDiagram
+    participant O as Operator
+    participant APP as Platform
+    participant S as Supplier system
+    participant C as Corporate
+    O->>APP: Submit order with idempotency key
+    APP->>APP: Revalidate location, catalog, price, and availability; persist pending order
+    APP->>S: Submit purchase order
+    S-->>APP: Acknowledge reference, lines, totals, and status
+    APP->>APP: Store acknowledgment and calculate discrepancies
+    APP-->>O: Show acknowledged order or owned exception
+    APP-->>C: Add reconciliation result or exception to work queue
+    C->>APP: Resolve and audit discrepancy
+```
+
+Acceptance requires one order for retries, supplier acknowledgment provenance, line-and-total comparison, visible partial rejection, owned timeout recovery, and an auditable corporate resolution. Payment reconciliation is a separate state transition and must use the payment/invoice authority.
 
 ### 3.2 Basic Mermaid sitemap
 

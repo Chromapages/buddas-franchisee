@@ -18,7 +18,15 @@ export { primaryNavItems, utilityNavItems, publicNavItems };
 
 const isCurrentPage = (pathname: string, href: string) => pathname === href;
 
-export const Navbar = () => {
+export const Navbar = ({
+  primaryItems = primaryNavItems,
+  utilityItems = utilityNavItems,
+  inquiryAction = { label: "Request Franchise Info", href: "/franchise/contact" },
+}: {
+  primaryItems?: readonly NavItem[];
+  utilityItems?: readonly NavItem[];
+  inquiryAction?: NavItem;
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
@@ -103,7 +111,7 @@ export const Navbar = () => {
                 alt="Budda's Franchising"
                 width={210}
                 height={42}
-                className="public-navbar-logo h-8 w-auto max-w-[112px] object-contain sm:h-9 sm:max-w-[190px] md:h-10 md:max-w-[150px] nav:max-w-[210px]"
+                className="public-navbar-logo h-auto w-[112px] object-contain sm:w-[180px] md:w-[150px] nav:w-[200px]"
                 priority
               />
             </Link>
@@ -111,7 +119,7 @@ export const Navbar = () => {
             {/* 2. Primary Education Curriculum (Center Navigation) */}
             <nav aria-label="Primary Navigation" className="hidden nav:flex items-center">
               <ul role="list" className="flex items-center gap-1 xl:gap-2">
-                {primaryNavItems.map((item) => {
+                {primaryItems.map((item) => {
                   const isActive = isCurrentPage(pathname, item.href);
                   return (
                     <li key={item.href}>
@@ -154,7 +162,7 @@ export const Navbar = () => {
               {/* Secondary Utilities Container */}
               <nav aria-label="Account and Reference" className="hidden nav:block bg-bds-cream/70 p-1 rounded-xl border border-bds-cocoa/10">
                 <ul role="list" className="flex items-center gap-1">
-                  {utilityNavItems.map((item) => {
+                  {utilityItems.map((item) => {
                     if (item.external) {
                       return (
                         <li key={item.href}>
@@ -195,11 +203,11 @@ export const Navbar = () => {
                * The page-level hero owns the primary conversion emphasis. */}
               {isInquiryPage ? (
                 <button type="button" onClick={scrollToInquiryForm} aria-label="Request Franchise Information" aria-current="page" className="text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 rounded-xl bg-bds-action-primary text-bds-action-primary-text font-bold shadow-none transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
-                  Request Franchise Info<span className="sr-only"> (Current Page — scroll to form)</span>
+                  {inquiryAction.label}<span className="sr-only"> (Current Page — scroll to form)</span>
                 </button>
               ) : (
-                <Link href="/franchise/contact" tabIndex={0} aria-label="Request Franchise Information" className="btn-outline text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 shadow-none hover:!bg-bds-cream transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
-                  Request Franchise Info
+                <Link href={inquiryAction.href} tabIndex={0} aria-label={inquiryAction.label} className="btn-outline text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 shadow-none hover:!bg-bds-cream transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  {inquiryAction.label}
                 </Link>
               )}
             </div>
@@ -208,11 +216,11 @@ export const Navbar = () => {
             <div className="public-navbar-mobile-actions absolute right-0 nav:hidden flex shrink-0 items-center gap-2 sm:gap-3">
               {isInquiryPage ? (
                 <button type="button" onClick={() => { trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: "#inquiry-form" }); scrollToInquiryForm(); }} aria-label="Request Franchise Information" aria-current="page" className="public-navbar-mobile-cta touch-target nav:hidden text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap rounded-xl bg-bds-action-primary text-bds-action-primary-text font-bold shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
-                  <span className="hidden sm:inline">Request Franchise Info</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="sr-only"> (Current Page — scroll to form)</span>
+                  <span className="hidden sm:inline">{inquiryAction.label}</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="sr-only"> (Current Page — scroll to form)</span>
                 </button>
               ) : (
-                <Link href="/franchise/contact" onClick={() => trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: "/franchise/contact" })} tabIndex={0} aria-label="Request Franchise Information" className="public-navbar-mobile-cta touch-target nav:hidden btn-outline !border-bds-action-primary/70 text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-none hover:!bg-bds-cream transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
-                  <span className="hidden sm:inline">Request Franchise Info</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="public-navbar-mobile-cta-compact hidden">Info</span>
+                <Link href={inquiryAction.href} onClick={() => trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: inquiryAction.href })} tabIndex={0} aria-label={inquiryAction.label} className="public-navbar-mobile-cta touch-target nav:hidden btn-outline !border-bds-action-primary/70 text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-none hover:!bg-bds-cream transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                  <span className="hidden sm:inline">{inquiryAction.label}</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="public-navbar-mobile-cta-compact hidden">Info</span>
                 </Link>
               )}
 
@@ -245,7 +253,7 @@ export const Navbar = () => {
             {/* Primary Navigation */}
             <nav aria-label="Mobile Primary Navigation" className="nav:hidden">
               <ul role="list" className="flex flex-col space-y-4">
-                {primaryNavItems.map((item) => {
+                {primaryItems.map((item) => {
                   const isActive = isCurrentPage(pathname, item.href);
                   return (
                     <li key={item.href}>
@@ -281,7 +289,7 @@ export const Navbar = () => {
                 Utilities
               </span>
               <ul role="list" className="flex flex-col gap-4">
-                {utilityNavItems.map((item) => {
+                {utilityItems.map((item) => {
                   if (item.external) {
                     return (
                       <li key={item.href}>

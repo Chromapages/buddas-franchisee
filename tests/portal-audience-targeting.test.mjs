@@ -161,7 +161,7 @@ test("evaluateAudienceTargeting: multi-criteria conjunction requires all operati
   assert.equal(slcResult.unmatchedRules.length, 2);
 });
 
-test("evaluateAudienceTargeting: corporate admins bypass unit restrictions but retain audit visibility", () => {
+test("evaluateAudienceTargeting: operator admins remain scoped to the active unit audience", () => {
   const targetedAudience: OperationalAudience = {
     unitIds: ["HNL-014"],
     markets: ["Hawaii"],
@@ -171,8 +171,8 @@ test("evaluateAudienceTargeting: corporate admins bypass unit restrictions but r
   const adminContext = buildAudienceContext(mockLocations["SLC-302"], "admin");
   const adminResult = evaluateAudienceTargeting(targetedAudience, adminContext);
 
-  assert.equal(adminResult.isTargeted, true);
-  assert.ok(adminResult.reasons.some((r) => r.includes("Bypassed by corporate administrator privilege")));
+  assert.equal(adminResult.isTargeted, false);
+  assert.ok(adminResult.summary.includes("Excluded"));
 });
 
 test("formatAudienceBadgeText: generates clear, human-readable operational tags", () => {

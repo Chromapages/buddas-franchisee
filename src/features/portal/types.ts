@@ -1,4 +1,6 @@
 import type { PortalOrderStatus } from "./order-status";
+import type { ResourceDeliveryState, ResourceRequiredAction } from "../resources/types";
+import type { SupportImpact } from "./support-form-options";
 
 export type PortalRole = "admin" | "franchisee";
 
@@ -96,7 +98,7 @@ export type PortalProduct = {
   id: string;
   sku: string;
   name: string;
-  category: "Bakery & Dough" | "Packaging" | "Signage & Uniforms" | "Equipment";
+  category: "Bakery & Dough" | "Packaging & Paper" | "Food Safety & PPE" | "Uniforms" | "Brand Materials" | "Cleaning & Sanitation" | "Equipment" | "Packaging" | "Signage & Uniforms";
   description: string;
   packSize: string;
   leadTimeDays: number;
@@ -104,6 +106,14 @@ export type PortalProduct = {
   price: number;
   slug: string;
   imageUrl?: string;
+  imageAlt?: string;
+  imageVerified?: boolean;
+  supplyDetails?: {
+    ingredient?: { handling?: string; storage?: string };
+    packaging?: { dimensions?: string; material?: string; count?: string; compatibility?: string };
+    uniform?: { size?: string; fit?: string; garmentDetails?: string; sizeChart?: string; approvedPlacement?: string };
+    signage?: { dimensions?: string; application?: string; artworkVersion?: string; installation?: string };
+  };
 };
 
 export type PortalOrderItem = {
@@ -122,6 +132,28 @@ export type PortalOrder = {
   total: number;
   invoiceId: string;
   items: PortalOrderItem[];
+  /** Optional source-system cancellation outcome. Undefined means no such outcome was supplied. */
+  cancellationStatus?: string;
+  procurement?: {
+    version: number;
+    supplier?: {
+      systemOfRecord: string;
+      supplierName: string;
+      acknowledgmentReference: string;
+      acknowledgedAt: string;
+      recordedAt: string;
+      recordedById: string;
+      recordedByName: string;
+      acceptedQuantities: Record<string, number>;
+    };
+    reconciliation?: {
+      status: "MATCHED" | "EXCEPTION";
+      reconciledAt: string;
+      reconciledById: string;
+      reconciledByName: string;
+      note?: string;
+    };
+  };
 };
 
 export type PortalResource = {
@@ -134,6 +166,11 @@ export type PortalResource = {
   downloadUrl: string;
   locationScope?: string[];
   audience?: OperationalAudience;
+  resourcePublicationId?: string;
+  requiredAction?: ResourceRequiredAction;
+  instructions?: string;
+  dueAt?: string;
+  responseState?: ResourceDeliveryState;
 };
 
 export type PortalSupportMessage = {
@@ -141,6 +178,7 @@ export type PortalSupportMessage = {
   caseId: string;
   locationId: string;
   authorEmail: string;
+  authorId?: string;
   authorRole: "OPERATOR" | "SUPPORT" | "ADMIN";
   authorName?: string;
   message: string;
@@ -154,7 +192,10 @@ export type PortalSupportCase = {
   subject: string;
   topic: string;
   details: string;
-  status: "Open" | "In Review" | "Resolved";
+  operationalImpact?: SupportImpact;
+  relatedOrderId?: string;
+  status: "Open" | "In Review" | "Waiting" | "Resolved";
+  version?: number;
   createdAt: string;
   updatedAt: string;
   submittedByUserId?: string;
@@ -165,7 +206,7 @@ export type PortalSupportCase = {
   messages?: PortalSupportMessage[];
 };
 
-export type PortalBulletinPriority = "ACTION_REQUIRED";
+export type PortalBulletinPriority = "IMPORTANT" | "ACTION_REQUIRED";
 
 export type PortalBulletinType = "OPERATIONS" | "SUPPLY" | "BRAND" | "TRAINING";
 

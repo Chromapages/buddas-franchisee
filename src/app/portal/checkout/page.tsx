@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { getPortalCart } from "@/src/features/portal/cart";
 import { redirect } from "next/navigation";
 import { requirePortalPermission } from "@/src/features/portal/authorization-server";
 import { CheckoutForm } from "@/src/components/portal/checkout-form";
 import { getCheckoutFingerprint } from "@/src/features/portal/checkout-review";
+
+export const metadata: Metadata = { title: "Review Supply Order" };
 
 type CheckoutPageProps = {
   searchParams: Promise<{ destination?: string }>;
@@ -28,7 +31,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     <div className="portal-checkout-page portal-page-stack">
       <div className="portal-page-header">
         <span className="portal-page-eyebrow">
-          Wholesale ordering / Checkout
+          Supply ordering / Checkout
         </span>
         <h1 className="portal-page-title">
           Review &amp; place your order

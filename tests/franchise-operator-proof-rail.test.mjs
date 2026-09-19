@@ -3,50 +3,40 @@ import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 
-const railPath = path.resolve("src/components/public/operator-proof-rail.tsx");
-const railContent = fs.readFileSync(railPath, "utf8");
+const read = (file) => fs.readFileSync(path.resolve(file), "utf8");
+const mobile = read("src/components/public/operator-proof-mobile.tsx");
+const desktop = read("src/components/public/operator-proof-desktop.tsx");
+const content = read("src/features/franchise/operator-proof-content.ts");
 
-test("OperatorProofRail utilizes BDS v2.0 design tokens and compact structure", () => {
-  assert.ok(railContent.includes("bg-white"), "Uses white background");
-  assert.ok(railContent.includes("text-bds-teal-dark"), "Uses bds-teal-dark base text");
-  assert.ok(railContent.includes("#1C5F56"), "Uses canonical Dark Teal #1C5F56");
-  assert.ok(railContent.includes("#C47D2B") || railContent.includes("#E9C559"), "Uses Island Gold accent tokens");
-  assert.ok(!railContent.includes("arc-form-02.png"), "Does not include arc-form-02 background graphic");
-  assert.ok(!railContent.includes("ROOTED IN HAWAI"), "Does not include bottom value line");
+test("mobile and desktop proof components keep isolated branded structures", () => {
+  assert.match(mobile, /aria-labelledby="operator-proof-mobile-heading"/);
+  assert.match(desktop, /aria-labelledby="operator-proof-desktop-heading"/);
+  assert.match(mobile, /bg-white text-bds-teal-dark/);
+  assert.match(desktop, /operator-blueprint-reference-layout/);
+  assert.match(desktop, /operator-blueprint-reference-register/);
+  assert.match(desktop, /Why Budda&apos;s\?/);
+  assert.match(desktop, /OperatorProofOpportunityCta/);
+  assert.doesNotMatch(mobile + desktop, /Monstera|h-\[2\.5px\]|left-\[34%\]|group-hover:scale/);
 });
 
-test("OperatorProofRail implements centered introduction hierarchy", () => {
-  assert.ok(railContent.includes("THE BUDDA&apos;S ADVANTAGE") || railContent.includes("THE BUDDA'S ADVANTAGE"), "Contains uppercase eyebrow");
-  assert.ok(railContent.includes("Built for operators. Designed to grow."), "Contains large display headline");
-  assert.ok(railContent.includes("Four connected strengths that make Budda&apos;s a proven opportunity"), "Contains centered support paragraph");
-  assert.ok(railContent.includes("MonsteraIcon"), "Contains decorative botanical motif");
+test("one source supplies the complete five-layer operating blueprint", () => {
+  assert.match(content, /eyebrow: "The Budda's Advantage"/);
+  assert.match(content, /heading: "What makes the Budda's model different\."/);
+  for (const index of ["01", "02", "03", "04", "05"]) assert.match(content, new RegExp(`index: "${index}"`));
+  for (const category of ["Product", "Production system", "Operator system", "Hospitality standard", "Growth gate"]) assert.match(content, new RegExp(`category: "${category}"`));
+  assert.match(content, /The Budda Roll creates distinction\./);
+  assert.match(content, /Preparation standards support repeatability\./);
+  assert.match(content, /Clear standards make execution teachable\./);
+  assert.match(content, /Hospitality is designed into the standard\./);
+  assert.match(content, /Repeatability comes before expansion\./);
+  assert.match(content, /evidenceItems:/);
+  assert.match(content, /href\?: string/);
+  assert.match(content, /linkLabel\?: string/);
 });
 
-test("OperatorProofRail renders 4-part timeline sequence with continuous rail and dots", () => {
-  assert.ok(railContent.includes("01"), "Contains sequence number 01");
-  assert.ok(railContent.includes("02"), "Contains sequence number 02");
-  assert.ok(railContent.includes("03"), "Contains sequence number 03");
-  assert.ok(railContent.includes("04"), "Contains sequence number 04");
-  assert.ok(railContent.includes("THE PRODUCT"), "Pillar 01 category label");
-  assert.ok(railContent.includes("The Roll sets Budda's apart."), "Pillar 01 subheadline");
-  assert.ok(railContent.includes("The Budda Roll gives the menu a signature bakery-led identity."), "Pillar 01 description");
-  assert.ok(railContent.includes("THE SYSTEM"), "Pillar 02 category label");
-  assert.ok(railContent.includes("Consistency teams can follow."), "Pillar 02 subheadline");
-  assert.ok(railContent.includes("Training, ordering, and clear standards support consistent execution."), "Pillar 02 description");
-  assert.ok(railContent.includes("THE EXPERIENCE"), "Pillar 03 category label");
-  assert.ok(railContent.includes("Hospitality teams can learn."), "Pillar 03 subheadline");
-  assert.ok(railContent.includes("Clear service behaviors make generous hospitality teachable."), "Pillar 03 description");
-  assert.ok(railContent.includes("THE GROWTH"), "Pillar 04 category label");
-  assert.ok(railContent.includes("Ready first. Growth second."), "Pillar 04 subheadline");
-  assert.ok(railContent.includes("Expansion follows readiness across the whole operation."), "Pillar 04 description");
-  assert.ok(railContent.includes("We grow when product, people, operations, supply, and demand are ready."), "Pillar 04 description");
-  assert.ok(railContent.includes("h-[2.5px]") || railContent.includes("h-[3px]"), "Continuous horizontal timeline rail line");
-  assert.ok(railContent.includes("rounded-full bg-[#E9C559]"), "Accent dots along timeline");
-});
-
-test("OperatorProofRail uses photographic crop for Pillar 01 and thin-line icons for 02-04", () => {
-  assert.ok(railContent.includes("/roll-icon.svg"), "Pillar 01 uses roll-icon.svg");
-  assert.ok(railContent.includes("SystemStoreIcon"), "Pillar 02 uses system/operations icon");
-  assert.ok(railContent.includes("ExperienceCareIcon"), "Pillar 03 uses hospitality/experience icon");
-  assert.ok(railContent.includes("GrowthChartIcon"), "Pillar 04 uses growth/chart icon");
+test("desktop imagery supports the framework without financial chart language", () => {
+  assert.match(desktop, /buddas-hero-rolls-cover\.png/);
+  assert.doesNotMatch(desktop, /operator-blueprint-operations-media|GrowthChartIcon|Top Quartile|revenue|margin|ROI/i);
+  assert.match(desktop, /UsersRound/);
+  assert.match(desktop, /ChartNoAxesCombined/);
 });

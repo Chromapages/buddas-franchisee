@@ -1,6 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Building2, CreditCard, Download, FileCheck2, ShieldCheck, Store, ArrowRight, Clock, Truck } from "lucide-react";
+import { Building2, CreditCard, Download, FileCheck2, ShieldCheck, Store, ArrowRight, Clock, Truck, User, LockKeyhole, HelpCircle, LayoutDashboard, CheckCircle2 } from "lucide-react";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
 import { logoutAction, switchPortalLocationAction } from "@/src/features/auth/actions";
 import { requirePortalPermission } from "@/src/features/portal/authorization-server";
@@ -12,6 +13,9 @@ import { getBrandSignoffs, getFoodSafetyCredentials } from "@/src/features/porta
 import { FoodSafetyCredentialUpload } from "@/src/components/portal/food-safety-credential-upload";
 import { BrandSignoffForm } from "@/src/components/portal/brand-signoff-form";
 import { isSanityCredentialUploadConfigured } from "@/src/lib/sanity/credential-upload";
+import "./account-page.css";
+
+export const metadata: Metadata = { title: "Account Profile" };
 
 const storeStatusLabel: Record<PortalStoreStatus, string> = {
   ACTIVE: "Active",
@@ -102,20 +106,23 @@ export default async function AccountPage() {
 
   return (
     <div className="account-page portal-page-stack">
-      <div className="portal-page-header">
-        <span className="portal-page-eyebrow">Your workspace account</span>
-        <h1 className="portal-page-title">Account profile</h1>
-        <p className="text-sm text-bds-cocoa/80">Your identity, unit access, and current session.</p>
+      <div className="account-layout">
+      <nav className="account-local-nav" aria-label="Account navigation"><h2>Account navigation</h2><a href="#account-overview" aria-current="page"><User aria-hidden="true" />Overview</a><a href="#account-business"><CreditCard aria-hidden="true" />Business &amp; Billing</a><a href="#account-compliance"><ShieldCheck aria-hidden="true" />Compliance</a><a href="#account-units"><Building2 aria-hidden="true" />Units &amp; Access</a><a href="#account-security"><LockKeyhole aria-hidden="true" />Security</a><Link href="/portal"><LayoutDashboard aria-hidden="true" />Back to Dashboard</Link></nav>
+      <main className="account-overview-main">
+      <div className="portal-page-header" id="account-overview">
+        <span className="portal-page-eyebrow">Account &amp; access</span>
+        <h1 className="portal-page-title">Account &amp; Access</h1>
+        <p className="text-sm text-bds-cocoa/80">Manage your identity, unit access, business records, and security.</p>
       </div>
 
       <article className="account-profile" aria-labelledby="account-identity-title">
         <header className="account-identity">
           <div className="account-avatar" aria-hidden="true">{initials}</div>
           <div className="account-identity-copy"><h2 id="account-identity-title">{identity}</h2><p>{session.email}</p></div>
-          <div className="account-role"><span>Workspace role</span><strong>{roleLabel}</strong></div>
+          <div className="account-role"><span>Workspace role</span><strong>{roleLabel}</strong></div><div className="account-standing"><CheckCircle2 aria-hidden="true" /><span><strong>Your account is in good standing.</strong><small>No action needed.</small></span></div>
         </header>
 
-        <section className="account-corporate" aria-labelledby="account-corporate-title">
+        <section className="account-corporate" id="account-business" aria-labelledby="account-corporate-title">
           <div className="account-section-heading"><Building2 size={20} aria-hidden="true" /><h3 id="account-corporate-title">Corporate &amp; entity verification</h3></div>
           <p className="account-description">Entity records are shown from the authorized account record. Tax IDs are intentionally masked.</p>
           <dl className="account-corporate-data">
@@ -142,7 +149,7 @@ export default async function AccountPage() {
           {financialDocuments.length ? <ul className="account-statement-list">{financialDocuments.map((document) => <li key={document.id}><div><strong>{document.title}</strong><p>{financialDocumentLabel[document.type]}{document.period ? ` · ${document.period}` : ""}{document.referenceId ? ` · Reference ${document.referenceId}` : ""}{document.unitId ? ` · Unit ${document.unitId}` : ""}{document.issuedAt ? ` · Issued ${formatPortalDateTime(document.issuedAt, document.unitId || session.locationId)}` : ""}</p></div><a href={`/portal/account/documents/${encodeURIComponent(document.id)}`} className="account-document-download">Download <Download size={16} aria-hidden="true" /></a></li>)}</ul> : <p className="account-record-note">No authorized statements or invoices are available to download.</p>}
         </section>
 
-        <section className="account-compliance" aria-labelledby="account-credentials-title">
+        <section className="account-compliance" id="account-compliance" aria-labelledby="account-credentials-title">
           <div className="account-section-heading"><ShieldCheck size={20} aria-hidden="true" /><h3 id="account-credentials-title">Food safety &amp; manager credentials</h3></div>
           <p className="account-description">Credentials are tied to the working unit and remain pending until a qualified reviewer verifies their status.</p>
           {credentialUploadConfigured ? <FoodSafetyCredentialUpload unitId={session.locationId} /> : <p className="account-record-note">Credential upload is not configured. Add the Sanity credential-upload settings before operators can submit ServSafe, health-department, or food-handler documents.</p>}
@@ -159,7 +166,7 @@ export default async function AccountPage() {
         </section>
 
         <div className="account-grid">
-          <section className="account-units" aria-labelledby="account-units-title">
+          <section className="account-units" id="account-units" aria-labelledby="account-units-title">
             <div className="account-section-heading"><Store size={20} aria-hidden="true" /><h3 id="account-units-title">Your franchise units</h3></div>
             <p className="account-description">Your account has access to {unitIds.length} franchise unit{unitIds.length === 1 ? "" : "s"}. Orders and support requests use your working unit.</p>
             <ul className="account-unit-list">
@@ -201,6 +208,18 @@ export default async function AccountPage() {
           <div className="account-help-actions"><Link href="/portal/expansion" className="account-support-link">{session.role === "admin" ? "Review growth requests" : "Request another location"} <ArrowRight size={17} aria-hidden="true" /></Link><Link href="/portal/support" className="account-support-link">Contact support <ArrowRight size={17} aria-hidden="true" /></Link></div>
         </footer>
       </article>
+      </main>
+      <aside className="account-context-rail" aria-label="Your account">
+        <header><h2>Your account</h2></header>
+        <section><User aria-hidden="true" /><div><span>Your profile</span><strong>{identity}</strong><small>{session.email}</small></div></section>
+        <section><ShieldCheck aria-hidden="true" /><div><span>Workspace role</span><strong>{roleLabel}</strong><a href="#account-overview">View role details <ArrowRight aria-hidden="true" /></a></div></section>
+        <section><Building2 aria-hidden="true" /><div><span>Unit access</span><strong>{unitIds.length} franchise unit{unitIds.length === 1 ? "" : "s"}</strong><a href="#account-units">View all units <ArrowRight aria-hidden="true" /></a></div></section>
+        <section><Store aria-hidden="true" /><div><span>Working unit</span><strong>{session.locationName} ({session.locationId})</strong><a href="#account-units">Change working unit <ArrowRight aria-hidden="true" /></a></div></section>
+        <section id="account-security"><Clock aria-hidden="true" /><div><span>Current session</span><strong>Signed in</strong><small>{hasExpiry ? <>Expires {formatPortalDateTime(expiry.toISOString(), session.locationId)}</> : "Expiration unavailable"}</small></div></section>
+        <form action={logoutAction}><AccountSignOut /></form>
+        <footer><HelpCircle aria-hidden="true" /><div><strong>Need help?</strong><small>Our support team is here for you.</small><Link href="/portal/support">Contact Support <ArrowRight aria-hidden="true" /></Link></div></footer>
+      </aside>
+      </div>
     </div>
   );
 }

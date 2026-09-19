@@ -10,6 +10,8 @@ import { usePortalContext } from "@/src/features/portal/portal-context";
 export type CartWorkspaceItem = {
   sku: string;
   quantity: number;
+  priceChanged?: boolean;
+  packSizeChanged?: boolean;
   product: {
     sku: string;
     name: string;
@@ -19,6 +21,7 @@ export type CartWorkspaceItem = {
     category?: string;
     description?: string;
     leadTimeDays?: number;
+    isAvailable: boolean;
   };
 };
 type Mutation = { item: CartWorkspaceItem; quantity: number; restoring?: boolean };
@@ -138,6 +141,7 @@ export const CartWorkspace = ({ locationId, locationName, items: initialItems, r
                 const editing = draft?.sku === item.sku;
                 const invalid = editing && !draftValid;
                 const controlsDisabled = Boolean(busy) || (dirty && !editing);
+                const quantityControlsDisabled = controlsDisabled || !item.product.isAvailable;
                 const inputId = "quantity-" + item.sku;
                 const helpId = "quantity-help-" + item.sku;
                 const displayedQuantity = editing ? draftQuantity : item.quantity;
@@ -151,20 +155,21 @@ export const CartWorkspace = ({ locationId, locationName, items: initialItems, r
                       <h3>{item.product.slug ? <Link href={"/portal/supplies/" + item.product.slug}>{item.product.name}</Link> : item.product.name}</h3>
                       {item.product.description ? <p className="cart-description">{item.product.description}</p> : null}
                       <p className="cart-pack">Pack size: <strong>{item.product.packSize}</strong></p>
+                      {item.priceChanged || item.packSizeChanged ? <p className="cart-catalog-change" role="status"><AlertCircle size={15} aria-hidden="true" />{item.priceChanged && item.packSizeChanged ? "Price and pack size changed since this item was added. Review the current details before checkout." : item.priceChanged ? "Price changed since this item was added. Review the current price before checkout." : "Pack size changed since this item was added. Review the current pack before checkout."}</p> : null}
                       <p className="cart-unit-price">{money(item.product.price)} <span>per case</span></p>
                       {typeof item.product.leadTimeDays === "number" ? <p className="cart-lead-time">Lead time: {item.product.leadTimeDays} business day{item.product.leadTimeDays === 1 ? "" : "s"}</p> : null}
                     </div>
                     <div className="cart-quantity">
                       <label className="cart-label" htmlFor={inputId}>Cases for this unit</label>
                       <div className="cart-stepper">
-                        <button type="button" disabled={controlsDisabled || displayedQuantity <= 1 || Boolean(invalid)} aria-label={"Decrease " + item.product.name + " quantity"} onClick={() => void mutate({ item, quantity: Math.max(1, displayedQuantity - 1) })}><Minus size={16} aria-hidden="true" /></button>
-                        <input id={inputId} type="text" inputMode="numeric" pattern="[0-9]*" autoComplete="off" value={editing ? draft.value : item.quantity} readOnly={controlsDisabled} aria-busy={busy === item.sku || undefined} aria-label={"Order quantity for " + item.product.name} aria-invalid={invalid || undefined} aria-describedby={helpId} onFocus={(event) => event.currentTarget.select()} onChange={(event) => { setDraft({ sku: item.sku, value: event.target.value }); setFailure(null); }} onKeyDown={(event) => {
+                        <button type="button" disabled={quantityControlsDisabled || displayedQuantity <= 1 || Boolean(invalid)} aria-label={"Decrease " + item.product.name + " quantity"} onClick={() => void mutate({ item, quantity: Math.max(1, displayedQuantity - 1) })}><Minus size={16} aria-hidden="true" /></button>
+                        <input id={inputId} type="text" inputMode="numeric" pattern="[0-9]*" autoComplete="off" value={editing ? draft.value : item.quantity} readOnly={quantityControlsDisabled} aria-busy={busy === item.sku || undefined} aria-label={"Order quantity for " + item.product.name} aria-invalid={invalid || undefined} aria-describedby={helpId} onFocus={(event) => event.currentTarget.select()} onChange={(event) => { setDraft({ sku: item.sku, value: event.target.value }); setFailure(null); }} onKeyDown={(event) => {
                           if (event.key === "Escape") { setDraft(null); setFailure(null); }
                           if (event.key === "Enter" && editing && draftValid) { event.preventDefault(); void mutate({ item, quantity: draftQuantity }); }
                         }} />
-                        <button type="button" disabled={controlsDisabled || displayedQuantity >= MAX_CART_QUANTITY || Boolean(invalid)} aria-label={"Increase " + item.product.name + " quantity"} onClick={() => void mutate({ item, quantity: Math.min(MAX_CART_QUANTITY, displayedQuantity + 1) })}><Plus size={16} aria-hidden="true" /></button>
+                        <button type="button" disabled={quantityControlsDisabled || displayedQuantity >= MAX_CART_QUANTITY || Boolean(invalid)} aria-label={"Increase " + item.product.name + " quantity"} onClick={() => void mutate({ item, quantity: Math.min(MAX_CART_QUANTITY, displayedQuantity + 1) })}><Plus size={16} aria-hidden="true" /></button>
                       </div>
-                      <p id={helpId} className={invalid ? "cart-field-error" : "cart-quantity-help"}>{invalid ? "Enter 1–" + MAX_CART_QUANTITY + ". Use Remove to delete." : busy === item.sku ? "Saving quantity…" : "Changes save automatically."}</p>
+                      <p id={helpId} className={invalid ? "cart-field-error" : "cart-quantity-help"}>{invalid ? "Enter 1–" + MAX_CART_QUANTITY + ". Use Remove to delete." : !item.product.isAvailable ? "This item is no longer available. Remove it before checkout." : busy === item.sku ? "Saving quantity…" : "Changes save automatically."}</p>
                     </div>
                     <div className="cart-line-total">
                       <p className="cart-label">Line subtotal</p><p className="cart-line-amount">{money(item.product.price * item.quantity)}</p>

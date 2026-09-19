@@ -1,6 +1,6 @@
-# Budda's Franchise Website PRD v1.0
+# Budda's Franchise Platform PRD v1.0
 
-**Product:** Budda's Franchise Recruitment Hub  
+**Product:** Budda's Franchise Marketing Website, Operator Portal, and Corporate Portal
 **Brand:** Budda's Hawaiian Bakery & Grill  
 **Status:** Approved product direction / implementation-ready requirements  
 **Date:** August 21, 2026  
@@ -8,11 +8,25 @@
 **Primary launch mode:** Qualified interest  
 **Future launch mode:** Active franchise offering  
 
-This document governs the first release of Budda's franchise recruitment website. It translates the approved brand strategy, identity system, franchise research, conversion design, and compliance requirements into one product specification.
+This document governs the Budda's franchise digital ecosystem. It translates the approved brand strategy, identity system, franchise research, conversion design, operating workflows, corporate oversight, and compliance requirements into one product specification. Detailed public-site requirements remain the primary Release 1 commitment; protected-product activation is gated below.
 
 ---
 
 # 1. Executive Summary
+
+## 1.0 Product portfolio contract
+
+The ecosystem comprises three products, not three themes of one interface:
+
+| Product | Primary user | Primary outcome | Design priority |
+| --- | --- | --- | --- |
+| Franchise marketing website (`/franchise`) | Prospect | Qualified, durable inquiry | Trust, evidence, comprehension, conversion |
+| Operator portal (`/portal`) | Approved franchisee or manager | Complete recurring operational work | Fewest practical steps, clarity, recoverability |
+| Corporate portal (`/corporate`) | Authorized corporate staff | Govern work, reconcile exceptions, and make decisions from authoritative data | Security, auditability, queues, data quality |
+
+Protected routes use separate navigation, noindex controls, and server-enforced roles/capabilities. Sharing a codebase does not permit shared sessions, data visibility, or analytics assumptions.
+
+The initial closed operational loop is **operator order → supplier acknowledgment → corporate reconciliation**. Aggregate corporate reporting is gated until its inputs are authoritative or reconciled.
 
 ## 1.1 Problem Statement
 
@@ -100,6 +114,21 @@ Targets 4 and 5 are initial product benchmarks, not financial-performance repres
 - The website must support content approval, lead routing, consent evidence, analytics, and future compliance expansion.
 - The experience must work on mobile, keyboard, screen reader, slow network, and reduced-motion settings.
 - No ordinary CMS editor can publish an unapproved regulated claim or enable active-offering mode.
+- Operator priority jobs must be benchmarked by completion rate, completion time, interaction count, error rate, abandonment, and recovery; “fewest practical steps” replaces any absolute three-click requirement.
+- Corporate metrics must identify their system of record, freshness, coverage, and reconciliation exceptions.
+
+### Systems of record
+
+| Domain | Authority |
+| --- | --- |
+| POS sales | Approved POS provider |
+| Inventory | Approved inventory or ERP provider |
+| Suppliers and fulfillment | Approved supplier/fulfillment system |
+| Payments and invoices | Approved processor or accounting/ERP system selected by billing model |
+| CRM pipeline | Approved CRM; the platform remains canonical for original inquiry and consent evidence |
+| Identity | Approved identity provider for credentials/MFA/recovery, combined with server-side platform grants |
+
+The platform stores durable workflow records, references, projections, delivery attempts, acknowledgments, and audit events. It does not overwrite external authority merely because a projection is easier to query.
 
 ### Approved assumptions
 
@@ -881,7 +910,7 @@ As legal counsel, I want only approved franchise claims and disclosures to publi
 ## 2.15 Non-Goals
 
 - consumer ordering, rewards, or account login;
-- franchisee operations portal;
+- ungated production use of operator or corporate portals before identity, tenancy, authority, reconciliation, security, support, and audit gates pass;
 - agreement signing;
 - fee or payment collection;
 - automated franchise award decisions;
@@ -1418,9 +1447,9 @@ Potential work:
 
 **Exit gate:** Leadership approves franchise readiness, counsel approves the state/FDD matrix, and Mode B tests pass.
 
-### Phase 3 — Franchisee Platform
+### Phase 3 — Protected operator and corporate products
 
-Not part of this PRD. Onboarding, training, documents, operations, reporting, local marketing, and support require separate discovery.
+The products are part of this PRD’s portfolio contract, but production activation is conditional. Discovery must validate operator and corporate jobs, identity and grants, location tenancy, authoritative integrations, support, and audit. The first production slice is the closed order → supplier acknowledgment → corporate reconciliation loop. Onboarding, training, broader operations, local marketing, and aggregate reporting expand only through their own acceptance gates; aggregate reporting additionally requires authoritative or reconciled inputs.
 
 ## 5.2 Work Breakdown
 

@@ -73,6 +73,8 @@ CREATE TABLE IF NOT EXISTS portal_support_cases (
   subject VARCHAR(256) NOT NULL,
   topic VARCHAR(128) NOT NULL,
   details TEXT NOT NULL,
+  operational_impact VARCHAR(64),
+  related_order_id VARCHAR(64),
   status VARCHAR(32) NOT NULL DEFAULT 'Open',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -82,6 +84,8 @@ ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS operator_action_requir
 ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS assigned_to_user_id VARCHAR(128);
 ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ;
 ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS reopened_at TIMESTAMPTZ;
+ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS operational_impact VARCHAR(64);
+ALTER TABLE portal_support_cases ADD COLUMN IF NOT EXISTS related_order_id VARCHAR(64);
 
 -- Support Case Messages (Chronological thread with tenant isolation)
 CREATE TABLE IF NOT EXISTS portal_support_messages (
@@ -148,4 +152,3 @@ ALTER TABLE portal_audit_log ADD COLUMN IF NOT EXISTS metadata JSONB;
 
 -- Audit records are operational and security infrastructure: strictly append-only
 REVOKE UPDATE, DELETE ON portal_audit_log FROM PUBLIC;
-

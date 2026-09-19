@@ -104,7 +104,7 @@ export const PUBLIC_FRANCHISE_FINANCIAL_CONTENT = {
       display: formatCompactCurrency(UNAPPROVED_FINANCIAL_THRESHOLDS.minimumNetWorth),
       qualifier: "Net worth",
     },
-    language: "Required financial readiness for development.",
+    language: "Financial qualifications are discussed during the mutual evaluation process.",
     destination: "/franchise/the-opportunity#financial-requirements",
     investmentRange: FRANCHISE_INVESTMENT_DISCLOSURE.displayRange,
     disclosureStatus: FRANCHISE_INVESTMENT_DISCLOSURE.publicationStatus,

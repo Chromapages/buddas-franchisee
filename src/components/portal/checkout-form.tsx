@@ -1,9 +1,11 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Store, AlertCircle, CheckCircle2, X } from "lucide-react";
 import { submitReviewedOrderAction } from "@/src/features/portal/actions";
+import { trackOperatorWorkspaceEvent } from "@/src/lib/analytics";
+import { usePortalContext } from "@/src/features/portal/portal-context";
 
 export type CheckoutOrderItem = { sku: string; name: string; price: number; quantity: number; packSize?: string };
 export type CheckoutFormProps = {
@@ -17,11 +19,26 @@ export type CheckoutFormProps = {
 const money = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
 export const CheckoutForm = ({ locationId, locationName, orderItems, total, reviewFingerprint, destinationParam }: CheckoutFormProps) => {
+  const { user, permittedUnits } = usePortalContext();
   const [hasConfirmedUnit, setHasConfirmedUnit] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [state, formAction, pending] = useActionState(submitReviewedOrderAction, { message: "" });
   const quantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
   const error = state.message || (destinationParam === "unconfirmed" ? "Confirm the receiving unit before placing your order." : "");
+  const checkoutTracked = useRef(false);
+  const lastFailure = useRef("");
+
+  useEffect(() => {
+    if (checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    trackOperatorWorkspaceEvent("operator_supply_checkout_started", { role_category: user.role === "admin" ? "admin" : "franchisee", location_scope_count: permittedUnits.length, location_scope: "active_unit", route: "/portal/checkout", cart_item_count: quantity });
+  }, [permittedUnits.length, quantity, user.role]);
+
+  useEffect(() => {
+    if (!error || lastFailure.current === error) return;
+    lastFailure.current = error;
+    trackOperatorWorkspaceEvent("operator_supply_order_failed", { role_category: user.role === "admin" ? "admin" : "franchisee", location_scope_count: permittedUnits.length, location_scope: "active_unit", route: "/portal/checkout", cart_item_count: quantity, supply_error_category: destinationParam === "unconfirmed" ? "validation" : "unknown" });
+  }, [destinationParam, error, permittedUnits.length, quantity, user.role]);
 
   const handleOpenConfirmModal = () => {
     setIsConfirmModalOpen(true);

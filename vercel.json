@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/internal/catalog-publications/execute",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/internal/supplier-orders/execute",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

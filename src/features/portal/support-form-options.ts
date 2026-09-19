@@ -1,5 +1,12 @@
 export const SUPPORT_SUBJECT_LIMIT = 160;
 export const SUPPORT_DETAILS_LIMIT = 5000;
+export const SUPPORT_MESSAGE_LIMIT = 10000;
+export const SUPPORT_IMPACTS = [
+  "Normal operations can continue",
+  "Operations are slowed",
+  "Normal operations are blocked",
+] as const;
+export type SupportImpact = typeof SUPPORT_IMPACTS[number];
 export const SUPPORT_TOPICS = [
   { value: "Supply Logistics & Freight", label: "Supply logistics & freight", hint: "Include the order or invoice number, affected items, and what arrived or is missing." },
   { value: "Equipment & Steam Deck Oven Maintenance", label: "Equipment & oven maintenance", hint: "Include the equipment model, symptoms or error code, and troubleshooting already tried." },

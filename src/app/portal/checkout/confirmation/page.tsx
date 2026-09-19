@@ -1,8 +1,12 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { CheckCircle2, Store } from "lucide-react";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
 import { redirect } from "next/navigation";
 import { requirePortalPermission } from "@/src/features/portal/authorization-server";
+import { OperatorEventOnMount } from "@/src/components/portal/operator-analytics";
+
+export const metadata: Metadata = { title: "Order Confirmation" };
 
 export default async function ConfirmationPage({ searchParams }: { searchParams: Promise<{ orderId?: string }> }) {
   const session = await requirePortalPermission("VIEW_ORDERS");
@@ -12,13 +16,14 @@ export default async function ConfirmationPage({ searchParams }: { searchParams:
   const order = orders.find((candidate) => candidate.id === orderId);
   if (!order) redirect("/portal/orders");
   return (
-    <div className="workspace-form mx-auto portal-page-stack text-center">
+    <div className="workspace-reading mx-auto portal-page-stack text-center">
+      <OperatorEventOnMount event="operator_supply_order_submitted" dedupeKey={`supply-order-submitted:${order.id}`} properties={{ route: "/portal/orders", location_scope: "active_unit", cart_item_count: order.items.reduce((total, item) => total + item.quantity, 0), product_count: order.items.length }} />
       <div className="space-y-5 rounded-2xl border border-bds-teal-dark/15 bg-white p-6 shadow-sm sm:p-8">
         <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-700" aria-hidden="true" />
 
         <div className="heading-stack">
           <h1 className="portal-page-title">
-            Wholesale Order Confirmed
+            Supply Order Confirmed
           </h1>
           <p className="text-sm text-bds-cocoa/80 leading-relaxed">
             Your supply order has been accepted for the confirmed fulfillment destination below.

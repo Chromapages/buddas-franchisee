@@ -1,25 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Poppins } from "next/font/google";
 import type { ReactNode } from "react";
+import { getSiteSettings } from "@/src/features/cms/content";
 import "./globals.css";
 
 const displayFont = Poppins({
   display: "swap",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-heading",
   weight: ["600", "700", "800"],
 });
 
 const bodyFont = DM_Sans({
   display: "swap",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-body",
 });
 
-export const metadata: Metadata = {
+const fallbackMetadata: Metadata = {
   title: "Budda's Hawaiian Bakery & Grill — Franchise Opportunity",
   description:
-    "Home of the iconic Budda Roll. Discover scalable bakery and grill franchise opportunities blending warm island hospitality with high-yield all-day utility.",
+    "Explore Budda's Hawaiian Bakery & Grill franchise information, including the Budda Roll, operator qualifications, and mutual evaluation process.",
   metadataBase: new URL("https://buddasfranchise.com"),
   icons: {
     icon: "/images/favicon.svg",
@@ -27,9 +28,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Budda's Hawaiian Bakery & Grill Franchise Opportunity",
     description:
-      "Home of the iconic Budda Roll. Learn about investment qualifications, operating models, and territory clearance.",
+      "Explore Budda's Hawaiian Bakery & Grill franchise information, including the Budda Roll, operator qualifications, and mutual evaluation process.",
     url: "https://buddasfranchise.com/franchise",
-    siteName: "Budda's Franchise Hub",
+    siteName: "Budda's Franchising",
     images: [
       {
         url: "/images/og-image.png",
@@ -43,13 +44,30 @@ export const metadata: Metadata = {
   },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    ...fallbackMetadata,
+    title: settings.defaultSeo.title,
+    description: settings.defaultSeo.description,
+    metadataBase: new URL(settings.siteUrl),
+    openGraph: { ...fallbackMetadata.openGraph, title: settings.defaultSeo.title, description: settings.defaultSeo.description, siteName: settings.organizationName },
+  };
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 type RootLayoutProps = Readonly<{
   children: ReactNode;
 }>;
 
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
         className={`${displayFont.variable} ${bodyFont.variable} bg-brand-cream text-brand-charcoal min-h-screen flex flex-col font-body`}
         suppressHydrationWarning
@@ -61,4 +79,3 @@ const RootLayout = ({ children }: RootLayoutProps) => {
 };
 
 export default RootLayout;
-

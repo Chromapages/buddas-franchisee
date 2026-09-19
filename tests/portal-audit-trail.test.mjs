@@ -103,7 +103,7 @@ test("supply ordering audit records actor, unit, order resource, timestamp, and 
   assert.equal(event.metadata?.itemCount, 2);
 });
 
-test("order cancellation where supported validates status transitions and audits success & denial", async () => {
+test("order cancellation requests validate status transitions and audit success & denial", async () => {
   const storage = new InMemoryPortalStorage();
   const testOrder = {
     id: "BD-CANCEL-01",
@@ -118,15 +118,15 @@ test("order cancellation where supported validates status transitions and audits
 
   await storage.createOrder(testOrder);
 
-  // Status PROCESSING allows transition to CANCELLED
-  assert.equal(canTransitionOrderStatus(testOrder.status, "CANCELLED"), true);
+  // Status PROCESSING allows a cancellation request, not an inferred cancellation.
+  assert.equal(canTransitionOrderStatus(testOrder.status, "CANCELLATION_REQUESTED"), true);
 
-  const cancelled = await storage.cancelOrder("BD-CANCEL-01", "Overstocked duplicate");
-  assert.equal(cancelled?.status, "CANCELLED");
+  const cancellationRequest = await storage.cancelOrder("BD-CANCEL-01", "Overstocked duplicate", testOrder.locationId);
+  assert.equal(cancellationRequest?.status, "CANCELLATION_REQUESTED");
 
   await recordPortalAudit({
     actor: { userId: "op-101", email: "op@buddas.test", role: "franchisee", locationId: "HNL-014" },
-    action: "ORDER_CANCELLED",
+    action: "ORDER_CANCELLATION_REQUESTED",
     outcome: "SUCCESS",
     unitId: "HNL-014",
     resourceType: "portal_order",
@@ -150,11 +150,11 @@ test("order cancellation where supported validates status transitions and audits
   };
   await storage.createOrder(deliveredOrder);
 
-  assert.equal(canTransitionOrderStatus(deliveredOrder.status, "CANCELLED"), false);
+  assert.equal(canTransitionOrderStatus(deliveredOrder.status, "CANCELLATION_REQUESTED"), false);
 
   await recordPortalAudit({
     actor: { userId: "op-101", email: "op@buddas.test", role: "franchisee", locationId: "HNL-014" },
-    action: "ORDER_CANCELLED",
+    action: "ORDER_CANCELLATION_REQUESTED",
     outcome: "DENIED",
     unitId: "HNL-014",
     resourceType: "portal_order",
@@ -168,7 +168,7 @@ test("order cancellation where supported validates status transitions and audits
   const trail = await getPortalAuditTrail();
   assert.equal(trail.length, 2);
   assert.equal(trail[0].outcome, "SUCCESS");
-  assert.equal(trail[0].action, "ORDER_CANCELLED");
+  assert.equal(trail[0].action, "ORDER_CANCELLATION_REQUESTED");
   assert.equal(trail[1].outcome, "DENIED");
   assert.equal(trail[1].metadata?.currentStatus, "DELIVERED");
 });

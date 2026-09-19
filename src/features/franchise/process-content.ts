@@ -1,3 +1,5 @@
+import { PUBLIC_INITIAL_INQUIRY_CONTENT } from "@/src/features/inquiry/public-inquiry-content";
+
 export type ProcessCopyClassification =
   | "MARKETING"
   | "BUSINESS_POLICY"
@@ -427,7 +429,7 @@ export const FRANCHISE_PROCESS_CONTENT: FranchiseProcessPageContent = {
         },
       ),
       decisionGateLabel: marketingCopy("Further-conversation decision"),
-      approvedTimingLabel: governedCopy("Target response: within 2 business days", {
+      approvedTimingLabel: governedCopy(`Target response: ${PUBLIC_INITIAL_INQUIRY_CONTENT.responseTarget.value}`, {
         classification: "BUSINESS_POLICY",
         sourceOwner: "Franchise Development Leadership",
         sourceReference: "Franchise development service-level expectation",

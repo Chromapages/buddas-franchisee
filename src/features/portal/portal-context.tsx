@@ -6,6 +6,7 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
 } from "react";
 import type { ReactNode } from "react";
 import type { PortalLocation } from "./types";
@@ -23,9 +24,9 @@ export type PortalActiveUnit = {
 };
 
 export type ScopedNotificationCounts = {
-  cartItemCount: number;
-  actionRequiredSupportCount: number;
-  actionRequiredBulletinCount: number;
+  cartItemCount: number | null;
+  actionRequiredSupportCount: number | null;
+  actionRequiredBulletinCount: number | null;
 };
 
 export type PortalContextValue = {
@@ -35,15 +36,15 @@ export type PortalContextValue = {
   counts: ScopedNotificationCounts;
   updateCount: (
     key: keyof ScopedNotificationCounts,
-    valueOrUpdater: number | ((prev: number) => number),
+    valueOrUpdater: number | null | ((prev: number) => number),
   ) => void;
   decrementCount: (key: keyof ScopedNotificationCounts) => void;
 };
 
 const defaultNotificationCounts: ScopedNotificationCounts = {
-  cartItemCount: 0,
-  actionRequiredSupportCount: 0,
-  actionRequiredBulletinCount: 0,
+  cartItemCount: null,
+  actionRequiredSupportCount: null,
+  actionRequiredBulletinCount: null,
 };
 
 const PortalContext = createContext<PortalContextValue | null>(null);
@@ -68,17 +69,21 @@ export const PortalProvider = ({
     ...initialCounts,
   }));
 
+  useEffect(() => {
+    setCounts({ ...defaultNotificationCounts, ...initialCounts });
+  }, [activeUnit.id, initialUser.id, initialCounts]);
+
   const updateCount = useCallback(
     (
       key: keyof ScopedNotificationCounts,
-      valueOrUpdater: number | ((prev: number) => number),
+      valueOrUpdater: number | null | ((prev: number) => number),
     ) => {
       setCounts((prev) => {
         const nextValue =
           typeof valueOrUpdater === "function"
-            ? valueOrUpdater(prev[key])
+            ? valueOrUpdater(prev[key] ?? 0)
             : valueOrUpdater;
-        const normalizedValue = Math.max(0, Math.round(nextValue));
+        const normalizedValue = nextValue === null ? null : Math.max(0, Math.round(nextValue));
         if (prev[key] === normalizedValue) {
           return prev;
         }
@@ -131,13 +136,13 @@ export type PortalCartBadgeProps = {
 
 export const PortalCartBadge = ({ className = "" }: PortalCartBadgeProps) => {
   const { counts } = usePortalContext();
-  if (counts.cartItemCount <= 0) {
+  if (counts.cartItemCount === null || counts.cartItemCount <= 0) {
     return null;
   }
 
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-full bg-bds-teal px-2 py-0.5 text-[10px] font-bold text-white shadow-xs ${className}`}
+      className={`inline-flex items-center justify-center rounded-full bg-bds-teal-dark px-2 py-0.5 text-[10px] font-bold text-white shadow-xs ${className}`}
       aria-label={`${counts.cartItemCount} items in cart`}
     >
       {counts.cartItemCount}
@@ -158,13 +163,13 @@ export const PortalNavBadge = ({
 }: PortalNavBadgeProps) => {
   const { counts } = usePortalContext();
   const count = counts[countKey];
-  if (count <= 0) {
+  if (count === null || count <= 0) {
     return null;
   }
 
   return (
     <span
-      className={`ml-auto inline-flex items-center justify-center rounded-full bg-bds-teal px-2 py-0.5 text-[10px] font-bold text-bds-teal-dark font-heading shadow-xs ${className}`}
+      className={`ml-auto inline-flex items-center justify-center rounded-full bg-bds-teal-dark px-2 py-0.5 text-[10px] font-bold text-white font-heading shadow-xs ${className}`}
       aria-label={`${count} ${labelPrefix}`}
     >
       {count}

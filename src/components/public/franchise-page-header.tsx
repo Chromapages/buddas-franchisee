@@ -19,12 +19,14 @@ type FranchisePageHeaderProps = {
   };
   title: string;
   description: string;
+  qualifier?: string;
   note?: string;
   sectionClassName?: string;
   containerClassName?: string;
   eyebrowClassName?: string;
   titleClassName?: string;
   descriptionClassName?: string;
+  qualifierClassName?: string;
   actions?: FranchisePageHeaderAction[];
   actionsClassName?: string;
   aside?: ReactNode;
@@ -50,12 +52,14 @@ export const FranchisePageHeader = ({
   eyebrow,
   title,
   description,
+  qualifier,
   note,
   sectionClassName,
   containerClassName,
   eyebrowClassName,
   titleClassName,
   descriptionClassName,
+  qualifierClassName,
   actions,
   actionsClassName,
   aside,
@@ -93,6 +97,7 @@ export const FranchisePageHeader = ({
             </p>
             {note ? <p className="text-sm font-semibold text-bds-text-body/80">Takes about {note} to complete.</p> : null}
           </div>
+          {qualifier ? <p className={qualifierClassName || "text-sm font-semibold text-bds-text-heading"}>{qualifier}</p> : null}
           {actions?.length ? (
             <div className={actionsClassName || "flex flex-wrap gap-3"}>
               {actions.map((action) =>

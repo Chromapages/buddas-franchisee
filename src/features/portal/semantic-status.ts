@@ -1,7 +1,12 @@
-export type SemanticStatus = "PROCESSING" | "DELIVERED" | "DELAYED" | "ACTION_REQUIRED" | "INFORMATION" | "ERROR" | "SUCCESS" | "LOADING" | "UNAVAILABLE";
+export type SemanticStatus = "DRAFT" | "SUBMITTED" | "PROCESSING" | "FULFILLED" | "CANCELLED" | "FAILED" | "DELIVERED" | "DELAYED" | "ACTION_REQUIRED" | "INFORMATION" | "ERROR" | "SUCCESS" | "LOADING" | "UNAVAILABLE";
 
 export const SEMANTIC_STATUS: Record<SemanticStatus, { label: string; description: string; icon: "clock" | "check" | "alert" | "info" | "spinner" | "unavailable"; className: string; textClassName: string }> = {
+  DRAFT: { label: "Draft", description: "Order has not been submitted.", icon: "info", className: "bg-bds-cream", textClassName: "text-bds-teal-dark" },
+  SUBMITTED: { label: "Submitted", description: "Order is awaiting fulfillment.", icon: "clock", className: "bg-bds-cream", textClassName: "text-bds-teal-dark" },
   PROCESSING: { label: "Processing", description: "Work is underway.", icon: "clock", className: "bg-bds-cream", textClassName: "text-bds-teal-dark" },
+  FULFILLED: { label: "Fulfilled", description: "Order delivery is complete.", icon: "check", className: "bg-emerald-100", textClassName: "text-emerald-950" },
+  CANCELLED: { label: "Cancelled", description: "Order will not be fulfilled.", icon: "info", className: "bg-bds-cream", textClassName: "text-bds-teal-dark" },
+  FAILED: { label: "Failed", description: "Order could not be accepted and needs review.", icon: "alert", className: "bg-red-100", textClassName: "text-red-950" },
   DELIVERED: { label: "Delivered", description: "Delivery is complete.", icon: "check", className: "bg-emerald-100", textClassName: "text-emerald-950" },
   DELAYED: { label: "Delayed", description: "Timing changed and requires review.", icon: "alert", className: "bg-amber-100", textClassName: "text-amber-950" },
   ACTION_REQUIRED: { label: "Action required", description: "Operator follow-up is required.", icon: "alert", className: "bg-red-100", textClassName: "text-red-950" },

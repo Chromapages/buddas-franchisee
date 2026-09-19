@@ -27,6 +27,15 @@ import {
   PortalAuthorizationError,
 } from "../src/features/portal/authorization.ts";
 import {
+  canAccessDashboardWidget,
+  canActFromDashboardWidget,
+  dashboardWidgetPolicies,
+} from "../src/features/portal/dashboard-authorization.ts";
+import {
+  DASHBOARD_DATA_STATE,
+  resolveDashboardCollectionState,
+} from "../src/features/portal/dashboard-data-state.ts";
+import {
   mapSupabaseUserToPortalSession,
 } from "../src/lib/auth/supabase.ts";
 import {
@@ -125,6 +134,8 @@ test("buildInsertSupportCaseQuery captures support intake with user email and lo
     subject: "Packaging box reorder delay",
     topic: "Supply ordering and replacements",
     details: "Need 4 additional roll boxes before the weekend rush.",
+    operationalImpact: "Operations are slowed",
+    relatedOrderId: "BD-5244",
   };
 
   const query = buildInsertSupportCaseQuery(ticketInput);
@@ -132,7 +143,10 @@ test("buildInsertSupportCaseQuery captures support intake with user email and lo
   assert.equal(query.values[0], "SUP-123456");
   assert.equal(query.values[1], "HNL-014");
   assert.equal(query.values[2], "operator@buddasdemo.com");
-  assert.equal(query.values[3], "Packaging box reorder delay");
+  assert.equal(query.values[3], null);
+  assert.equal(query.values[4], "Packaging box reorder delay");
+  assert.equal(query.values[7], "Operations are slowed");
+  assert.equal(query.values[8], "BD-5244");
 });
 
 test("support-case retrieval is scoped to the active unit", () => {
@@ -227,6 +241,54 @@ test("authorization denies horizontal and vertical portal privilege escalation",
   assert.throws(() => assertPortalPermission(operator, "ADMINISTER_PORTAL"), PortalAuthorizationError);
   assert.doesNotThrow(() => assertPortalPermission(scopedAdmin, "ADMINISTER_PORTAL"));
   assert.throws(() => assertPortalPermission(scopedAdmin, "VIEW_RESOURCES", "SLC-302"), PortalAuthorizationError);
+});
+
+test("dashboard widgets declare scoped read and action access before records are loaded", () => {
+  const operator = {
+    userId: "operator-1",
+    email: "operator@example.test",
+    role: "franchisee",
+    locationId: "HNL-014",
+    locationName: "La'ie Origin Grill",
+    managedLocationIds: ["HNL-014"],
+    expiresAt: Date.now() + 10_000,
+  };
+
+  assert.equal(dashboardWidgetPolicies["recent-orders"].readPermission, "VIEW_ORDERS");
+  assert.equal(dashboardWidgetPolicies["recent-orders"].locationScope, "active-unit");
+  assert.equal(dashboardWidgetPolicies["operations-bulletins"].locationScope, "targeted-active-unit");
+  assert.equal(dashboardWidgetPolicies["operations-bulletins"].organizationScope, "audience-targeted");
+  assert.equal(dashboardWidgetPolicies["support-shortcut"].actionPermission, "CREATE_SUPPORT");
+  assert.equal(canAccessDashboardWidget(operator, "recent-orders"), true);
+  assert.equal(canActFromDashboardWidget(operator, "support-shortcut"), true);
+  assert.equal(canAccessDashboardWidget({ ...operator, locationId: "OAH-207" }, "recent-orders"), false);
+});
+
+test("dashboard data state never turns authorization or request failures into empty data", () => {
+  assert.equal(
+    resolveDashboardCollectionState(undefined, false).state,
+    DASHBOARD_DATA_STATE.PERMISSION_UNAVAILABLE,
+  );
+  assert.equal(
+    resolveDashboardCollectionState({ status: "fulfilled", value: [] }, true).state,
+    DASHBOARD_DATA_STATE.EMPTY,
+  );
+  assert.equal(
+    resolveDashboardCollectionState({ status: "fulfilled", value: [{ id: "order-1" }] }, true).state,
+    DASHBOARD_DATA_STATE.ACTIVE,
+  );
+  assert.equal(
+    resolveDashboardCollectionState(
+      { status: "fulfilled", value: [{ id: "order-1" }] },
+      true,
+      { updatedAt: new Date(Date.now() - 61_000).toISOString(), staleAfterMs: 60_000 },
+    ).state,
+    DASHBOARD_DATA_STATE.STALE,
+  );
+  assert.equal(
+    resolveDashboardCollectionState({ status: "rejected", reason: new Error("service unavailable") }, true).state,
+    DASHBOARD_DATA_STATE.PARTIAL_ERROR,
+  );
 });
 
 test("Supabase portal authorization uses app metadata rather than mutable user metadata", () => {

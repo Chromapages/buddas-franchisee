@@ -1,16 +1,39 @@
-import type { ReactNode } from "react";
+import type { Metadata } from "next";
+import "./operator-mobile.css";
+import { Suspense, type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getPortalSession } from "@/src/features/auth/session";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
+import { readDashboardBulletins, readDashboardSupport } from "@/src/features/portal/dashboard-reads";
 import { PortalShell } from "@/src/components/portal/portal-shell";
-import { canAccessLocation } from "@/src/lib/auth/auth-provider";
-import { assertPortalPermission } from "@/src/features/portal/authorization";
+import { assertPortalPermission, hasPortalPermission } from "@/src/features/portal/authorization";
 import { getPortalCart } from "@/src/features/portal/cart";
-import { getVisibleBulletins, requiresBulletinAction } from "@/src/features/portal/bulletins";
-import { PortalProvider } from "@/src/features/portal/portal-context";
+import { getVisibleBulletins, isBulletinActionOutstanding } from "@/src/features/portal/bulletins";
+import { PortalProvider, type ScopedNotificationCounts } from "@/src/features/portal/portal-context";
+import { PortalCountsUpdate } from "@/src/components/portal/portal-counts-update";
+import { WebVitalsReporter } from "@/src/components/public/web-vitals-reporter";
 
-export const metadata = {
-  title: "Operator Portal — Budda's Workspace",
+// Portal content is scoped by authenticated user, role, and active unit.
+// Never place it in the shared route or data cache.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
+async function StreamedCount({ countKey, result }: {
+  countKey: keyof ScopedNotificationCounts;
+  result: Promise<number | null>;
+}) {
+  return <PortalCountsUpdate countKey={countKey} value={await result} />;
+}
+
+export const metadata: Metadata = {
+  title: {
+    default: "Dashboard | Budda's Operator Portal",
+    template: "%s | Budda's Operator Portal",
+  },
+  description: "Authorized operational workspace for Budda's franchise operators.",
+  openGraph: null,
+  twitter: null,
   robots: {
     index: false,
     follow: false,
@@ -38,36 +61,34 @@ export default async function PortalLayout({
   }
   assertPortalPermission(session, "ACCESS_WORKSPACE");
 
-  const [allLocations, cartItems, supportCases, rawBulletins] = await Promise.all([
-    defaultPortalStorage.getLocations(),
-    getPortalCart(session).catch(() => []),
-    defaultPortalStorage.getSupportCasesByLocation(session.locationId).catch(() => []),
-    defaultPortalStorage.getBulletinsForSession(session).catch(() => []),
-  ]);
+  const canManageCart = hasPortalPermission(session, "MANAGE_CART");
+  const canViewSupport = hasPortalPermission(session, "VIEW_SUPPORT");
+  const canViewBulletins = hasPortalPermission(session, "ACCESS_WORKSPACE");
+  // Start independent reads together, but do not hold the shell for badge data.
+  const locationRequest = Promise.all(session.managedLocationIds.map((locationId) => defaultPortalStorage.getLocationById(locationId)));
+  const cartCount = canManageCart ? getPortalCart(session).then(
+    (items) => items.reduce((total, item) => total + item.quantity, 0), () => null,
+  ) : Promise.resolve(null);
+  const supportCount = canViewSupport ? readDashboardSupport(session.locationId).then(
+    (tickets) => tickets.filter((ticket) => ticket.status !== "Resolved" && ticket.operatorActionRequired === true).length, () => null,
+  ) : Promise.resolve(null);
+  const bulletinResult = canViewBulletins ? Promise.allSettled([readDashboardBulletins(session)]).then(([result]) => result) : Promise.resolve(undefined);
+  const locationRecords = await locationRequest;
 
-  const locations = allLocations.filter((location) =>
-    canAccessLocation(session, location.id),
-  );
+  const locations = locationRecords.filter((location): location is NonNullable<typeof location> => location !== null);
 
   const activeLocation =
     locations.find((location) => location.id === session.locationId) ?? null;
-  const visibleBulletins = getVisibleBulletins(
-    rawBulletins,
-    session.locationId,
-    session.role,
-    activeLocation,
-  );
-
-  const initialCounts = {
-    cartItemCount: cartItems.reduce((total, item) => total + item.quantity, 0),
-    actionRequiredSupportCount: supportCases.filter(
-      (ticket) => ticket.status !== "Resolved" && ticket.operatorActionRequired === true,
-    ).length,
-    actionRequiredBulletinCount: visibleBulletins.filter(requiresBulletinAction).length,
-  };
+  if (!activeLocation) {
+    redirect("/franchise/login");
+  }
+  const bulletinCount = bulletinResult.then((result) => result?.status === "fulfilled"
+    ? getVisibleBulletins(result.value, session.locationId, session.role, activeLocation).filter(isBulletinActionOutstanding).length
+    : null);
 
   return (
     <PortalProvider
+      key={`${session.userId}:${session.locationId}:${session.role}`}
       initialUser={{
         id: session.userId,
         email: session.email,
@@ -79,9 +100,12 @@ export default async function PortalLayout({
         id: session.locationId,
         name: session.locationName,
       }}
-      initialCounts={initialCounts}
     >
-      <PortalShell session={session} locations={locations}>
+      <WebVitalsReporter />
+      <PortalShell key={`${session.userId}:${session.locationId}:${session.role}`} session={session} locations={locations}>
+        <Suspense fallback={null}><StreamedCount countKey="cartItemCount" result={cartCount} /></Suspense>
+        <Suspense fallback={null}><StreamedCount countKey="actionRequiredSupportCount" result={supportCount} /></Suspense>
+        <Suspense fallback={null}><StreamedCount countKey="actionRequiredBulletinCount" result={bulletinCount} /></Suspense>
         {children}
       </PortalShell>
     </PortalProvider>

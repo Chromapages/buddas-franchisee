@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ProcessDesktopDossier } from "@/src/components/public/process-desktop-dossier";
 import { ProcessClosingCta } from "@/src/components/public/process-closing-cta";
 import { ProcessInteractionAnalytics } from "@/src/components/public/process-interaction-analytics";
 import { ProcessStageDetails } from "@/src/components/public/process-stage-details";
 import { FranchisePageHeader } from "@/src/components/public/franchise-page-header";
+import { StructuredData } from "@/src/components/public/structured-data";
 import { getPublicFranchiseProcessContent } from "@/src/features/franchise/process-content";
 
 const processContent = getPublicFranchiseProcessContent();
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function ProcessPage() {
   return (
-    <div className="page-rhythm">
+    <><StructuredData /><div className="page-rhythm">
       <div className="lg:hidden">
       <FranchisePageHeader
         sectionClassName="bg-bds-cream/60 pt-12 pb-6"
@@ -149,11 +151,13 @@ export default function ProcessPage() {
         </ol>
       </section>
 
-      <ProcessClosingCta content={processContent.closing} />
+      <Suspense fallback={null}>
+        <ProcessClosingCta content={processContent.closing} />
+      </Suspense>
       </div>
 
       <ProcessDesktopDossier content={processContent} />
       <ProcessInteractionAnalytics />
-    </div>
+    </div></>
   );
 }

@@ -1,0 +1,9 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Catalog uploads use the server-side Admin SDK. Browser clients have no direct Storage access.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

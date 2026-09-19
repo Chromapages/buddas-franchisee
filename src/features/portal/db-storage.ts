@@ -85,6 +85,7 @@ export const buildSelectOrdersByLocationQuery = (
 
 export const buildSelectOrderByIdQuery = (
   orderId: string,
+  locationId: string,
 ): ParameterizedQuery => {
   const text = `
     SELECT o.order_id as "id", o.location_id as "locationId",
@@ -102,22 +103,23 @@ export const buildSelectOrderByIdQuery = (
            ) as items
     FROM portal_orders o
     LEFT JOIN portal_order_items oi ON o.order_id = oi.order_id
-    WHERE o.order_id = $1
+    WHERE o.order_id = $1 AND o.location_id = $2
     GROUP BY o.order_id, o.location_id, o.created_at, o.status, o.eta, o.total, o.invoice_id
   `.trim();
-  return { text, values: [orderId] };
+  return { text, values: [orderId, locationId] };
 };
 
 export const buildCancelOrderQuery = (
   orderId: string,
+  locationId: string,
 ): ParameterizedQuery => {
   const text = `
     UPDATE portal_orders
-    SET status = 'CANCELLED'
-    WHERE order_id = $1
+    SET status = 'CANCELLATION_REQUESTED'
+    WHERE order_id = $1 AND location_id = $2
     RETURNING order_id as "id", location_id as "locationId", created_at as "createdAt", status, eta, total, invoice_id as "invoiceId"
   `.trim();
-  return { text, values: [orderId] };
+  return { text, values: [orderId, locationId] };
 };
 
 export const buildInsertOrderQuery = (
@@ -178,12 +180,14 @@ export const buildInsertSupportCaseQuery = (ticket: {
   subject: string;
   topic: string;
   details: string;
+  operationalImpact?: PortalSupportCase["operationalImpact"];
+  relatedOrderId?: string;
   submittedByUserId?: string;
 }): ParameterizedQuery => {
   const text = `
     INSERT INTO portal_support_cases (
-      case_id, location_id, user_email, submitted_by_user_id, subject, topic, details, status, operator_action_required, created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'Open', FALSE, NOW(), NOW())
+      case_id, location_id, user_email, submitted_by_user_id, subject, topic, details, operational_impact, related_order_id, status, operator_action_required, created_at, updated_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'Open', FALSE, NOW(), NOW())
   `.trim();
   return {
     text,
@@ -195,6 +199,8 @@ export const buildInsertSupportCaseQuery = (ticket: {
       ticket.subject,
       ticket.topic,
       ticket.details,
+      ticket.operationalImpact || null,
+      ticket.relatedOrderId || null,
     ],
   };
 };
@@ -205,6 +211,7 @@ export const buildSelectSupportCasesByLocationQuery = (
   const text = `
     SELECT c.case_id as "id", c.location_id as "locationId", c.user_email as "userEmail",
            c.submitted_by_user_id as "submittedByUserId", c.subject, c.topic, c.details,
+           c.operational_impact as "operationalImpact", c.related_order_id as "relatedOrderId",
            c.status, c.operator_action_required as "operatorActionRequired",
            c.assigned_to_user_id as "assignedToUserId",
            c.created_at as "createdAt", c.updated_at as "updatedAt",
@@ -223,6 +230,7 @@ export const buildSelectSupportCaseByIdQuery = (
   const text = `
     SELECT c.case_id as "id", c.location_id as "locationId", c.user_email as "userEmail",
            c.submitted_by_user_id as "submittedByUserId", c.subject, c.topic, c.details,
+           c.operational_impact as "operationalImpact", c.related_order_id as "relatedOrderId",
            c.status, c.operator_action_required as "operatorActionRequired",
            c.assigned_to_user_id as "assignedToUserId",
            c.created_at as "createdAt", c.updated_at as "updatedAt",
@@ -375,10 +383,10 @@ export class DatabasePortalStorage {
     }));
   }
 
-  public async getOrderById(orderId: string): Promise<PortalOrder | null> {
+  public async getOrderById(orderId: string, locationId: string): Promise<PortalOrder | null> {
     const pool = await this.getPool();
     if (!pool) return null;
-    const query = buildSelectOrderByIdQuery(orderId);
+    const query = buildSelectOrderByIdQuery(orderId, locationId);
     const result = await pool.query(query.text, query.values);
     const row = result.rows[0] as (Omit<PortalOrder, "status"> & { status: unknown }) | undefined;
     if (!row) return null;
@@ -399,10 +407,10 @@ export class DatabasePortalStorage {
     }
   }
 
-  public async cancelOrder(orderId: string, _reason?: string): Promise<PortalOrder | null> {
+  public async cancelOrder(orderId: string, _reason: string | undefined, locationId: string): Promise<PortalOrder | null> {
     const pool = await this.getPool();
     if (!pool) return null;
-    const query = buildCancelOrderQuery(orderId);
+    const query = buildCancelOrderQuery(orderId, locationId);
     const result = await pool.query(query.text, query.values);
     const row = result.rows[0] as (Omit<PortalOrder, "status"> & { status: unknown }) | undefined;
     if (!row) return null;
@@ -412,12 +420,19 @@ export class DatabasePortalStorage {
     };
   }
 
-  public async getResourcesByLocation(locationId: string): Promise<PortalResource[]> {
+  public async getResourcesByLocation(locationId: string, role: PortalRole = "franchisee"): Promise<PortalResource[]> {
     const pool = await this.getPool();
     if (!pool) return [];
     const query = buildSelectResourcesByLocationQuery(locationId);
     const result = await pool.query(query.text, query.values);
-    return result.rows as PortalResource[];
+    const location = await this.getLocationById(locationId);
+    const context = location
+      ? buildAudienceContext(location, role)
+      : { unitId: locationId, role };
+    return (result.rows as PortalResource[]).filter((resource) =>
+      (!resource.locationScope || resource.locationScope.includes(locationId))
+      && evaluateAudienceTargeting(resource.audience, context).isTargeted,
+    );
   }
 
   public async createSupportCase(ticket: {
@@ -427,6 +442,8 @@ export class DatabasePortalStorage {
     subject: string;
     topic: string;
     details: string;
+    operationalImpact?: PortalSupportCase["operationalImpact"];
+    relatedOrderId?: string;
     submittedByUserId?: string;
   }): Promise<void> {
     const pool = await this.getPool();
@@ -600,9 +617,8 @@ export class DatabasePortalStorage {
     }));
   }
 
-  public async acknowledgeBulletin(_bulletinId: string, _userId: string): Promise<void> {
-    // Bulletin acknowledgement persistence in database is operational/read state
-    return;
+  public async acknowledgeBulletin(_bulletinId: string, _userId: string): Promise<string> {
+    throw new Error("Bulletin acknowledgement persistence is not configured for database storage.");
   }
 
   public async explainBulletinForUnit(
@@ -634,7 +650,7 @@ export class DatabasePortalStorage {
     locationId: string,
     role: PortalRole = "franchisee",
   ): Promise<TargetingEvaluation | null> {
-    const resources = await this.getResourcesByLocation(locationId);
+    const resources = await this.getResourcesByLocation(locationId, role);
     const resource = resources.find((r) => r.id === resourceId);
     if (!resource) return null;
     const location = await this.getLocationById(locationId);

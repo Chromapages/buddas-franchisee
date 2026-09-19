@@ -1,6 +1,6 @@
 "use client";
 
-import { trackFunnelEvent } from "@/src/lib/analytics";
+import { trackFranchiseFunnelEvent } from "@/src/lib/analytics";
 
 export const CandidateProfileInvestmentLink = ({
   href,
@@ -11,14 +11,8 @@ export const CandidateProfileInvestmentLink = ({
 }) => (
   <a
     href={href}
-    onClick={() => trackFunnelEvent("candidate_profile_investment_click", {
-      page_path: "/franchise",
-      placement: "candidate_profile",
-      candidate_criterion: "capitalize",
-      candidate_destination: "investment",
-      destination: href,
-    })}
-    className="touch-target-inline mt-2 inline-flex font-bold text-xs text-[#1C5F56] underline underline-offset-2 hover:text-[#54BFA5] focus:outline-none focus:ring-2 focus:ring-[#1C5F56] focus:ring-offset-1 rounded-sm"
+    onClick={() => trackFranchiseFunnelEvent("franchise_financial_qualifications_clicked")}
+    className="touch-target-inline mt-3 inline-flex font-heading text-sm font-semibold leading-[1.4] text-bds-teal-dark underline underline-offset-4 hover:text-bds-teal-ink focus:outline-none focus:ring-2 focus:ring-bds-teal-dark focus:ring-offset-2 rounded-sm"
   >
     {label}
   </a>

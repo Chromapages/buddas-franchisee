@@ -4,29 +4,36 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
+  ArrowRight,
   Bookmark,
   BookmarkPlus,
-  Clock,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  ClipboardList,
+  DollarSign,
+  Headphones,
+  Package,
+  PackageCheck,
+  Plus,
   RotateCcw,
   Search,
+  Truck,
   X,
 } from "lucide-react";
 import type { PortalOrder } from "@/src/features/portal/types";
-import { TableLine } from "@/src/components/portal/table-line";
 import {
-  canTransitionOrderStatus,
   getOrderStatus,
   getOrderStatusAnalytics,
   getOrderStatusAccessibleLabel,
-  getOrderStatusNotification,
   isOrderInMotion,
   isOrderTerminal,
   ORDER_STATUS_IDS,
   requiresOrderOperatorAction,
 } from "@/src/features/portal/order-status";
-import { cancelPortalOrderAction } from "@/src/features/portal/actions";
-import { trackFunnelEvent } from "@/src/lib/analytics";
-import { formatPortalDate } from "@/src/features/portal/date-time";
+import { trackOperatorWorkspaceEvent } from "@/src/lib/analytics";
+import { formatPortalDate, getUnitTimeZone } from "@/src/features/portal/date-time";
 import {
   areOrderCriteriaEqual,
   deleteCustomView,
@@ -41,6 +48,25 @@ import {
 
 type OrderView = OrderViewMode;
 type OrderSort = OrderSortMode;
+const DEFAULT_PAGE_SIZE = 10;
+const orderCurrency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+
+const formatOrderTime = (value: string, locationId: string) => new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: getUnitTimeZone(locationId),
+}).format(new Date(value));
+
+const getOrderActionLabel = (order: PortalOrder) => {
+  const actionLabel = getOrderStatus(order.status).notification.actionLabel;
+  return actionLabel.startsWith("Track") ? "Track" : actionLabel.startsWith("Review") ? "Review" : "View";
+};
+
+const getOrderFulfillmentLabel = (order: PortalOrder) => order.status === "DELIVERED"
+  ? "Delivered"
+  : order.status === "CANCELLED"
+    ? "Cancelled"
+    : order.eta || getOrderStatus(order.status).meaning;
 
 const isOrderPastDue = (order: PortalOrder): boolean => {
   if (isOrderTerminal(order.status)) return false;
@@ -56,31 +82,24 @@ const isOrderPastDue = (order: PortalOrder): boolean => {
 const isOrderException = (order: PortalOrder): boolean =>
   requiresOrderOperatorAction(order.status) || isOrderPastDue(order);
 
-const getOrderExceptionLabel = (order: PortalOrder): string | null => {
-  if (requiresOrderOperatorAction(order.status)) {
-    return getOrderStatusNotification(order.status).title;
-  }
-  return isOrderPastDue(order) ? "Shipment timing is past ETA" : null;
-};
-
 export const OrdersWorkspace = ({
   orders,
   locationId = "default",
   locationName,
-  initialOrderId,
   initialView = "all",
 }: {
   orders: PortalOrder[];
   locationId?: string;
   locationName: string;
-  initialOrderId?: string;
   initialView?: "all" | "in-motion";
 }) => {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<PortalOrder["status"] | "ALL">("ALL");
   const [view, setView] = useState<OrderView>(initialView);
   const [sort, setSort] = useState<OrderSort>("newest");
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(orders.find((order) => order.id === initialOrderId)?.id ?? orders[0]?.id ?? null);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [previewOrder, setPreviewOrder] = useState<PortalOrder | null>(orders[0] ?? null);
 
   const [customViews, setCustomViews] = useState<SavedOrderView[]>([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -198,55 +217,73 @@ export const OrdersWorkspace = ({
       });
   }, [orders, query, sort, statusFilter, view]);
 
-  const selectedOrder = visibleOrders.find((order) => order.id === selectedOrderId) ?? visibleOrders[0];
+  const pageCount = Math.max(1, Math.ceil(visibleOrders.length / pageSize));
+  const safePage = Math.min(currentPage, pageCount);
+  const pageStart = (safePage - 1) * pageSize;
+  const pagedOrders = visibleOrders.slice(pageStart, pageStart + pageSize);
+  const systemViewCounts = useMemo(() => ({
+    all: orders.length,
+    "in-motion": orders.filter((order) => isOrderInMotion(order.status)).length,
+    "needs-attention": orders.filter(isOrderException).length,
+  }), [orders]);
+  const completedOrderCount = useMemo(() => orders.filter((order) => order.status === "DELIVERED" || order.status === "FULFILLED").length, [orders]);
 
-  const selectOrder = (order: PortalOrder) => {
-    setSelectedOrderId(order.id);
-    trackFunnelEvent("portal_order_detail_open", {
-      order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage,
-    });
-  };
+  useEffect(() => { setCurrentPage(1); }, [pageSize, query, sort, statusFilter, view]);
 
   return (
-    <div className="portal-page-stack">
-      <div className="portal-page-header">
-        <span className="portal-page-eyebrow">Shipment tracking</span>
-        <h1 className="portal-page-title">Orders &amp; Shipments</h1>
-        <p className="text-sm text-bds-cocoa/80">Search, filter, and inspect wholesale orders for <strong>{locationName}</strong>.</p>
-      </div>
+    <div className="portal-page-stack orders-page-stack">
+      <div className="orders-page-layout">
+      <div className="orders-page-index">
+      <header className="portal-page-header orders-page-header">
+        <div className="orders-page-hero-copy">
+          <p className="orders-page-eyebrow">Orders &amp; shipments</p>
+          <h1 className="portal-page-title">Orders &amp; Shipments</h1>
+          <p className="orders-page-subtitle">Track and manage your supply orders for <strong>{locationName}</strong>.</p>
+        </div>
+        <div className="orders-page-actions"><Link href="/portal/supplies" className="orders-new-order"><Plus size={17} aria-hidden="true" />New supply order</Link></div>
+      </header>
+
+      <section className="orders-metric-grid" aria-label="Order summary">
+        <article><span><Truck size={22} aria-hidden="true" /></span><strong>{systemViewCounts["in-motion"]}</strong><div><h2>In progress</h2><p>Orders on the way</p></div></article>
+        <article data-tone={systemViewCounts["needs-attention"] ? "attention" : "neutral"}><span><AlertCircle size={22} aria-hidden="true" /></span><strong>{systemViewCounts["needs-attention"]}</strong><div><h2>Needs attention</h2><p>Requires your action</p></div></article>
+        <article><span><PackageCheck size={22} aria-hidden="true" /></span><strong>{completedOrderCount}</strong><div><h2>Completed</h2><p>Delivered orders</p></div></article>
+        <article><span><ClipboardList size={22} aria-hidden="true" /></span><strong>{orders.length}</strong><div><h2>Total orders</h2><p>For this location</p></div></article>
+      </section>
 
       {orders.length === 0 ? (
         <section role="status" className="portal-empty-state flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="space-y-1">
-            <h2 className="heading-minor text-bds-teal-dark">No wholesale orders yet</h2>
+            <h2 className="heading-minor text-bds-teal-dark">No supply orders yet</h2>
             <p className="text-sm text-bds-cocoa/80">Orders accepted for this unit will appear here with shipment and invoice details.</p>
           </div>
           <Link href="/portal/supplies" className="btn-primary shrink-0 text-xs font-bold uppercase tracking-wider">Order supplies</Link>
         </section>
       ) : (
         <>
-      <section aria-label="Order controls" className="space-y-4 rounded-2xl border border-bds-teal-dark/15 bg-white p-4 shadow-sm sm:p-5">
+      <section aria-label="Order work queue controls" className="orders-work-queue-toolbar mobile-workspace-panel space-y-4 rounded-2xl border border-bds-teal-dark/15 bg-white p-4 shadow-sm sm:p-5">
         {/* Saved Views / System Presets Rail */}
         <div className="flex flex-col gap-3 pb-3 border-b border-bds-teal-dark/10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2" role="region" aria-label="Saved views and common filters">
-            <span className="text-xs font-bold uppercase tracking-wider text-bds-cocoa/70 mr-1">Views:</span>
+          <div className="orders-work-queue-tabs flex flex-wrap items-center gap-2" role="region" aria-label="Order views">
+            <span className="orders-work-queue-label text-xs font-bold uppercase tracking-wider text-bds-cocoa/70 mr-1">Views:</span>
             {SYSTEM_ORDER_VIEWS.map((sysView) => {
               const isSelected = activeMatchedView?.id === sysView.id;
+              const viewCount = systemViewCounts[sysView.criteria.view];
+              const viewLabel = sysView.criteria.view === "in-motion" ? "Active" : sysView.name;
               return (
                 <button
                   key={sysView.id}
                   type="button"
                   tabIndex={0}
                   onClick={() => handleApplyCriteria(sysView.criteria)}
-                  className={`touch-target-inline rounded-xl px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
+                  className={`orders-work-queue-tab touch-target-inline rounded-xl px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                     isSelected
                       ? "bg-bds-teal-dark text-white shadow-sm"
                       : "bg-bds-cream text-bds-teal-dark hover:bg-bds-gold/30 border border-bds-teal-dark/10"
                   }`}
                   aria-pressed={isSelected}
-                  aria-label={`View ${sysView.name}`}
+                  aria-label={`View ${viewLabel}, ${viewCount} orders`}
                 >
-                  {sysView.name}
+                  <span>{viewLabel}</span><small aria-hidden="true">{viewCount}</small>
                 </button>
               );
             })}
@@ -291,7 +328,7 @@ export const OrdersWorkspace = ({
           </div>
 
           {/* Action to Save View or Reset Filters */}
-          <div className="flex items-center gap-2 shrink-0">
+          {!activeMatchedView || !isDefaultView ? <div className="orders-work-queue-actions flex items-center gap-2 shrink-0">
             {!activeMatchedView && (
               <button
                 type="button"
@@ -317,7 +354,7 @@ export const OrdersWorkspace = ({
                 <span>Reset</span>
               </button>
             )}
-          </div>
+          </div> : null}
         </div>
 
         {undoNotice && (
@@ -384,7 +421,7 @@ export const OrdersWorkspace = ({
         )}
 
         {/* Search, status, and sort refine the selected view without repeating it. */}
-        <div className="grid gap-3 sm:grid-cols-[minmax(15rem,1fr)_auto_auto]">
+        <div className="orders-work-queue-fields mobile-workspace-toolbar grid gap-3 sm:grid-cols-[minmax(15rem,1fr)_auto_auto]">
             <label className="relative block">
               <span className="sr-only">Search by order or invoice number</span>
               <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-bds-cocoa/45" aria-hidden="true" />
@@ -392,293 +429,83 @@ export const OrdersWorkspace = ({
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search order or invoice"
+                placeholder="Search orders or invoices…"
                 className="w-full rounded-xl border border-bds-teal-dark/20 bg-bds-cream/40 py-2.5 pl-9 pr-3 text-sm text-bds-teal-dark outline-none focus:ring-2 focus:ring-bds-teal placeholder:text-bds-cocoa/50"
               />
             </label>
-            <label className="text-xs font-semibold text-bds-cocoa/80">
+            <label className="relative text-xs font-semibold text-bds-cocoa/80">
               <span className="sr-only">Filter by status</span>
-              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as PortalOrder["status"] | "ALL")} className="h-full rounded-xl border border-bds-teal-dark/20 bg-white px-3 text-sm font-semibold text-bds-teal-dark">
-                <option value="ALL">All statuses</option>
+              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as PortalOrder["status"] | "ALL")} className="h-full appearance-none rounded-xl border border-bds-teal-dark/20 bg-white py-2 pl-3 pr-10 text-sm font-semibold text-bds-teal-dark">
+                <option value="ALL">Status: All</option>
                 {ORDER_STATUS_IDS.map((status) => (
-                  <option key={status} value={status}>{getOrderStatus(status).label}</option>
+                  <option key={status} value={status}>Status: {getOrderStatus(status).label}</option>
                 ))}
               </select>
+              <span aria-hidden="true" className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-bds-teal">⌄</span>
             </label>
-            <label className="text-xs font-semibold text-bds-cocoa/80">
+            <label className="relative text-xs font-semibold text-bds-cocoa/80">
               <span className="sr-only">Sort orders</span>
-              <select value={sort} onChange={(event) => setSort(event.target.value as OrderSort)} className="h-full rounded-xl border border-bds-teal-dark/20 bg-white px-3 text-sm font-semibold text-bds-teal-dark">
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="highest-total">Highest total</option>
+              <select value={sort} onChange={(event) => setSort(event.target.value as OrderSort)} className="h-full appearance-none rounded-xl border border-bds-teal-dark/20 bg-white py-2 pl-3 pr-10 text-sm font-semibold text-bds-teal-dark">
+                <option value="newest">Sort: Newest first</option>
+                <option value="oldest">Sort: Oldest first</option>
+                <option value="highest-total">Sort: Highest total</option>
               </select>
+              <span aria-hidden="true" className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-bds-teal">⌄</span>
             </label>
           </div>
       </section>
 
-      <div className={`grid gap-5 ${visibleOrders.length > 0 ? "xl:grid-cols-5" : ""}`}>
-        <section aria-label="Order list" className={visibleOrders.length > 0 ? "xl:col-span-2" : ""}>
-          <div className="space-y-3">
-            {visibleOrders.map((order) => {
-              const status = getOrderStatus(order.status);
-              const isSelected = selectedOrder?.id === order.id;
-              const isException = isOrderException(order);
-              const exceptionLabel = getOrderExceptionLabel(order);
-
-              return (
-                <button
-                  key={order.id}
-                  type="button"
-                  onClick={() => selectOrder(order)}
-                  aria-pressed={isSelected}
-                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${isSelected ? "border-bds-teal-dark bg-bds-cream/60 shadow-sm" : isException ? "border-bds-orange/30 bg-bds-orange/5 hover:border-bds-orange/50" : "border-bds-teal-dark/10 bg-white hover:border-bds-teal"}`}
-                >
-                  <div className="space-y-3">
-                    <div className="min-w-0">
-                      <p className="font-heading text-base font-bold text-bds-teal-dark">Order {order.id}</p>
-                      <p className="mt-1 text-xs text-bds-cocoa/70">Invoice {order.invoiceId}</p>
-                    </div>
-                    <div className="flex max-w-full flex-wrap gap-1.5">
-                      <span aria-label={getOrderStatusAccessibleLabel(order.status)} className="max-w-full rounded-full border border-bds-teal-dark/10 bg-bds-cream px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bds-teal-dark">
-                        Status: {status.label}
-                      </span>
-                      {exceptionLabel ? (
-                        <span className="max-w-full rounded-full bg-bds-orange/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-bds-orange">
-                          Action required: {exceptionLabel}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between gap-3 text-xs text-bds-cocoa/80">
-                    <span>{order.items.length} item{order.items.length === 1 ? "" : "s"}{!isOrderTerminal(order.status) && order.eta ? <> <span aria-hidden="true">·</span> Shipment timing: {order.eta}</> : null}</span>
-                    <span className="font-bold text-bds-teal-dark">${order.total.toFixed(2)}</span>
-                  </div>
-                </button>
-              );
-            })}
-
-            {visibleOrders.length === 0 ? (
-              <div role="status" className="rounded-2xl border border-bds-teal-dark/15 bg-white p-8 text-center text-sm text-bds-cocoa/80">
-                No orders match this view.
-              </div>
-            ) : null}
-          </div>
-        </section>
-
-        {visibleOrders.length > 0 ? (
-          <section aria-label="Selected order detail" className="xl:col-span-3">
-            {selectedOrder ? (
-            <OrderDetail
-              order={selectedOrder}
-              locationName={locationName}
-              locationId={locationId}
-            />
-            ) : null}
-          </section>
-        ) : null}
-      </div>
+      <section className="orders-table-workspace" aria-label="Orders table">
+        <div className="orders-table-scroll">
+          <table>
+            <caption className="sr-only">Supply orders for {locationName}</caption>
+            <thead><tr><th scope="col">Order</th><th scope="col">Status</th><th scope="col">Items</th><th scope="col">Shipment</th><th scope="col">Total</th><th scope="col">Placed</th><th scope="col">Actions</th></tr></thead>
+            <tbody>
+              {pagedOrders.map((order) => {
+                const status = getOrderStatus(order.status);
+                const actionLabel = getOrderActionLabel(order);
+                const fulfillment = getOrderFulfillmentLabel(order);
+                const href = `/portal/orders/${encodeURIComponent(order.id)}`;
+                return <tr key={order.id} className={previewOrder?.id === order.id ? "is-previewing" : undefined}>
+                  <td><Link href={href} className="orders-table-order" onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage })}><strong>{order.id}</strong><small>{order.invoiceId}</small></Link></td>
+                  <td><span className="orders-table-status" data-tone={status.presentation.tone} aria-label={getOrderStatusAccessibleLabel(order.status)}>{status.label}</span><small>{status.meaning}</small></td>
+                  <td><strong>{order.items.length} item{order.items.length === 1 ? "" : "s"}</strong><small>{order.items[0]?.name || "Order items"}{order.items.length > 1 ? ` +${order.items.length - 1}` : ""}</small></td>
+                  <td><strong>{fulfillment}</strong><small>{isOrderTerminal(order.status) ? status.meaning : "Ships from approved vendor"}</small></td>
+                  <td className="orders-table-total">{orderCurrency.format(order.total)}</td>
+                  <td><time dateTime={order.createdAt}>{formatPortalDate(order.createdAt, locationId)}<small>{formatOrderTime(order.createdAt, locationId)}</small></time></td>
+                  <td><span className="orders-table-action-cell">{actionLabel === "View" ? <button type="button" aria-label={`Preview order ${order.id}`} aria-pressed={previewOrder?.id === order.id} onClick={() => setPreviewOrder(order)}>View order <ArrowRight size={15} aria-hidden="true" /></button> : <Link href={href} className="is-primary" onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage })}>{actionLabel}<ArrowRight size={15} aria-hidden="true" /></Link>}</span></td>
+                </tr>;
+              })}
+              {pagedOrders.length === 0 ? <tr><td colSpan={7} className="orders-table-empty">No orders match this view.</td></tr> : null}
+            </tbody>
+          </table>
+        </div>
+        <footer className="orders-table-footer"><p>Showing {visibleOrders.length ? pageStart + 1 : 0}–{Math.min(pageStart + pageSize, visibleOrders.length)} of {visibleOrders.length} orders</p>{pageCount > 1 ? <nav aria-label="Orders pagination"><button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={safePage === 1} aria-label="Previous page"><ChevronLeft size={16} aria-hidden="true" /></button>{Array.from(new Set([Math.max(1, safePage - 1), safePage, Math.min(pageCount, safePage + 1)])).map((page) => <button key={page} type="button" aria-current={page === safePage ? "page" : undefined} onClick={() => setCurrentPage(page)}>{page}</button>)}<button type="button" onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))} disabled={safePage === pageCount} aria-label="Next page"><ChevronRight size={16} aria-hidden="true" /></button></nav> : null}{visibleOrders.length > DEFAULT_PAGE_SIZE ? <label><span>Rows per page</span><select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}><option value={10}>10</option><option value={25}>25</option><option value={50}>50</option></select></label> : null}</footer>
+      </section>
         </>
       )}
+      </div>
+      {orders.length ? <aside className="orders-preview-rail" aria-label="Order preview">{previewOrder ? <OrderPreview order={previewOrder} locationId={locationId} locationName={locationName} onClose={() => setPreviewOrder(null)} /> : <div className="orders-preview-empty"><ClipboardList size={28} aria-hidden="true" /><h2>Select an order</h2><p>Choose an order to review its shipment and line items.</p></div>}</aside> : null}
+      </div>
     </div>
   );
 };
 
-const OrderDetail = ({
-  order,
-  locationName,
-  locationId,
-}: {
-  order: PortalOrder;
-  locationName: string;
-  locationId: string;
-}) => {
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
-  const [cancelReason, setCancelReason] = useState("Operator requested cancellation");
-
+const OrderPreview = ({ order, locationId, locationName, onClose }: { order: PortalOrder; locationId: string; locationName: string; onClose: () => void }) => {
   const status = getOrderStatus(order.status);
-  const isException = isOrderException(order);
-  const exceptionLabel = getOrderExceptionLabel(order);
+  const href = `/portal/orders/${encodeURIComponent(order.id)}`;
+  const actionRequired = requiresOrderOperatorAction(order.status);
+  const primaryItem = order.items[0];
+  const remainingItems = order.items.slice(1);
 
-  const handleOpenCancelDialog = () => {
-    setIsCancelDialogOpen(true);
-  };
-
-  const handleCloseCancelDialog = () => {
-    setIsCancelDialogOpen(false);
-  };
-
-  const handleReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCancelReason(event.target.value);
-  };
-
-  const handleDialogKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleCloseCancelDialog();
-    }
-  };
-
-  return (
-    <article className="rounded-2xl border border-bds-teal-dark/15 bg-white p-6 shadow-sm xl:sticky xl:top-6 sm:p-8">
-      <div className="flex flex-col gap-4 border-b border-bds-teal-dark/10 pb-5 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-bds-teal-dark">Order detail</p>
-          <h2 className="mt-2 heading-subsection text-bds-teal-dark">Order {order.id}</h2>
-          <p className="mt-1 text-xs text-bds-cocoa/80">Placed {formatPortalDate(order.createdAt, locationId)} <span aria-hidden="true">·</span> Invoice {order.invoiceId}</p>
-          <TableLine className="w-24 mt-2" />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <span aria-label={getOrderStatusAccessibleLabel(order.status)} className="inline-flex w-fit items-center gap-1.5 rounded-full bg-bds-cream px-3 py-1 text-xs font-bold text-bds-teal-dark border border-bds-teal-dark/10">
-            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-            Status: {status.label}
-          </span>
-          {exceptionLabel ? (
-            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-bds-orange/15 px-3 py-1 text-xs font-bold text-bds-orange">
-              <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
-              Action required: {exceptionLabel}
-            </span>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl bg-bds-cream/40 border border-bds-teal-dark/10 p-4"><span className="block text-[10px] font-bold uppercase tracking-wider text-bds-cocoa/75">{isOrderTerminal(order.status) ? "Fulfillment" : "Shipment timing"}</span><span className="mt-1 block text-sm font-bold text-bds-teal-dark">{isOrderTerminal(order.status) ? getOrderStatus(order.status).meaning : order.eta || "Not available"}</span></div>
-        <div className="rounded-2xl bg-bds-cream/40 border border-bds-teal-dark/10 p-4"><span className="block text-[10px] font-bold uppercase tracking-wider text-bds-cocoa/75">Items</span><span className="mt-1 block text-sm font-bold text-bds-teal-dark">{order.items.length}</span></div>
-        <div className="rounded-2xl bg-bds-cream/40 border border-bds-teal-dark/10 p-4"><span className="block text-[10px] font-bold uppercase tracking-wider text-bds-cocoa/75">Total</span><span className="mt-1 block text-sm font-bold text-bds-teal-dark">${order.total.toFixed(2)}</span></div>
-      </div>
-
-      <div className="mt-6">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-bds-cocoa/70">Line items</h4>
-        <div className="mt-3 divide-y divide-bds-teal-dark/10 rounded-2xl border border-bds-teal-dark/10">
-          {order.items.map((item, index) => (
-            <div key={`${item.sku}-${index}`} className="flex items-center justify-between gap-4 p-4 text-sm">
-              <div><p className="font-semibold text-bds-teal-dark">{item.quantity}× {item.name}</p><p className="mt-1 text-xs text-bds-cocoa/70">SKU {item.sku}</p></div>
-              <span className="shrink-0 font-semibold text-bds-teal-dark">${(item.quantity * item.price).toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {canTransitionOrderStatus(order.status, "CANCELLED") ? (
-        <div className="mt-6 border-t border-bds-teal-dark/10 pt-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs font-bold text-bds-teal-dark">Fulfillment cancellation</p>
-              <p className="mt-0.5 text-[11px] text-bds-cocoa/80">Order is eligible for cancellation while pending fulfillment.</p>
-            </div>
-            <button
-              type="button"
-              onClick={handleOpenCancelDialog}
-              tabIndex={0}
-              aria-label={`Open cancellation confirmation for order ${order.id}`}
-              className="shrink-0 rounded-xl border border-bds-orange/30 bg-bds-orange/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-bds-orange hover:bg-bds-orange/20 hover:border-bds-orange/40 focus:outline-none focus:ring-2 focus:ring-bds-orange"
-            >
-              Cancel order
-            </button>
-          </div>
-
-          {/* High-Consequence Confirmation Dialog */}
-          {isCancelDialogOpen && (
-            <div
-              role="alertdialog"
-              aria-modal="true"
-              aria-labelledby="cancel-dialog-title"
-              aria-describedby="cancel-dialog-description"
-              onKeyDown={handleDialogKeyDown}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-            >
-              <div className="w-full max-w-lg rounded-2xl border border-red-200 bg-white p-6 sm:p-8 shadow-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-2xl bg-red-100 p-2.5 text-red-700">
-                    <AlertCircle className="h-6 w-6" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h3 id="cancel-dialog-title" className="text-lg font-bold font-heading text-bds-teal-dark">
-                      Confirm Order Cancellation
-                    </h3>
-                    <p className="text-xs text-bds-cocoa/70">
-                      High-consequence action for wholesale logistics
-                    </p>
-                  </div>
-                </div>
-
-                <div id="cancel-dialog-description" className="mt-4 space-y-3 text-xs text-bds-cocoa/80">
-                  <p className="rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-amber-900 leading-relaxed">
-                    Cancelling halts warehouse picking and voids invoice <strong>{order.invoiceId}</strong>. This action cannot be automatically reversed once processed.
-                  </p>
-
-                  <div className="rounded-2xl border border-bds-teal-dark/10 bg-bds-cream/40 p-4 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-bds-cocoa/75 uppercase text-[10px] tracking-wider">Target Unit</span>
-                      <span className="font-bold text-bds-teal-dark">{locationName} ({locationId || order.locationId})</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-bds-cocoa/75 uppercase text-[10px] tracking-wider">Order ID</span>
-                      <span className="font-mono font-bold text-bds-teal-dark">{order.id}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-bds-cocoa/75 uppercase text-[10px] tracking-wider">Invoice ID</span>
-                      <span className="font-mono font-bold text-bds-teal-dark">{order.invoiceId}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-bds-cocoa/75 uppercase text-[10px] tracking-wider">Total Value</span>
-                      <span className="font-bold text-bds-teal-dark text-sm">${order.total.toFixed(2)}</span>
-                    </div>
-                    <div className="pt-2 border-t border-bds-teal-dark/10">
-                      <span className="block font-bold text-bds-cocoa/75 uppercase text-[10px] tracking-wider mb-1">
-                        Line Items ({order.items.length})
-                      </span>
-                      <div className="max-h-24 overflow-y-auto space-y-1">
-                        {order.items.map((item, idx) => (
-                          <div key={`${item.sku}-${idx}`} className="flex justify-between text-[11px] text-bds-cocoa/80">
-                            <span>{item.quantity}× {item.name}</span>
-                            <span>${(item.price * item.quantity).toFixed(2)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <form action={cancelPortalOrderAction} className="mt-4 space-y-4">
-                    <input type="hidden" name="orderId" value={order.id} />
-                    <label className="block space-y-1">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-bds-teal-dark">Cancellation Reason</span>
-                      <input
-                        type="text"
-                        name="reason"
-                        value={cancelReason}
-                        onChange={handleReasonChange}
-                        required
-                        className="w-full rounded-xl border border-bds-teal-dark/20 bg-white px-3 py-2 text-xs text-bds-teal-dark outline-none focus:ring-2 focus:ring-bds-orange"
-                        placeholder="State reason for audit log..."
-                      />
-                    </label>
-
-                    <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-2 pt-2">
-                      <button
-                        type="button"
-                        onClick={handleCloseCancelDialog}
-                        tabIndex={0}
-                        aria-label="Keep order and dismiss cancellation"
-                        className="w-full sm:w-auto rounded-xl border border-bds-teal-dark/20 bg-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-bds-teal-dark hover:bg-bds-cream transition-colors focus:outline-none focus:ring-2 focus:ring-bds-gold"
-                      >
-                        Keep order
-                      </button>
-                      <button
-                        type="submit"
-                        tabIndex={0}
-                        aria-label={`Confirm cancellation of order ${order.id} for unit ${locationName}`}
-                        className="w-full sm:w-auto rounded-xl border border-red-600 bg-red-600 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
-                      >
-                        Yes, cancel order
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      ) : null}
-    </article>
-  );
+  return <div className="order-preview-surface">
+    <header><div><p>Order preview</p><h2 id="order-preview-title">Order {order.id}</h2></div><button type="button" onClick={onClose} aria-label="Close order preview"><X size={20} aria-hidden="true" /></button></header>
+    <div className="order-preview-heading"><span className="orders-table-status" data-tone={status.presentation.tone} aria-label={getOrderStatusAccessibleLabel(order.status)}>{status.label}</span><p>Invoice {order.invoiceId}</p><time dateTime={order.createdAt}>Placed {formatPortalDate(order.createdAt, locationId)} · {formatOrderTime(order.createdAt, locationId)}</time></div>
+    <section className="order-preview-callout" data-tone={actionRequired ? "attention" : "progress"} aria-labelledby="order-preview-callout-title">{actionRequired ? <AlertCircle aria-hidden="true" /> : <Package aria-hidden="true" />}<div><h3 id="order-preview-callout-title">{actionRequired ? status.notification.title : `${status.label} order`}</h3><p>{status.notification.body || status.meaning}</p></div><Link href={href}>{actionRequired ? status.notification.actionLabel : "View fulfillment details"}<ArrowRight size={17} aria-hidden="true" /></Link><Link href={`/portal/support?orderId=${encodeURIComponent(order.id)}`} className="order-preview-callout-support">Contact fulfillment support</Link></section>
+    <dl className="order-preview-impact"><div><Package aria-hidden="true" /><dt>Items</dt><dd>{order.items.length}</dd></div><div><ClipboardList aria-hidden="true" /><dt>Unit</dt><dd>{locationName}<small>{order.locationId}</small></dd></div><div><DollarSign aria-hidden="true" /><dt>Order total</dt><dd>{orderCurrency.format(order.total)}</dd></div></dl>
+    <p className="order-preview-guidance" role="status"><CheckCircle2 aria-hidden="true" />{actionRequired ? "Review the order status and resolution options before continuing." : "No action is required while this order continues through fulfillment."}</p>
+    <section className="order-preview-items" aria-labelledby="order-preview-items-title"><h3 id="order-preview-items-title">Items ({order.items.length})</h3>{primaryItem ? <article className="order-preview-primary-item"><span><Package aria-hidden="true" /></span><div><strong>{primaryItem.name}</strong><small>SKU {primaryItem.sku}</small><b>Qty {primaryItem.quantity}</b></div><em>{orderCurrency.format(primaryItem.quantity * primaryItem.price)}</em></article> : <p>No line items are available.</p>}{remainingItems.length ? <details className="order-preview-other-items"><summary>Other items in order: {remainingItems.length}</summary><ul>{remainingItems.map((item, index) => <li key={`${item.sku}-${index}`}><div><strong>{item.name}</strong><small>SKU {item.sku} · Qty {item.quantity}</small></div><span>{orderCurrency.format(item.quantity * item.price)}</span></li>)}</ul></details> : null}</section>
+    <section className="order-preview-activity" aria-labelledby="order-preview-activity-title"><header><h3 id="order-preview-activity-title">Order activity</h3><Link href={href}>View full timeline <ArrowRight size={15} aria-hidden="true" /></Link></header><ol><li><CheckCircle2 aria-hidden="true" /><div><strong>Order submitted</strong><small>{formatPortalDate(order.createdAt, locationId)} · {formatOrderTime(order.createdAt, locationId)}</small></div><span>Order received and confirmed.</span></li><li data-tone={actionRequired ? "attention" : "complete"}>{actionRequired ? <AlertCircle aria-hidden="true" /> : <CheckCircle2 aria-hidden="true" />}<div><strong>{status.label}</strong><small>{status.meaning}</small></div><span>{status.notification.body}</span></li>{!isOrderTerminal(order.status) && order.eta ? <li><Circle aria-hidden="true" /><div><strong>Estimated arrival</strong><small>{order.eta}</small></div><span>We&apos;ll notify you if timing changes.</span></li> : null}</ol></section>
+    <footer><Link href={href} onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: status.analytics.lifecycleStage })}>View full order <ArrowRight size={17} aria-hidden="true" /></Link><Link href={`/portal/support?orderId=${encodeURIComponent(order.id)}`} className="order-preview-support"><Headphones size={17} aria-hidden="true" />Contact support</Link></footer>
+  </div>;
 };

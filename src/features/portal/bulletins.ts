@@ -92,4 +92,7 @@ export const getVisibleBulletins = (
     );
 
 export const requiresBulletinAction = (bulletin: PortalBulletin): boolean =>
-  bulletin.priority === "ACTION_REQUIRED";
+  bulletin.priority === "ACTION_REQUIRED" || bulletin.acknowledgement?.required === true;
+
+export const isBulletinActionOutstanding = (bulletin: PortalBulletin): boolean =>
+  requiresBulletinAction(bulletin) && !bulletin.currentUserState?.acknowledgedAt;

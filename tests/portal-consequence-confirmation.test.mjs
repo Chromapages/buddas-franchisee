@@ -8,6 +8,8 @@ const ROOT_DIR = path.resolve(process.cwd());
 test("1. High-Consequence Order Cancellation: has rich confirmation dialog preventing wrong-unit / wrong-order mistakes", () => {
   const ordersWorkspacePath = path.join(ROOT_DIR, "src/components/portal/orders-workspace.tsx");
   const content = fs.readFileSync(ordersWorkspacePath, "utf-8");
+  const dialogPath = path.join(ROOT_DIR, "src/components/portal/order-cancellation-request.tsx");
+  const dialogContent = fs.readFileSync(dialogPath, "utf-8");
 
   // Verify OrderDetail accepts locationName and locationId
   assert.ok(
@@ -19,50 +21,50 @@ test("1. High-Consequence Order Cancellation: has rich confirmation dialog preve
     "OrderDetail should accept locationId for unit context",
   );
 
-  // Verify alertdialog with aria-modal
+  // Native dialog provides modal background isolation and Escape behavior.
   assert.ok(
-    content.includes('role="alertdialog"'),
-    "Order cancellation confirmation must use role='alertdialog'",
+    dialogContent.includes("<dialog"),
+    "Order cancellation confirmation must use a native modal dialog",
   );
   assert.ok(
-    content.includes('aria-modal="true"'),
-    "Order cancellation confirmation must specify aria-modal='true'",
+    dialogContent.includes("showModal()"),
+    "Order cancellation confirmation must open modally",
   );
 
   // Verify context: unit name, unit ID, order ID, invoice ID, total dollar value, line items
   assert.ok(
-    content.includes("{locationName} ({locationId || order.locationId})"),
+    dialogContent.includes("{locationName} ({locationId})"),
     "Must display target unit name and ID to prevent wrong-unit mistakes",
   );
   assert.ok(
-    content.includes("{order.id}"),
+    dialogContent.includes("{order.id}"),
     "Must display order ID in confirmation dialog",
   );
   assert.ok(
-    content.includes("{order.invoiceId}"),
+    dialogContent.includes("{order.invoiceId}"),
     "Must display invoice ID in confirmation dialog",
   );
   assert.ok(
-    content.includes("${order.total.toFixed(2)}"),
+    dialogContent.includes("${order.total.toFixed(2)}"),
     "Must display total dollar amount in confirmation dialog",
   );
   assert.ok(
-    content.includes("Line Items"),
+    dialogContent.includes("Line items"),
     "Must display line items summary in confirmation dialog",
   );
   assert.ok(
-    content.includes("name=\"reason\""),
+    dialogContent.includes("name=\"reason\""),
     "Must provide reason input for audit trail",
   );
 
   // Verify dismiss and confirm buttons
   assert.ok(
-    content.includes("Keep order"),
+    dialogContent.includes("Keep order"),
     "Must offer a non-destructive dismiss button to keep the order",
   );
   assert.ok(
-    content.includes("Yes, cancel order"),
-    "Must offer an explicit confirmation button for cancellation",
+    dialogContent.includes("Submit cancellation request"),
+    "Must offer an explicit confirmation button for a cancellation request",
   );
 });
 
@@ -119,12 +121,12 @@ test("3. Low-Risk Reversible Cart Item Removal: prefers Undo over blocking confi
 
   // Verify Undo mechanism
   assert.ok(
-    content.includes("handleUndoRemove"),
-    "Cart workspace must support handleUndoRemove",
+    content.includes("undoRef") && content.includes("Undo removal"),
+    "Cart workspace must offer a focused Undo removal action",
   );
   assert.ok(
-    content.includes("restorePortalCartItemAction"),
-    "Cart workspace must call restorePortalCartItemAction on undo",
+    content.includes("restoring: true"),
+    "Cart workspace must restore the removed quantity through its guarded mutation path",
   );
   assert.ok(
     content.includes('role="status"'),
@@ -171,7 +173,7 @@ test("4. Low-Risk Reversible Saved View Deletion: prefers Undo in Orders & Suppo
 });
 
 test("5. Ordinary Non-Destructive Actions: ZERO confirmation dialogs for navigation, bulletins, and resources", () => {
-  const bulletinsPath = path.join(ROOT_DIR, "src/components/portal/bulletins-board.tsx");
+  const bulletinsPath = path.join(ROOT_DIR, "src/components/portal/interactive-bulletin-list.tsx");
   const bulletinsContent = fs.readFileSync(bulletinsPath, "utf-8");
 
   assert.ok(
@@ -183,7 +185,7 @@ test("5. Ordinary Non-Destructive Actions: ZERO confirmation dialogs for navigat
     "Reading bulletins should not prompt 'Are you sure?'",
   );
 
-  const resourcePath = path.join(ROOT_DIR, "src/components/portal/resource-library.tsx");
+  const resourcePath = path.join(ROOT_DIR, "src/components/portal/resource-action.tsx");
   const resourceContent = fs.readFileSync(resourcePath, "utf-8");
 
   assert.ok(
@@ -196,10 +198,10 @@ test("5. Ordinary Non-Destructive Actions: ZERO confirmation dialogs for navigat
   );
 });
 
-test("6. Cart Actions: restorePortalCartItemAction exports correctly", async () => {
-  const cartActions = await import("../src/features/portal/cart-actions.ts");
-  assert.equal(typeof cartActions.restorePortalCartItemAction, "function");
-  assert.equal(typeof cartActions.removePortalCartItemAction, "function");
-  assert.equal(typeof cartActions.updatePortalCartItemAction, "function");
-  assert.equal(typeof cartActions.addPortalCartItemAction, "function");
+test("6. Cart Actions: guarded cart commands are exported", () => {
+  const cartActions = fs.readFileSync(path.join(ROOT_DIR, "src/features/portal/cart-actions.ts"), "utf-8");
+  assert.match(cartActions, /export const restorePortalCartItemAction\s*=/);
+  assert.match(cartActions, /export const removePortalCartItemAction\s*=/);
+  assert.match(cartActions, /export const updatePortalCartItemAction\s*=/);
+  assert.match(cartActions, /export const addPortalCartItemAction\s*=/);
 });

@@ -43,14 +43,14 @@ if (new Set(requiredTokens).size !== requiredTokens.length) {
 }
 
 const shellRules: Array<[string, string]> = [
-  ["src/app/franchise/login/page.tsx", "content-narrow section-standard"],
+  ["src/app/franchise/login/page.tsx", "max-w-[480px]"],
   ["src/app/franchise/fdd/[token]/page.tsx", "content-wide page-rhythm"],
-  ["src/app/portal/account/page.tsx", "workspace-reading"],
-  ["src/app/portal/support/page.tsx", "workspace-form"],
-  ["src/app/portal/checkout/page.tsx", "workspace-reading"],
-  ["src/app/portal/cart/page.tsx", "workspace-detail"],
+  ["src/app/portal/account/page.tsx", "account-page portal-page-stack"],
+  ["src/app/portal/support/page.tsx", "portal-page-stack"],
+  ["src/app/portal/checkout/page.tsx", "portal-checkout-page portal-page-stack"],
+  ["src/app/portal/cart/page.tsx", "portal-cart-page portal-page-stack"],
   ["src/app/portal/supplies/[slug]/page.tsx", "workspace-detail"],
-  ["src/app/portal/checkout/confirmation/page.tsx", "workspace-form section-standard"],
+  ["src/app/portal/checkout/confirmation/page.tsx", "workspace-form mx-auto portal-page-stack"],
 ];
 
 for (const [path, expected] of shellRules) {

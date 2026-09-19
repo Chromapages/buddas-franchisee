@@ -1,7 +1,7 @@
 # Define the scope and requirements for the Budda’s franchise platform
 
 **Document:** Scope and requirements  
-**Product:** Budda’s franchise recruitment site and operator portal  
+**Product:** Budda’s franchise marketing website, operator portal, and corporate portal
 **Version:** 1.0  
 **Date:** August 21, 2026  
 **Status:** Proposed release baseline  
@@ -12,12 +12,13 @@ This document defines the pages, features, integrations, exclusions, and accepta
 
 ## 1. Executive summary
 
-The platform contains two related products:
+The platform contains three related products with separate audiences, navigation, authorization, and success measures:
 
 1. **Public franchise recruitment:** An evidence-led website that explains Budda’s, helps prospects assess fit, and captures qualified interest
 2. **Operator portal:** A protected workspace for franchise operations, supplies, orders, resources, support, and account context
+3. **Corporate portal:** A protected internal workspace for inquiry disposition, network work queues, order reconciliation, support, requests, content, directory, access, integration health, and audit
 
-Release 1 commits to the public qualified-interest experience and its production inquiry pipeline. The operator portal may enter a controlled pilot only after discovery validates operator jobs and the required identity, data, tenancy, and integration foundations.
+Release 1 commits to the public qualified-interest experience and its production inquiry pipeline. The operator portal and corporate portal may enter controlled production use only after discovery validates their jobs and the required identity, data, tenancy, integration, support, and audit foundations. Corporate is an operating environment, not a public-site CMS skin or an operator role.
 
 Active franchise-offering features remain outside Release 1. Budda’s may enable them only after leadership and franchise counsel approve operational readiness, the Franchise Disclosure Document, state rules, qualification thresholds, and any financial-performance representations.
 
@@ -103,6 +104,10 @@ Release 2 requires a separate legal acceptance matrix. The Federal Trade Commiss
 - **REQ-010:** Active-offering content must require a protected release gate
 - **REQ-011:** Analytics must exclude direct inquiry identifiers
 - **REQ-012:** Production secrets must remain server-only
+- **REQ-013:** Marketing, operator, and corporate environments must have distinct navigation, authorization policy, analytics boundaries, and noindex behavior for protected routes
+- **REQ-014:** A portal projection must identify its authoritative system and display freshness or unavailable state; it must not silently become a competing source of truth
+- **REQ-015:** Corporate aggregate reporting may use only authoritative or reconciled records and must expose coverage, freshness, and reconciliation exceptions
+- **REQ-016:** Operator workflows must use the fewest practical steps for the job; usability is measured by completion, time, error, abandonment, and recovery rather than an absolute click count
 
 ### 3.2 Approved assumptions
 
@@ -112,12 +117,38 @@ Release 2 requires a separate legal acceptance matrix. The Federal Trade Commiss
 - The public site remains under `/franchise`
 - Existing public route names remain canonical for Release 1
 - The operator portal shares the application but uses separate navigation and access controls
+- The corporate portal shares the application but uses separate navigation, staff-only capabilities, and access controls
 - Server Components remain the default rendering model
 - Server Actions or Route Handlers handle mutations
 - The platform remains a modular monolith for Release 1
 - No artificial intelligence feature is required
 
-### 3.3 Controlled variables
+### 3.3 Systems-of-record contract
+
+The selected provider may change, but authority may not remain ambiguous. Before production data is enabled, each domain must have a named owner, authoritative record identifier, freshness target, retry policy, and reconciliation procedure.
+
+| Domain | Authoritative system | Platform responsibility | Failure rule |
+| --- | --- | --- | --- |
+| POS sales | Approved POS provider | Ingest immutable transaction/location references for reconciled reporting | Mark delayed or unavailable; never estimate sales |
+| Inventory | Approved inventory or ERP provider; supplier system only where contractually authoritative | Read availability and capture the snapshot used at order submission | Revalidate before acceptance; never infer stock from catalog display |
+| Suppliers and fulfillment | Approved supplier/fulfillment system | Submit idempotent purchase orders and retain acknowledgments, supplier references, status events, and exceptions | An operator confirmation is pending until supplier acknowledgment |
+| Payments and invoices | Approved payment processor or accounting/ERP system, according to the selected billing model | Store provider references and verified state projections | Redirect, receipt, or client state never proves payment |
+| Franchise CRM | Approved CRM | Own sales-pipeline disposition and follow-up after durable platform inquiry capture; platform inquiry remains the canonical submission and consent evidence | Queue delivery and manual recovery without asking the prospect to resubmit |
+| Identity and access | Approved identity provider plus platform authorization grants | Delegate credentials, MFA, recovery, and revocation; enforce role, capability, organization, and location grants server-side | Fail closed when identity or grants cannot be verified |
+
+### 3.4 First closed production loop
+
+The first operational integration is **operator order → supplier acknowledgment → corporate reconciliation**:
+
+1. An authorized operator submits an idempotent order using server-revalidated catalog, price, location, and availability data.
+2. The platform persists the order as `submission_pending` and sends it to the authoritative supplier system.
+3. The supplier returns an acknowledgment with its reference, accepted/rejected lines, quantities, prices, and expected fulfillment state.
+4. The platform records the immutable acknowledgment, moves accepted work to the appropriate state, and exposes exceptions to operator and corporate users.
+5. Corporate reconciles platform order totals and lines against supplier acknowledgments; payment or invoice reconciliation remains separate and uses its own authority.
+
+The loop is complete only when every submitted order is acknowledged or placed in an owned exception queue, duplicates are prevented, discrepancies are visible, and reconciliation is auditable.
+
+### 3.5 Controlled variables
 
 These values require accountable approval before configuration:
 
@@ -167,6 +198,18 @@ Protected portal (/portal)
 ├── Resources (/portal/resources)
 ├── Support (/portal/support)
 └── Account (/portal/account)
+
+Protected corporate portal (/corporate)
+├── Dashboard and reporting (/corporate)
+├── Work queue (/corporate/work)
+├── Inquiries (/corporate/inquiries)
+├── Orders and reconciliation (/corporate/orders)
+├── Support (/corporate/support)
+├── Requests (/corporate/requests)
+├── Catalog (/corporate/catalog)
+├── Resources (/corporate/resources)
+├── Directory (/corporate/directory)
+└── Administration (/corporate/administration)
 ```
 
 ### 4.2 Redirect requirements

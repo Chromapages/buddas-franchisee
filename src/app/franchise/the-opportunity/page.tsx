@@ -17,6 +17,7 @@ import { OpportunityIndex } from "@/src/components/public/opportunity-index";
 import { OpportunityIndexEnhancer } from "@/src/components/public/opportunity-index-enhancer";
 import { OpportunityAnalyticsLink } from "@/src/components/public/opportunity-analytics-link";
 import { TerritoryChecker } from "@/src/components/public/territory-checker";
+import { StructuredData } from "@/src/components/public/structured-data";
 import {
   getPublicJurisdictionDisplay,
   PUBLIC_JURISDICTION_STATUSES,
@@ -248,6 +249,7 @@ export default function TheOpportunityPage() {
 
   return (
     <div data-opportunity-dossier>
+      <StructuredData />
       <OpportunityPageStructuredData />
       <OpportunityIndexEnhancer />
       <FranchisePageHeader

@@ -7,6 +7,7 @@ export const getInquiryDeliveryUrl = (): string | null => {
     return configured.trim();
   }
 
-  // Development/Test fallback
-  return "https://api.buddasfranchise.com/v1/inquiries/webhook";
+  return process.env.NODE_ENV === "development"
+    ? "https://api.buddasfranchise.com/v1/inquiries/webhook"
+    : null;
 };
