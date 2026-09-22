@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { CorporateShell } from "@/src/components/corporate/corporate-shell";
 import { hasCorporatePermission } from "@/src/features/corporate/authorization";
 import { requireCorporateSession } from "@/src/features/corporate/session";
+import "./corporate-sidebar.css";
 
 export const metadata: Metadata = {
   title: "Corporate operations — Budda's Workspace",

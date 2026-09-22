@@ -6,17 +6,18 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Bell,
+  Building2,
   BookOpen,
   ClipboardCheck,
   ClipboardList,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Headphones,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageSquareMore,
-  PanelLeftClose,
-  PanelLeftOpen,
   PackageSearch,
   ReceiptText,
   ChartNoAxesCombined,
@@ -72,6 +73,7 @@ export function CorporateShell({ children, displayName, email, scopeLabel, acces
   const accountButton = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
   const { collapsed, toggle } = useDesktopSidebarPreference("corporate");
+  const accountInitials = displayName.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || email[0]?.toUpperCase() || "C";
   const visibleItems = primaryItems.filter((item) => item.access === null || access[item.access]);
   const navigationGroups = (["Work", "Operations", "Growth"] as const).map((group) => ({ group, items: visibleItems.filter((item) => item.group === group) })).filter((entry) => entry.items.length > 0);
 
@@ -137,7 +139,7 @@ export function CorporateShell({ children, displayName, email, scopeLabel, acces
     <div className="corporate-shell" data-sidebar-collapsed={collapsed || undefined}>
       <a className="corporate-skip-link" href="#corporate-main">Skip to corporate workspace</a>
       <aside id="corporate-desktop-sidebar" className="corporate-rail" aria-label="Corporate operations sidebar">
-        <div>
+        <div className="corporate-rail-scroll">
           <div className="corporate-brand">
             <Link href="/corporate" className="corporate-brand-link" aria-label="Budda's corporate operations home">
               <Image className="corporate-brand-logo" src="/images/Logo-white.svg" width={178} height={36} alt="Budda's Franchising" priority />
@@ -145,24 +147,30 @@ export function CorporateShell({ children, displayName, email, scopeLabel, acces
             </Link>
             <p>Corporate operations</p>
           </div>
+          <div className="corporate-rail-context" aria-label={`Portfolio: ${scopeLabel}`} title={scopeLabel}>
+            <Building2 size={26} aria-hidden="true" />
+            <span><strong>Portfolio</strong><small>{scopeLabel}</small></span>
+          </div>
           {navigation()}
         </div>
         <div ref={accountArea} className="corporate-account">
           <button ref={accountButton} type="button" className="corporate-account-trigger" onClick={() => setIsAccountMenuOpen((value) => !value)} aria-label={`Open account menu for ${displayName || email}`} aria-haspopup="dialog" aria-expanded={isAccountMenuOpen} aria-controls="corporate-account-menu" title={`Account: ${displayName || email}`}>
-            <span className="corporate-avatar" aria-hidden="true">{(displayName || email).slice(0, 1).toUpperCase()}</span>
-            <span className="corporate-account-copy"><strong>{displayName || "Corporate user"}</strong><small>{email}</small></span>
+            <span className="corporate-avatar" aria-hidden="true">{accountInitials}</span>
+            <span className="corporate-account-copy"><strong>{displayName || "Corporate user"}</strong><small>Corporate workspace</small></span>
             <ChevronDown className="corporate-account-arrow" size={16} aria-hidden="true" />
           </button>
           <button type="button" className="corporate-sidebar-toggle" onClick={() => { setIsAccountMenuOpen(false); toggle(); }} aria-label={collapsed ? "Expand navigation" : "Collapse navigation"} aria-controls="corporate-desktop-sidebar" aria-expanded={!collapsed} title={collapsed ? "Expand navigation" : "Collapse navigation"}>
-            {collapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
+            {collapsed ? <ChevronRight size={20} aria-hidden="true" /> : <ChevronLeft size={20} aria-hidden="true" />}
+            <span className="corporate-sidebar-toggle-label">{collapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
           </button>
           {isAccountMenuOpen ? <div ref={accountMenu} id="corporate-account-menu" role="dialog" aria-label="Account menu" className="corporate-account-menu">
-            <div className="corporate-account-menu-summary"><span className="corporate-avatar" aria-hidden="true">{(displayName || email).slice(0, 1).toUpperCase()}</span><span><strong>{displayName || "Corporate user"}</strong><small>{email}</small></span></div>
-            <div className="corporate-account-menu-actions">
-              {access.administration ? <Link href="/corporate/administration" onClick={() => setIsAccountMenuOpen(false)}><Settings size={16} aria-hidden="true" />Administration</Link> : null}
-              {access.support ? <Link href="/corporate/support" onClick={() => setIsAccountMenuOpen(false)}><Headphones size={16} aria-hidden="true" />Support</Link> : null}
+            <div className="corporate-account-menu-summary"><span className="corporate-avatar" aria-hidden="true">{accountInitials}</span><span><strong>{displayName || "Corporate user"}</strong><small>{email}</small></span><button type="button" onClick={() => { setIsAccountMenuOpen(false); accountButton.current?.focus(); }} aria-label="Close account menu"><ChevronDown size={20} aria-hidden="true" /></button></div>
+            <div className="corporate-account-menu-body">
+              {access.administration ? <section className="corporate-account-menu-section" aria-label="Your workspace"><h2><Building2 size={14} aria-hidden="true" />Your workspace</h2><Link className="corporate-account-menu-row" href="/corporate/administration" onClick={() => setIsAccountMenuOpen(false)}><Settings size={22} aria-hidden="true" /><span><strong>Administration</strong><small>Review permitted governance tools</small></span><ChevronRight size={18} aria-hidden="true" /></Link></section> : null}
+              <section className="corporate-account-menu-section" aria-label="Portfolio scope"><h2><Building2 size={14} aria-hidden="true" />Portfolio scope</h2><div className="corporate-account-menu-context"><Building2 size={22} aria-hidden="true" /><span><strong>Portfolio</strong><small>{scopeLabel}</small></span><span>Current</span></div></section>
+              {access.support ? <Link className="corporate-account-menu-row corporate-account-menu-help" href="/corporate/support" onClick={() => setIsAccountMenuOpen(false)}><Headphones size={23} aria-hidden="true" /><span><strong>Support</strong><small>Open support cases and requests</small></span><ChevronRight size={18} aria-hidden="true" /></Link> : null}
             </div>
-            <form action={logoutAction}><button type="submit" className="corporate-account-menu-signout"><LogOut size={16} aria-hidden="true" />Sign out</button></form>
+            <form action={logoutAction} className="corporate-account-menu-logout"><button type="submit" className="corporate-account-menu-signout"><LogOut size={22} aria-hidden="true" /><span><strong>Sign out</strong><small>End your current session</small></span></button></form>
           </div> : null}
         </div>
       </aside>

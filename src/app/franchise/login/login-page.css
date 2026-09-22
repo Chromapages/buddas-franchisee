@@ -1,0 +1,395 @@
+.operator-login-page {
+  min-height: 100svh;
+  background: #fff;
+  color: #123f44;
+}
+
+.operator-login-story {
+  position: relative;
+  display: none;
+}
+
+.operator-login-panel {
+  position: relative;
+  min-height: 100svh;
+  padding: 1.5rem;
+  background: #fff;
+}
+
+.operator-login-panel-inner {
+  width: min(100%, 35rem);
+  margin: 4.5rem auto 0;
+}
+
+.operator-login-public-link {
+  position: absolute;
+  top: 1.75rem;
+  right: 1.75rem;
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: .45rem;
+  color: #005d57;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.operator-login-public-link svg,
+.operator-login-help-links a svg {
+  width: .95rem;
+  height: .95rem;
+}
+
+.operator-login-panel .operator-login-eyebrow {
+  color: #788da0;
+  font-size: .78rem;
+  letter-spacing: .22em;
+}
+
+.operator-login-panel .operator-login-heading {
+  margin-top: .85rem;
+  color: #005750;
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.035em;
+}
+
+.operator-login-panel .operator-login-subtext {
+  max-width: 29rem;
+  margin-top: 1rem;
+  color: #42596b;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.operator-auth-form {
+  display: grid;
+  gap: 1.35rem;
+  margin-top: 2.45rem;
+}
+
+.operator-auth-field label {
+  display: block;
+  margin-bottom: .55rem;
+  color: #005750;
+  font-size: .88rem;
+  font-weight: 700;
+}
+
+.operator-auth-field > div {
+  display: flex;
+  min-height: 3.35rem;
+  align-items: center;
+  gap: .85rem;
+  border: 1px solid #c3d0db;
+  border-radius: .68rem;
+  background: #fff;
+  padding: 0 1rem;
+}
+
+.operator-auth-field > div:focus-within {
+  border-color: #00776d;
+  box-shadow: 0 0 0 3px rgb(0 119 109 / 14%);
+}
+
+.operator-auth-field > div > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  color: #006b63;
+}
+
+.operator-auth-field input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #173f45;
+  font-size: .98rem;
+}
+
+.operator-auth-field input::placeholder {
+  color: #7b8fa5;
+}
+
+.operator-auth-field button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #6d8195;
+}
+
+.operator-auth-field button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.operator-auth-forgot {
+  display: flex;
+  width: fit-content;
+  min-height: 2.75rem;
+  margin: .05rem 0 -1rem auto;
+  align-items: center;
+  color: #005d57;
+  font-size: .86rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .18rem;
+}
+
+.operator-auth-submit {
+  display: flex;
+  min-height: 3.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  border-radius: .68rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.operator-auth-submit {
+  background: #00776d;
+  color: #fff;
+}
+
+.operator-auth-submit:hover:not(:disabled) {
+  background: #00675f;
+}
+
+.operator-auth-submit svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.operator-auth-submit:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.operator-login-help-links {
+  margin-top: 2.35rem;
+  border-top: 1px solid #d6dee4;
+}
+
+.operator-login-help-links > div {
+  display: grid;
+  grid-template-columns: 2.8rem 1fr;
+  gap: .95rem;
+  align-items: center;
+  min-height: 6.15rem;
+  border-bottom: 1px solid #d6dee4;
+}
+
+.operator-login-help-links > div > span {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f4f1;
+  color: #006b63;
+}
+
+.operator-login-help-links > div > span svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.operator-login-help-links p {
+  color: #435869;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.operator-login-help-links a {
+  display: flex;
+  width: fit-content;
+  min-height: 2.2rem;
+  align-items: center;
+  gap: .5rem;
+  color: #005d57;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .18rem;
+}
+
+@media (min-width: 1024px) {
+  .operator-login-page {
+    display: grid;
+    grid-template-columns: minmax(0, 53.25fr) minmax(34rem, 46.75fr);
+  }
+
+  .operator-login-story {
+    position: relative;
+    display: block;
+    min-height: 100svh;
+    overflow: hidden;
+    background: #f7f2e8;
+  }
+
+  .operator-login-story-photo {
+    object-fit: cover;
+    object-position: center bottom;
+  }
+
+  .operator-login-story-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bds-color-brand-cream) 98%, transparent) 0%,
+      color-mix(in srgb, var(--bds-color-brand-cream) 96%, transparent) 48%,
+      color-mix(in srgb, var(--bds-color-brand-cream) 76%, transparent) 58%,
+      color-mix(in srgb, var(--bds-color-brand-cream) 12%, transparent) 70%,
+      color-mix(in srgb, var(--bds-color-brand-teal-dark) 18%, transparent) 100%
+    );
+  }
+
+  .operator-login-story-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    padding: clamp(2.5rem, 4.2vw, 4.15rem) clamp(2.75rem, 4.4vw, 4.4rem) 3.1rem;
+  }
+
+  .operator-login-logo-link {
+    display: block;
+    width: fit-content;
+  }
+
+  .operator-login-story-copy {
+    margin-top: clamp(2.25rem, 4.2vh, 3.25rem);
+  }
+
+  .operator-login-story-eyebrow,
+  .operator-login-tagline {
+    color: #8a7d69;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .23em;
+    text-transform: uppercase;
+  }
+
+  .operator-login-story-copy h2 {
+    margin-top: 1.1rem;
+    color: #005750;
+    font-family: var(--font-heading), sans-serif;
+    font-size: clamp(2.4rem, 3.15vw, 3.1rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -.04em;
+  }
+
+  .operator-login-story-copy > p:last-child {
+    max-width: 28rem;
+    margin-top: .8rem;
+    color: #405969;
+    font-size: clamp(1.05rem, 1.45vw, 1.35rem);
+    line-height: 1.45;
+  }
+
+  .operator-login-benefits {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(.5rem, 1.5vw, 1.25rem);
+    width: min(100%, 38rem);
+    margin-top: 1.4rem;
+  }
+
+  .operator-login-benefits li {
+    display: grid;
+    justify-items: center;
+    gap: .55rem;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .operator-login-benefits li > span {
+    display: grid;
+    width: clamp(3.25rem, 4.7vw, 4.25rem);
+    height: clamp(3.25rem, 4.7vw, 4.25rem);
+    place-items: center;
+    border-radius: 50%;
+    background: #e6f1ed;
+    color: #006b63;
+  }
+
+  .operator-login-benefits svg {
+    width: clamp(1.45rem, 2.2vw, 2rem);
+    height: clamp(1.45rem, 2.2vw, 2rem);
+  }
+
+  .operator-login-benefits strong {
+    color: #005750;
+    font-size: clamp(.78rem, 1.2vw, 1rem);
+  }
+
+  .operator-login-tagline {
+    margin-top: auto;
+    color: #9a7848;
+    line-height: 1.5;
+  }
+
+  .operator-login-panel {
+    padding: 2.5rem clamp(3rem, 5.1vw, 5.25rem) 3rem;
+  }
+
+  .operator-login-panel-inner {
+    margin-top: clamp(4.7rem, 9.2vh, 7rem);
+  }
+
+  .operator-login-public-link {
+    top: 2.2rem;
+    right: clamp(3rem, 4vw, 4.3rem);
+  }
+}
+
+@media (max-height: 850px) and (min-width: 1024px) {
+  .operator-login-story-content {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .operator-login-story-copy {
+    margin-top: 1.8rem;
+  }
+
+  .operator-login-story-copy h2 {
+    font-size: 2.25rem;
+  }
+
+  .operator-login-benefits {
+    gap: .45rem;
+    margin-top: 1rem;
+  }
+
+  .operator-login-benefits li > span {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .operator-login-panel-inner {
+    margin-top: 3.8rem;
+  }
+
+  .operator-auth-form {
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .operator-login-help-links {
+    margin-top: 1.4rem;
+  }
+
+  .operator-login-help-links > div {
+    min-height: 4.8rem;
+  }
+}

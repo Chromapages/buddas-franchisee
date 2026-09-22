@@ -37,6 +37,186 @@ The source region has icon-and-copy pairs separated only by a central rule. The 
 
 final result: passed
 
+# Latest pass — Corporate footer name overflow
+
+- Reference: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-3215f0e7-f0de-40cd-84a3-f35c3b9323c6.png`.
+- Implementation: `.omx/state/corporate-sidebar/account-footer-one-line.png`, cropped from the authenticated corporate dashboard at a 280px expanded rail.
+- Finding and fix: the account name wrapped because a corporate-specific rule overrode the existing single-line clipping behavior. Removed that override rather than adding another variant.
+- Evidence: computed name height equals one line (22.8px); `white-space: nowrap`, `overflow: hidden`, and `text-overflow: ellipsis` are active. The full name remains in the account trigger's accessible label and the open menu.
+- No remaining P0/P1/P2 visual mismatch for the requested footer region.
+
+final result: passed
+
+# Latest pass — Corporate account dropdown parity
+
+- Visual source: operator account-menu capture `.omx/state/operator-sidebar/account-menu-single.png` at approximately 1910 × 860 CSS px.
+- Implementation: authenticated corporate portal at `http://localhost:3000/corporate`; capture `.omx/state/corporate-sidebar/account-menu.png` at approximately 1910 × 900 CSS px. Comparison was limited to the open dropdown component, with its different corporate content treated as intentional.
+- Initial finding: P1 — the old corporate popover was present in the accessibility tree but hidden behind the scrolling rail. Moving it to a fixed, rail-adjacent layer made the menu visible in both expanded and collapsed modes.
+- Typography, spacing, colors, assets, and copy: the updated card uses the operator menu's 416px width, avatar, dark teal token, section spacing, context highlight, link rows, and sign-out treatment. The approved icon library remains; labels and destinations are corporate-specific. No new asset or dependency was introduced.
+- Behavior: Administration and Support remain permission-gated; an empty Administration section is omitted for users without access. Escape closes the menu and returns focus to its trigger. The Administration link reaches `/corporate/administration`. In the collapsed 72px rail, the menu begins at 84px; at 1024 × 768 it remains in view with no horizontal overflow.
+- Final visual comparison: no remaining P0/P1/P2 difference. The shorter corporate card reflects its smaller set of authorized actions, not missing UI.
+
+final result: passed
+
+# Latest pass — Corporate sidebar parity
+
+- Visual source: authenticated operator rail capture `.omx/state/operator-sidebar/expanded-dashboard.png` and `.omx/state/operator-sidebar/collapsed-dashboard.png`, each at 900 CSS px viewport height.
+- Implementation: authenticated corporate portal at `http://localhost:3000/corporate`; captures `.omx/state/corporate-sidebar/expanded.png` and `.omx/state/corporate-sidebar/collapsed.png` at approximately 1910 × 900 CSS px, device scale 1. Comparison was limited to the sidebar crop and both expanded/collapsed states.
+- Initial comparison: P2 footer identity truncation. Fixed by wrapping the name and showing a short workspace descriptor, with the full email retained in the account menu. Post-fix comparison shows no P0/P1/P2 mismatch.
+- Typography, spacing, colors, assets, and copy: the corporate rail now uses the operator rail's 280px/72px widths, teal-ink background, mint active marker, group labels, 52px link targets, avatar treatment, and footer rhythm. The approved wordmark, existing icon library, corporate labels, and permission-gated links remain. Corporate portfolio scope intentionally replaces the operator working-unit context.
+- Functionality: the long navigation scrolls independently of the fixed footer; Resources routes and becomes active; Escape closes the account menu and restores focus. At 1024 × 768 the rail has no horizontal overflow; at 390px the existing corporate mobile menu remains available and opens/closes.
+- P3 note: the corporate account popover retains its existing content and styling; this pass targeted the navigation rail.
+
+final result: passed
+
+# Latest pass — Operator account context menu
+
+- Source visual truth: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-a9eb6ab9-d02b-4ce9-ab62-28f94ea359e6.png` (1536 × 1024px concept board).
+- Implementation: `http://localhost:3000/portal`, authenticated Chrome at 1910 × 860 CSS px, device scale 1; screenshot: `.omx/state/operator-sidebar/account-menu-single.png` (1910 × 860px).
+- State: desktop, expanded rail, account menu open, one authorized unit. The comparison focused on the single-unit card; surrounding presentation-board annotations were excluded. The card is 416 × 637 CSS px in the final capture.
+
+| Fidelity surface | Evidence and result |
+| --- | --- |
+| Typography | Existing portal font and type scale retained; account, unit, help, and sign-out hierarchy matches. |
+| Spacing and layout | Initial live card was 416 × 560px and too dense. Section and row spacing increased; final capture is 416 × 637px with all controls visible. |
+| Color and tokens | Existing teal-ink, mint accent, and white text reused; no new brand color. |
+| Assets and icons | Existing initials avatar and Lucide icons retained; no image asset was needed inside the menu. |
+| Copy and content | Single-unit state names the authorized unit, marks it Current, and explains why switching is unavailable. Multi-unit choices are sourced from authorized `locations`, not mock names from the concept. |
+
+The first comparison found a P2 density mismatch; the spacing change and second side-by-side comparison resolved it. Keyboard Escape closes the menu and restores focus. Account & Access navigates to `/portal/account`; the collapsed-rail menu fits at 1024 × 768 without page overflow. The multi-unit branch is implemented but could not be browser-tested with the available single-unit demo account. No remaining P0/P1/P2 finding.
+
+final result: passed
+
+# Latest pass — Operator command rail
+
+Source: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-bbd82b93-838f-4528-b02c-a7f4b4cbe373.png`. Compared the sidebar portion of the concept with authenticated 1440 × 900 browser captures at `.omx/state/operator-sidebar/expanded-dashboard.png` and `.omx/state/operator-sidebar/collapsed-dashboard.png`.
+
+| Check | Result |
+| --- | --- |
+| Expanded and collapsed widths | 280px and 72px, respectively. |
+| Hierarchy | Brand, working unit, Work / Operations / Growth groups, account, and collapse control are present. |
+| Interaction | Account menu opens and closes with Escape; Orders routes to `/portal/orders` and becomes the active item. |
+| Responsive | No horizontal overflow at 1024px or 390px; 390px retains the existing mobile bottom navigation. |
+| Accessibility | Sidebar has named navigation and controls; account and collapse controls expose labels. |
+
+No unresolved P0/P1/P2 visual differences. The approved wordmark retains its existing Franchising descriptor, and badges are shown only for nonzero live counts rather than copying illustrative numbers.
+
+final result: passed
+
+# Latest pass — Corrected mobile operator dashboard reference
+
+- Source visual truth: `C:\Users\ericb\AppData\Local\Temp\codex-clipboard-8b31ae3f-0700-4072-bfa7-9cecf8d49c5f.png`.
+- Implementation: `http://localhost:3000/portal`, authenticated Chrome capture.
+- Viewport: 390 × 844 CSS px, device scale 1.
+- Source pixels: 1024 × 1536; source device frame was treated as presentation chrome and app-owned content was compared proportionally.
+- State: Salt Lake City #1 with one delayed order, one active item, no delivery dated today, empty cart.
+
+## Full-view comparison
+
+The corrected mobile composition follows the reference order: time-aware greeting and refresh, Today at a glance, Action required, What’s next, Quick actions, Recent activity, and five-item persistent navigation. Decorative tree and quote artwork were intentionally excluded per the request. Counts, order records, shipment windows, and activity rows remain connected to authorized portal data.
+
+## Focused comparison
+
+- Header: display hierarchy and inline freshness control match the reference without adding decorative artwork.
+- Summary: three equal metric cells use semantic icons, numeric values, labels, existing borders, and brand tokens.
+- Action card: orange exception treatment, order hierarchy, Delayed badge, and full-width shipment action match the source pattern.
+- Quick actions: two equal cards use existing actions and restored directional arrows from the corrected reference.
+- Activity: compact, divided rows show real order status, item count, date, and navigation affordance.
+
+## Comparison history
+
+- Pass 1 finding [P2]: previous implementation used the earlier work-queue layout and omitted the corrected summary and activity hierarchy.
+- Fix: replaced the mobile-only composition while preserving desktop modules and real data contracts.
+- Pass 2 finding [P2]: initial corrected pass retained the `Home` navigation label and pushed Recent activity entirely below the first viewport.
+- Fix: restored `Dashboard`, tightened token-based mobile rhythm, reduced non-interactive card height, and kept all actionable targets at least 44px.
+- Final evidence: authenticated 390 × 844 and 320 × 568 renders show no horizontal overflow; 390px render exposes the Recent activity heading above the persistent navigation.
+
+## Findings
+
+- No actionable P0/P1/P2 differences remain.
+- P3: real record count and browser-safe-area behavior can move lower activity rows below the initial viewport; vertical scrolling remains available and the section heading is visible.
+
+## Accessibility and interaction checks
+
+- Refresh, View all, shipment, upcoming-order, quick-action, activity, and bottom-navigation controls remain native links or buttons.
+- Mobile action controls preserve 44px minimum target height.
+- Status is communicated through icon, label, copy, and border treatment rather than color alone.
+- Existing tokenized colors, typography, spacing, radii, and focus behavior remain in use.
+
+final result: passed
+
+# Latest pass — Mobile operator dashboard work queue
+
+- Source visual truth: `C:\Users\ericb\AppData\Local\Temp\codex-clipboard-e3a16c55-7cf8-42de-9b6a-daa3165e2abe.png`.
+- Live route: `http://localhost:3000/portal`, authenticated Chrome at 390 × 844 and 320 × 568 CSS px.
+- Requested exclusions: decorative tree and quote were not implemented.
+
+## Comparison
+
+The mobile dashboard now follows the reference hierarchy: location header, dashboard freshness row, ranked work queue, prominent delayed-shipment action, compact active-support card, next-shipment card, paired frequent tools, recent orders, and five-item bottom navigation.
+
+## Findings
+
+- No actionable P0/P1/P2 visual differences remain within current authorized data.
+- A third resource work item was not fabricated because current dashboard data contains no required resource record.
+
+## Verification evidence
+
+- 390px and 320px layouts render without horizontal overflow.
+- Delayed shipment remains a real linked order action.
+- Support, shipment, supplies, resources, recent orders, and bottom navigation retain existing destinations and analytics.
+- Bottom navigation order matches reference: Home, Orders, Supplies, Resources, More.
+
+final result: passed
+
+---
+
+# Latest pass — Desktop operator and corporate sign-in
+
+- Source visual truth: `C:\Users\ericb\AppData\Local\Temp\codex-clipboard-bd19eb1d-30ff-4cfe-b1a1-04630191e391.png`.
+- Source dimensions: 1536 × 1024px.
+- Implementation: `http://localhost:3000/franchise/login` and `?access=corporate`.
+- Implementation visual evidence: browser-rendered Chrome capture at approximately 1424 × 896 CSS px, density 1. The capture surface does not expose a file-backed screenshot path.
+- State: desktop operator and corporate default sign-in; mobile fallback checked in the in-app browser.
+
+## Full-view comparison
+
+The implementation matches the selected split-screen composition: 53/47 desktop regions, branded workspace story and food photography at left, public-site route at top right, large two-line sign-in heading, label-led fields, full-width primary and Google actions, and two contextual help rows. The production Firebase and MFA behavior remains intact.
+
+## Focused comparison
+
+The sign-in form and left workspace narrative were readable in the full-view captures, so separate crops were not required. Field borders, icon alignment, password affordance, divider, action dimensions, benefit icon circles, and desktop split were checked against the source.
+
+## Fidelity surfaces
+
+- Typography: existing Poppins/DM Sans stack retained; heading size, line height, uppercase eyebrow, labels, and support copy follow the source hierarchy.
+- Spacing and layout rhythm: desktop split, wide form controls, right-panel gutters, benefit-row rhythm, and help-link separators match the source composition without horizontal overflow.
+- Colors and visual tokens: White, Cream, Dark Teal, muted Blue Gray, and light Teal support surfaces remain within the established brand palette.
+- Image quality and asset fidelity: official `Logo.svg` and existing `food-experience-editorial.png` are reused at native quality. No placeholder or code-drawn visual asset was introduced.
+- Copy and content: operator and corporate copy remain workspace-specific; all existing authentication, reset, public-site, support, and cross-workspace destinations remain connected.
+
+## Comparison history
+
+1. First rendered comparison:
+   - Finding: P2 — the initial selected image crop was an oversized bread-crumb close-up and did not provide the source's composed food scene.
+   - Fix: replaced it with the existing editorial Budda Roll and Hawaiian plate photography and adjusted the desktop crop.
+2. Post-fix comparison:
+   - No actionable P0/P1/P2 visual differences remain.
+   - Next Image fill-parent and logo-ratio warnings were corrected. Remaining console errors originate from the previously identified Chrome extension bridge, not application code.
+
+## Primary interactions checked
+
+- Operator and corporate variants render their correct titles, descriptions, and cross-workspace links.
+- Email/password labels, password visibility control, reset route, submit action, Google action, public-site route, and support route remain exposed and keyboard-addressable.
+- Mobile viewport removes the desktop story panel and keeps the sign-in task readable.
+
+## Follow-up polish
+
+- P3: Add an official Google provider mark only when an approved asset is added to the repository.
+- P3: Replace the editorial plate photo if Brand supplies the exact sandwich composition from the reference.
+
+final result: passed
+
 # Latest pass — Operations Support workspace
 
 - Source visual truth: `C:\Users\ericb\Downloads\Codex Image Sep 18, 2026, 05_48_22 PM.png`.
@@ -1048,5 +1228,11 @@ The page follows the reference's library architecture inside the existing operat
 ## Follow-up polish
 
 - P3: Re-run visual comparison with populated authorized resources to validate row density, required-action expansion, and download metadata against the source state.
+
+final result: passed
+
+# Latest status — Corrected mobile operator dashboard
+
+Detailed source, viewport, comparison history, focused-region evidence, accessibility checks, and residual P3 notes are recorded in the `Latest pass — Corrected mobile operator dashboard reference` section above. The final authenticated 390 × 844 and 320 × 568 browser renders contain no unresolved P0/P1/P2 findings.
 
 final result: passed

@@ -7,23 +7,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
-  LayoutDashboard,
-  PackageSearch,
+  House,
+  Package,
   ShoppingCart,
   Truck,
   BookOpen,
-  FolderOpen,
   HelpCircle,
   User,
   LogOut,
   MoreHorizontal,
   X,
   Store,
-  MapPinned,
+  BarChart3,
   Bell,
   ChevronDown,
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Info,
   ArrowLeft,
   Search,
 } from "lucide-react";
@@ -40,6 +41,7 @@ import {
 } from "@/src/features/portal/portal-context";
 import { consumeConfirmedOperatorLocationSwitch, markOperatorLocationSwitch, trackOperatorWorkspaceEvent, type OperatorAnalyticsProperties } from "@/src/lib/analytics";
 import { useDesktopSidebarPreference } from "@/src/components/shared/use-desktop-sidebar-preference";
+import { AccountLocalNav } from "@/src/components/portal/account-local-nav";
 
 export type PortalShellProps = {
   session: PortalSession;
@@ -129,6 +131,7 @@ const PortalShellComponent = ({
 }: PortalShellProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isAccountSettingsRoute = pathname === "/portal/account" || ["business-billing", "compliance", "units-access", "security"].some((section) => pathname === `/portal/account/${section}`);
   const orderListHref = pathname.startsWith("/portal/orders/")
     ? ordersListHref(parseOrdersListQuery(Object.fromEntries(searchParams.entries())))
     : "/portal/orders";
@@ -145,26 +148,29 @@ const PortalShellComponent = ({
   const mobileNavigationRef = useRef<HTMLElement>(null);
 
   const navItems = [
-    { href: "/portal", label: "Dashboard", icon: LayoutDashboard, permission: "ACCESS_WORKSPACE", group: "Work" },
-    { href: "/portal/supplies", label: "Supplies Catalog", icon: PackageSearch, permission: "VIEW_CATALOG", group: "Work" },
-    { href: "/portal/orders", label: "Orders & Shipments", icon: Truck, permission: "VIEW_ORDERS", group: "Work" },
-    { href: "/portal/resources", label: "Resource Center", icon: BookOpen, permission: "VIEW_RESOURCES", group: "Operations" },
-    { href: "/portal/bulletins", label: "Corporate Bulletins", icon: Bell, permission: "ACCESS_WORKSPACE", group: "Operations", countKey: "actionRequiredBulletinCount" as const },
-    { href: "/portal/support", label: "Operations Support", icon: HelpCircle, permission: "VIEW_SUPPORT", group: "Operations", countKey: "actionRequiredSupportCount" as const },
-    { href: "/portal/expansion", label: "Growth Requests", icon: MapPinned, permission: "ACCESS_WORKSPACE", group: "Growth" },
-    { href: "/portal/account", label: "Account Profile", icon: User, permission: "VIEW_ACCOUNT", group: "Account" },
+    { href: "/portal", label: "Dashboard", sidebarLabel: "Dashboard", icon: House, permission: "ACCESS_WORKSPACE", group: "Work" },
+    { href: "/portal/orders", label: "Orders & Shipments", sidebarLabel: "Orders", icon: Truck, permission: "VIEW_ORDERS", group: "Work" },
+    { href: "/portal/supplies", label: "Supplies Catalog", sidebarLabel: "Supplies", icon: Package, permission: "VIEW_CATALOG", group: "Work" },
+    { href: "/portal/resources", label: "Resource Center", sidebarLabel: "Resources", icon: BookOpen, permission: "VIEW_RESOURCES", group: "Operations" },
+    { href: "/portal/bulletins", label: "Corporate Bulletins", sidebarLabel: "Bulletins", icon: Bell, permission: "ACCESS_WORKSPACE", group: "Operations", countKey: "actionRequiredBulletinCount" as const },
+    { href: "/portal/support", label: "Operations Support", sidebarLabel: "Support", icon: HelpCircle, permission: "VIEW_SUPPORT", group: "Operations", countKey: "actionRequiredSupportCount" as const },
+    { href: "/portal/expansion", label: "Growth Requests", sidebarLabel: "Growth Requests", icon: BarChart3, permission: "ACCESS_WORKSPACE", group: "Growth" },
+    { href: "/portal/account", label: "Account Profile", sidebarLabel: "Account", icon: User, permission: "VIEW_ACCOUNT", group: "Account" },
   ] satisfies Array<{
     href: string;
     label: string;
-    icon: typeof LayoutDashboard;
+    sidebarLabel: string;
+    icon: typeof House;
     permission: PortalPermission;
     group: "Work" | "Operations" | "Growth" | "Account";
     countKey?: keyof ScopedNotificationCounts;
   }>;
   const visibleNavItems = navItems.filter((item) => hasPortalPermission(session, item.permission));
   const desktopNavGroups = (["Work", "Operations", "Growth"] as const).map((group) => ({ group, items: visibleNavItems.filter((item) => item.group === group) })).filter((entry) => entry.items.length > 0);
-  const mobilePrimaryNavItems = visibleNavItems.filter((item) => ["/portal", "/portal/supplies", "/portal/orders", "/portal/support"].includes(item.href));
+  const mobilePrimaryNavItems = ["/portal", "/portal/orders", "/portal/supplies", "/portal/resources"].flatMap((href) => visibleNavItems.filter((item) => item.href === href));
   const mobileSecondaryNavItems = visibleNavItems.filter((item) => !mobilePrimaryNavItems.includes(item));
+  const accountInitials = session.displayName?.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || session.email[0].toUpperCase();
+  const accountRole = session.role === "admin" ? "Administrator" : "Franchisee";
   const returnTo = pathname + (searchParams.size ? "?" + searchParams.toString() : "");
   const analyticsRoute = (href: string): OperatorAnalyticsProperties["route"] =>
     href === "/portal" || href === "/portal/cart" || href === "/portal/checkout" || href === "/portal/orders" || href === "/portal/support" || href === "/portal/resources" || href === "/portal/supplies" || href === "/portal/bulletins" ? href : undefined;
@@ -177,6 +183,23 @@ const PortalShellComponent = ({
       });
     }
   }, [locations.length, session.locationId, session.role]);
+
+  useEffect(() => {
+    setIsAccountMenuOpen(false);
+    setIsMobileMoreOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isMobileMoreOpen) return;
+    const bodyOverflow = document.body.style.overflow;
+    const rootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = bodyOverflow;
+      document.documentElement.style.overflow = rootOverflow;
+    };
+  }, [isMobileMoreOpen]);
 
   const handleToggleMobileMore = () => {
     setIsMobileMoreOpen((prev) => !prev);
@@ -219,7 +242,7 @@ const PortalShellComponent = ({
       setIsAccountMenuOpen(false);
       if (restoreFocus) requestAnimationFrame(() => accountButtonRef.current?.focus());
     };
-    const onPointerDown = (event: PointerEvent) => {
+    const onClick = (event: MouseEvent) => {
       if (event.target instanceof Element && event.target.closest(".portal-sidebar-toggle")) return;
       if (event.target instanceof Node && !sidebarFooterRef.current?.contains(event.target)) closeMenu(false);
     };
@@ -229,11 +252,11 @@ const PortalShellComponent = ({
         closeMenu(true);
       }
     };
-    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("click", onClick);
     document.addEventListener("keydown", onKeyDown);
     requestAnimationFrame(() => accountMenuRef.current?.querySelector<HTMLElement>("a, button")?.focus());
     return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("click", onClick);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [isAccountMenuOpen]);
@@ -351,14 +374,10 @@ const PortalShellComponent = ({
                 item.href === "/portal"
                   ? pathname === "/portal"
                   : pathname.startsWith(item.href);
-              const itemClassName = `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-white focus-visible:ring-2 focus-visible:ring-bds-teal focus-visible:ring-offset-2 focus-visible:ring-offset-bds-teal-dark ${
-                isActive
-                  ? "bg-white/15 text-white font-bold border-l-4 border-bds-teal shadow-sm"
-                  : "text-white/80 hover:text-white hover:bg-white/10 border-l-4 border-transparent"
-              }`;
-              const itemContent = <><Icon className="w-4 h-4 shrink-0" aria-hidden="true" /><span className="portal-sidebar-nav-label">{item.label}</span>{item.countKey ? <PortalNavBadge countKey={item.countKey} /> : null}</>;
+              const itemClassName = `portal-sidebar-nav-link${isActive ? " is-active" : ""}`;
+              const itemContent = <><Icon className="portal-sidebar-nav-icon" aria-hidden="true" /><span className="portal-sidebar-nav-label">{item.sidebarLabel}</span>{item.countKey ? <PortalNavBadge countKey={item.countKey} labelPrefix={`${item.sidebarLabel.toLowerCase()} items needing attention`} className="portal-sidebar-badge" /> : null}</>;
 
-              return isActive ? <span key={item.href} className={itemClassName} aria-current="page" aria-label={item.label} title={item.label}>{itemContent}<span className="sr-only">(Current page)</span></span> : <Link key={item.href} href={item.href} onClick={() => trackOperatorWorkspaceEvent("operator_sidebar_nav_selected", { role_category: session.role, location_scope_count: locations.length, viewport_group: "desktop", route: analyticsRoute(item.href) })} className={itemClassName} aria-label={item.label} title={item.label}>{itemContent}</Link>;
+              return isActive ? <span key={item.href} className={itemClassName} aria-current="page" aria-label={item.sidebarLabel} title={item.sidebarLabel}>{itemContent}<span className="sr-only">(Current page)</span></span> : <Link key={item.href} href={item.href} onClick={() => trackOperatorWorkspaceEvent("operator_sidebar_nav_selected", { role_category: session.role, location_scope_count: locations.length, viewport_group: "desktop", route: analyticsRoute(item.href) })} className={itemClassName} aria-label={item.sidebarLabel} title={item.sidebarLabel}>{itemContent}</Link>;
             })}</section>)}
           </nav>
         </div>
@@ -376,26 +395,28 @@ const PortalShellComponent = ({
             aria-controls="portal-account-menu"
             title={`Account: ${session.displayName || session.email}`}
           >
-            <div className="portal-sidebar-avatar" aria-hidden="true">
-              {(session.displayName || session.email)[0].toUpperCase()}
-            </div>
+            <div className="portal-sidebar-avatar" aria-hidden="true">{accountInitials}</div>
             <span className="portal-sidebar-account-copy">
               <strong>{session.displayName || "Account profile"}</strong>
-              <span>{session.displayName ? session.email : "Account profile"}</span>
+              <span>{accountRole}</span>
             </span>
             <ChevronDown className="portal-sidebar-account-arrow" size={16} aria-hidden="true" />
           </button>
-          <button type="button" className="portal-sidebar-toggle" onClick={() => { setIsAccountMenuOpen(false); toggleSidebar(); }} aria-label={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"} aria-controls="operator-desktop-sidebar" aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"}>
-            {sidebarCollapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
+          <button type="button" className="portal-sidebar-toggle" onClick={() => { setIsAccountMenuOpen(false); toggleSidebar(); }} aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} aria-controls="operator-desktop-sidebar" aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}>
+            {sidebarCollapsed ? <ChevronRight size={20} aria-hidden="true" /> : <ChevronLeft size={20} aria-hidden="true" />}
+            <span className="portal-sidebar-toggle-label">{sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
           </button>
           {isAccountMenuOpen ? <div ref={accountMenuRef} id="portal-account-menu" role="dialog" aria-label="Account menu" className="portal-account-menu">
-            <div className="portal-account-menu-summary"><div className="portal-sidebar-avatar" aria-hidden="true">{(session.displayName || session.email)[0].toUpperCase()}</div><span><strong title={session.displayName || "Account profile"}>{session.displayName || "Account profile"}</strong><small title={session.email}>{session.email}</small></span></div>
-            <div className="portal-account-menu-actions">
-              {hasPortalPermission(session, "VIEW_ACCOUNT") ? <Link href="/portal/account" onClick={() => setIsAccountMenuOpen(false)}><User size={16} aria-hidden="true" />Account settings</Link> : null}
-              {hasPortalPermission(session, "VIEW_RESOURCES") ? <Link href="/portal/resources" onClick={() => setIsAccountMenuOpen(false)}><FolderOpen size={16} aria-hidden="true" />Resource Center</Link> : null}
-              {hasPortalPermission(session, "VIEW_SUPPORT") ? <Link href="/portal/support" onClick={() => setIsAccountMenuOpen(false)}><HelpCircle size={16} aria-hidden="true" />Get support</Link> : null}
+            <div className="portal-account-menu-summary"><div className="portal-sidebar-avatar" aria-hidden="true">{accountInitials}</div><span><strong title={session.displayName || "Account profile"}>{session.displayName || "Account profile"}</strong><small>{accountRole}</small></span><button type="button" onClick={() => { setIsAccountMenuOpen(false); accountButtonRef.current?.focus(); }} aria-label="Close account menu"><ChevronDown size={20} aria-hidden="true" /></button></div>
+            <div className="portal-account-menu-body">
+              {hasPortalPermission(session, "VIEW_ACCOUNT") ? <section className="portal-account-menu-section" aria-label="Your account"><h2><User size={14} aria-hidden="true" />Your account</h2><Link className="portal-account-menu-row" href="/portal/account" onClick={() => setIsAccountMenuOpen(false)}><User size={22} aria-hidden="true" /><span><strong>Account &amp; Access</strong><small>Manage your profile, access, and settings</small></span><ChevronRight size={18} aria-hidden="true" /></Link></section> : null}
+              <section className="portal-account-menu-section" aria-label={locations.length > 1 ? "Switch working unit" : "Working unit"}>
+                <h2><Store size={14} aria-hidden="true" />{locations.length > 1 ? "Switch working unit" : "Working unit"}</h2>
+                {locations.length > 1 ? <><form action={switchPortalLocationAction}><input type="hidden" name="returnTo" value={returnTo} /><ul className="portal-account-menu-units">{locations.map((location) => <li key={location.id}>{location.id === session.locationId ? <div className="portal-account-menu-unit-current" aria-current="true"><Store size={22} aria-hidden="true" /><span><strong>{location.name}</strong><small>{location.id}</small></span><Check size={19} aria-label="Current unit" /></div> : <button type="submit" name="locationId" value={location.id} onClick={() => markOperatorLocationSwitch(location.id)}><Store size={22} aria-hidden="true" /><span><strong>{location.name}</strong><small>{location.id}</small></span></button>}</li>)}</ul></form>{hasPortalPermission(session, "VIEW_ACCOUNT") ? <Link className="portal-account-menu-view-all" href="/portal/account/units-access" onClick={() => setIsAccountMenuOpen(false)}>View all units<ChevronRight size={18} aria-hidden="true" /></Link> : null}</> : <><div className="portal-account-menu-current"><Store size={22} aria-hidden="true" /><span><strong>{session.locationName}</strong><small>{session.locationId}</small></span><span>Current</span></div><p className="portal-account-menu-note"><Info size={17} aria-hidden="true" />You only have access to one unit. If you need access to additional units, please contact your administrator.</p></>}
+              </section>
+              {hasPortalPermission(session, "VIEW_SUPPORT") ? <Link className="portal-account-menu-row portal-account-menu-help" href="/portal/support" onClick={() => setIsAccountMenuOpen(false)}><HelpCircle size={23} aria-hidden="true" /><span><strong>Account access help</strong><small>Get help with your account or access</small></span><ChevronRight size={18} aria-hidden="true" /></Link> : null}
             </div>
-            <form action={logoutAction}><button type="submit" className="portal-account-menu-signout"><LogOut size={16} aria-hidden="true" />Sign out</button></form>
+            <form action={logoutAction} className="portal-account-menu-logout"><button type="submit" className="portal-account-menu-signout"><LogOut size={22} aria-hidden="true" /><span><strong>Sign out</strong><small>End your current session</small></span></button></form>
           </div> : null}
         </div>
       </aside>
@@ -413,7 +434,8 @@ const PortalShellComponent = ({
           {pathname.startsWith("/portal/supplies/") ? <Link href="/portal/supplies" className="portal-header-context-link hidden lg:inline-flex"><ArrowLeft size={16} aria-hidden="true" />Back to supplies</Link> : null}
           {pathname.startsWith("/portal/orders/") ? <Link href={orderListHref} className="portal-header-context-link hidden lg:inline-flex"><ArrowLeft size={16} aria-hidden="true" />All orders</Link> : null}
           {pathname === "/portal/expansion/new" ? <Link href="/portal/expansion" className="portal-header-context-link inline-flex"><ArrowLeft size={16} aria-hidden="true" />Back to growth requests</Link> : null}
-          {pathname === "/portal/account" ? <Link href="/portal" className="portal-header-context-link hidden lg:inline-flex"><ArrowLeft size={16} aria-hidden="true" />Back to dashboard</Link> : null}
+          {isAccountSettingsRoute ? <Link href="/portal" className="portal-header-context-link hidden lg:inline-flex"><ArrowLeft size={16} aria-hidden="true" />Back to dashboard</Link> : null}
+          <div id="portal-header-local-nav" className="portal-header-local-nav">{isAccountSettingsRoute ? <AccountLocalNav /> : null}</div>
 
           <div className="portal-shell-actions flex shrink-0 items-center gap-2 ml-auto">
             <Link
@@ -499,7 +521,7 @@ const PortalShellComponent = ({
             const Icon = item.icon;
             const isActive = item.href === "/portal" ? pathname === "/portal" : pathname.startsWith(item.href);
             return <Link key={item.href} href={item.href} inert={isMobileMoreOpen} aria-hidden={isMobileMoreOpen || undefined} aria-current={isActive ? "page" : undefined} className={isActive ? "is-active" : undefined} onClick={() => { const route = analyticsRoute(item.href); const context = { role_category: session.role, location_scope_count: locations.length }; trackOperatorWorkspaceEvent("operator_bottom_nav_selected", { ...context, route }); if (item.href === "/portal/support") trackOperatorWorkspaceEvent("operator_support_opened", { ...context, route: "/portal/support" }); }}>
-              <Icon className="h-5 w-5" aria-hidden="true" /><span>{item.label === "Dashboard" ? "Home" : item.label === "Supplies Catalog" ? "Supplies" : item.label === "Operations Support" ? "Support" : "Orders"}</span>{item.countKey ? <PortalNavBadge countKey={item.countKey} /> : null}
+              <Icon className="h-5 w-5" aria-hidden="true" /><span>{item.label === "Supplies Catalog" ? "Supplies" : item.label === "Orders & Shipments" ? "Orders" : item.label === "Resource Center" ? "Resources" : item.label}</span>{item.countKey ? <PortalNavBadge countKey={item.countKey} /> : null}
             </Link>;
           })}
           <button ref={moreButtonRef} type="button" onClick={handleToggleMobileMore} aria-expanded={isMobileMoreOpen} aria-controls="portal-mobile-more" aria-current={mobileSecondaryNavItems.some((item) => pathname.startsWith(item.href)) ? "page" : undefined} className={mobileSecondaryNavItems.some((item) => pathname.startsWith(item.href)) ? "is-active" : undefined}>

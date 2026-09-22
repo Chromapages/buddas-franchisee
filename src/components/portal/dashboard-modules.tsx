@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Bell, ChevronRight, FolderOpen, MessageSquare, Package } from "lucide-react";
+import { AlertCircle, ArrowRight, Bell, ChevronRight, FileText, FolderOpen, MessageSquare, Package, Truck } from "lucide-react";
 import type { PortalBulletin, PortalOrder, PortalResource, PortalSupportCase } from "@/src/features/portal/types";
 import { isBulletinActionOutstanding } from "@/src/features/portal/bulletins";
 import { getOrderStatus } from "@/src/features/portal/order-status";
-import { formatPortalDate, formatPortalFreshnessTime, formatPortalDateTime } from "@/src/features/portal/date-time";
+import { formatPortalDate, formatPortalFreshnessTime, formatPortalDateTime, getUnitTimeZone } from "@/src/features/portal/date-time";
 import { DASHBOARD_DATA_STATE, DASHBOARD_STALE_AFTER_MS, resolveDashboardCollectionState } from "@/src/features/portal/dashboard-data-state";
 import { DashboardFreshness as DashboardFreshnessControl } from "@/src/components/portal/dashboard-freshness";
 import { DashboardWidgetRetry, DashboardWidgetSnapshot, DashboardWidgetStateNotice } from "@/src/components/portal/dashboard-widget-state";
@@ -46,6 +46,7 @@ type PulsePermissions = {
 };
 
 const formatCount = (count: number) => count > 99 ? "99+" : String(count);
+const localDateKey = (value: string | Date, locationId: string) => new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: getUnitTimeZone(locationId) }).format(new Date(value));
 
 export async function OperatorBriefStatus({ orders, bulletins, supportCases, canViewOrders, canViewSupport, canViewUpdates, locationId, idPrefix, trackDashboardView, trackDashboardSurface, roleCategory, locationScopeCount }: HomeData & PulsePermissions) {
   const [orderResult, bulletinResult, supportResult] = await Promise.all([
@@ -60,7 +61,11 @@ export async function OperatorBriefStatus({ orders, bulletins, supportCases, can
   const updates = bulletinData.data;
   const tickets = supportData.data;
   const operationalState = buildDashboardOperationalState({ orders: orderRows, supportCases: tickets, bulletins: updates, locationId });
-  const attentionItems: OperatorAttentionItem[] = operationalState.attention.map((item) => ({ id: item.id, category: item.type === "required-update" ? "Required update" : item.type === "support-reply" ? "Support reply" : "Supply order", title: item.label, status: item.secondaryText, dueLabel: item.dueAt ? `Due ${formatPortalDateTime(item.dueAt, locationId)}` : undefined, dueDateTime: item.dueAt, href: item.destination, accessibleStateLabel: `${item.label}. ${item.secondaryText}. Action required.`, priority: item.priority === "P0_BLOCKING" ? "blocking" : "action-required", icon: item.type === "required-update" ? Bell : item.type === "support-reply" ? MessageSquare : Package, analyticsType: item.type === "required-update" ? "required_update" : item.type === "support-reply" ? "support_reply" : "order_exception" }));
+  const desktopLayout = trackDashboardSurface === "desktop";
+  const attentionItems: OperatorAttentionItem[] = operationalState.attention.map((item) => {
+    const delayedOrder = !desktopLayout && item.type === "supply-order" && item.secondaryText.startsWith("Processing beyond expected");
+    return { id: item.id, category: item.type === "required-update" ? "Required update" : item.type === "support-reply" ? "Support reply" : "Supply order", title: item.label, status: delayedOrder ? "Delayed" : item.secondaryText, detail: delayedOrder ? item.secondaryText : undefined, dueLabel: item.dueAt ? `Due ${formatPortalDateTime(item.dueAt, locationId)}` : undefined, dueDateTime: item.dueAt, href: item.destination, accessibleStateLabel: `${item.label}. ${item.secondaryText}. Action required.`, priority: item.priority === "P0_BLOCKING" ? "blocking" : "action-required", icon: item.type === "required-update" ? Bell : item.type === "support-reply" ? MessageSquare : Package, analyticsType: item.type === "required-update" ? "required_update" : item.type === "support-reply" ? "support_reply" : "order_exception" };
+  });
   const unavailable = [
     ["Required updates", bulletinData.state],
     ["Support replies", supportData.state],
@@ -74,7 +79,7 @@ export async function OperatorBriefStatus({ orders, bulletins, supportCases, can
         : []);
   const shouldRetry = [orderData, bulletinData, supportData].some((data) => data.state === DASHBOARD_DATA_STATE.PARTIAL_ERROR);
   const attentionCount = attentionItems.length;
-  const desktopLayout = trackDashboardSurface === "desktop";
+  const deliveriesToday = orderRows.filter((order) => order.status === "IN_TRANSIT" && Number.isFinite(Date.parse(order.eta)) && localDateKey(order.eta, locationId) === localDateKey(new Date(), locationId)).length;
   const pulseState = shouldRetry
     ? DASHBOARD_DATA_STATE.PARTIAL_ERROR
     : [orderData, bulletinData, supportData].some((data) => data.state === DASHBOARD_DATA_STATE.UNCONFIGURED)
@@ -90,11 +95,10 @@ export async function OperatorBriefStatus({ orders, bulletins, supportCases, can
       { type: "support_reply", count: attentionItems.filter((item) => item.analyticsType === "support_reply").length },
       { type: "order_exception", count: attentionItems.filter((item) => item.analyticsType === "order_exception").length },
     ]} /> : null}
-    <OperatorStatusSummary attentionCount={attentionCount} activeItems={operationalState.active} state={pulseState} idPrefix={idPrefix} showActiveWork={!desktopLayout} desktopAllClear={desktopLayout} attentionContent={desktopLayout ? <AttentionList items={attentionItems} idPrefix={idPrefix} embedded /> : undefined}>
+    {desktopLayout ? <><OperatorStatusSummary attentionCount={attentionCount} activeItems={operationalState.active} state={pulseState} idPrefix={idPrefix} showActiveWork={false} desktopAllClear attentionContent={<AttentionList items={attentionItems} idPrefix={idPrefix} embedded />}>
       {unavailable.length ? <div className="home-status-unavailable" role="status">{unavailable.map((message) => <p key={message}>{message}</p>)}{shouldRetry ? <DashboardWidgetRetry label="Retry operational status" /> : null}</div> : null}
       <DashboardWidgetStateNotice state={pulseState} />
-    </OperatorStatusSummary>
-    {desktopLayout ? <ActiveWorkPanel activeItems={operationalState.active} /> : <AttentionList items={attentionItems} idPrefix={idPrefix} />}
+    </OperatorStatusSummary><ActiveWorkPanel activeItems={operationalState.active} /></> : <><section className="mobile-dashboard-glance" aria-labelledby={`${idPrefix}-glance-heading`}><p className="home-section-label" id={`${idPrefix}-glance-heading`}>Today at a glance</p><div><article><AlertCircle aria-hidden="true" /><span><strong>{formatCount(attentionCount)}</strong><small>Needs attention</small></span></article><article><Truck aria-hidden="true" /><span><strong>{formatCount(deliveriesToday)}</strong><small>Deliveries today</small></span></article><article><FileText aria-hidden="true" /><span><strong>{formatCount(operationalState.active.length)}</strong><small>Active items</small></span></article></div></section><AttentionList items={attentionItems} idPrefix={idPrefix} limit={1} mobileDashboard />{unavailable.length ? <div className="home-status-unavailable" role="status">{unavailable.map((message) => <p key={message}>{message}</p>)}{shouldRetry ? <DashboardWidgetRetry label="Retry operational status" /> : null}</div> : null}<DashboardWidgetStateNotice state={pulseState} /></>}
   </div></DashboardWidgetSnapshot>;
 }
 
@@ -104,7 +108,7 @@ export async function RecentWholesaleOrdersModule({ orders, locationId, idPrefix
   const orderData = resolveDashboardCollectionState(await settle(orders), true);
   if (orderData.state === DASHBOARD_DATA_STATE.UNCONFIGURED) return <DashboardWidgetSnapshot state={orderData.state} moduleId="recent-orders" failureMessage="Recent supply orders are not configured." retryLabel="Retry recent supply orders"><section className="home-orders" data-dashboard-state={orderData.state} aria-labelledby={headingId}><header className="home-section-header"><h2 id={headingId}>Recent supply orders</h2></header><p className="home-orders-error">Recent supply orders are not set up for this workspace.</p></section></DashboardWidgetSnapshot>;
   if (orderData.state === DASHBOARD_DATA_STATE.PARTIAL_ERROR) return <DashboardWidgetSnapshot state={orderData.state} moduleId="recent-orders" failureMessage="Recent supply orders could not be refreshed." retryLabel="Retry recent supply orders"><section className="home-orders" data-dashboard-state={orderData.state} aria-labelledby={headingId}><header className="home-section-header"><h2 id={headingId}>Recent supply orders</h2><Link href="/portal/orders">View all orders</Link></header><p className="home-orders-error">Recent supply orders could not be loaded.</p><DashboardWidgetRetry label="Retry recent supply orders" /></section></DashboardWidgetSnapshot>;
-  const rows = orderData.data.filter((order) => !excludeOrderIds.includes(order.id)).sort((first, second) => (Date.parse(second.createdAt) || 0) - (Date.parse(first.createdAt) || 0)).slice(0, isDesktop ? 5 : 2);
+  const rows = orderData.data.filter((order) => !excludeOrderIds.includes(order.id)).sort((first, second) => (Date.parse(second.createdAt) || 0) - (Date.parse(first.createdAt) || 0)).slice(0, isDesktop ? 5 : 3);
   const title = "Recent supply orders";
   const state = rows.length ? DASHBOARD_DATA_STATE.ACTIVE : DASHBOARD_DATA_STATE.EMPTY;
   if (isDesktop && !rows.length) return null;
@@ -113,7 +117,7 @@ export async function RecentWholesaleOrdersModule({ orders, locationId, idPrefix
     return <OperatorAnalyticsLink key={order.id} href={orderHref(order.id)} events={[{ event: "operator_order_opened", properties: { route: "/portal/orders", order_status_category: status.analytics.lifecycleStage, module_id: "recent-orders" } }, { event: "operator_recent_order_opened", properties: { route: "/portal/orders", order_status_category: status.analytics.lifecycleStage, module_id: "recent-orders" } }]} ariaLabel={`Open order ${order.id}. ${status.presentation.accessibleDescription} Placed ${safeDate(order.createdAt, locationId)}. ${order.items.length} line items. Total ${order.total.toFixed(2)} US dollars.`}>{content}</OperatorAnalyticsLink>;
   };
   return <DashboardWidgetSnapshot state={state} moduleId="recent-orders" failureMessage="Recent supply orders could not be refreshed." retryLabel="Retry recent supply orders"><section className={`home-orders${isDesktop ? " home-orders-desktop" : ""}`} data-dashboard-state={state} aria-labelledby={headingId}>
-    <header className="home-section-header"><div><p className="home-section-label">Recent activity</p><h2 id={headingId}>{title}</h2></div><OperatorAnalyticsLink href="/portal/orders" events={[{ event: "operator_orders_view_all", properties: { route: "/portal/orders", module_id: "recent-orders" } }]}>View all orders</OperatorAnalyticsLink></header>
+    <header className="home-section-header"><div><p className="home-section-label">Recent activity</p><h2 id={headingId}>{title}</h2></div><OperatorAnalyticsLink href="/portal/orders" events={[{ event: "operator_orders_view_all", properties: { route: "/portal/orders", module_id: "recent-orders" } }]}>{isDesktop ? "View all orders" : <>View all activity <ArrowRight size={16} aria-hidden="true" /></>}</OperatorAnalyticsLink></header>
     {rows.length ? isDesktop ? <div className="home-orders-table"><div className="home-orders-table-head" aria-hidden="true"><span>Order</span><span>Status</span><span>Date</span><span>Items</span><span>Total</span><span /></div><ul className="home-orders-table-body">{rows.map((order) => {
       const status = getOrderStatus(order.status);
       return <li key={order.id}>{openOrder(order, <span className="home-order-table-row"><strong>{order.id}</strong><span className="home-order-status" data-tone={status.presentation.tone}>{status.label}</span><time dateTime={order.createdAt}>{safeDate(order.createdAt, locationId)}</time><span>{order.items.length}</span><strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(order.total)}</strong><ChevronRight size={18} aria-hidden="true" /></span>)}</li>;
@@ -121,8 +125,8 @@ export async function RecentWholesaleOrdersModule({ orders, locationId, idPrefix
       const status = getOrderStatus(order.status);
       const actionState = status.operatorActionRequired ? "Action required" : order.status === "CANCELLED" ? "No action required" : status.label;
       return <li key={order.id}>{openOrder(order, <span className="home-order-row">
-        <div className="home-order-main"><div className="home-order-heading"><strong>Order {order.id}</strong><span className="home-order-status" data-tone={status.presentation.tone}>{status.label}</span></div><p className="home-order-meta"><time dateTime={order.createdAt}>{safeDate(order.createdAt, locationId)}</time><span aria-hidden="true">·</span><span>{order.items.length} item{order.items.length === 1 ? "" : "s"}</span></p>{status.operatorActionRequired || order.status === "CANCELLED" ? <span className="home-order-action">{actionState}</span> : null}</div>
-        <div className="home-order-total"><strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(order.total)}</strong><ChevronRight size={18} aria-hidden="true" /></div>
+        <span className="home-order-activity-icon" data-tone={status.presentation.tone}>{status.operatorActionRequired ? <AlertCircle aria-hidden="true" /> : <Package aria-hidden="true" />}</span><div className="home-order-main"><div className="home-order-heading"><strong>Order {order.id}</strong></div><p className="home-order-meta"><span>{status.label}</span><span aria-hidden="true">·</span><span>{order.items.length} item{order.items.length === 1 ? "" : "s"}</span></p>{status.operatorActionRequired || order.status === "CANCELLED" ? <span className="home-order-action">{actionState}</span> : null}</div>
+        <div className="home-order-total"><time dateTime={order.createdAt}>{safeDate(order.createdAt, locationId)}</time><ChevronRight size={18} aria-hidden="true" /></div>
       </span>)}</li>;
     })}</ul> : <p className="home-empty">No recent supply orders.</p>}
     <DashboardWidgetStateNotice state={state} />

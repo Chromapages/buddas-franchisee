@@ -13,6 +13,7 @@ export type OperatorAttentionItem = {
   category: string;
   title: string;
   status: string;
+  detail?: string;
   dueLabel?: string;
   dueDateTime?: string;
   href: string;
@@ -54,7 +55,7 @@ const activeWorkEvents = (activeItems: DashboardOperationalItem[]): OperatorAnal
   },
 }];
 
-const ActiveWorkLink = ({ activeItems }: { activeItems: DashboardOperationalItem[] }) => activeItems.length ? <OperatorAnalyticsLink className="operator-active-work" href={activeItems.every((item) => item.type === "supply-order") ? "/portal/orders?view=in-motion" : activeItems[0].destination} events={activeWorkEvents(activeItems)}><Package size={16} aria-hidden="true" /><span><small>Active work</small><strong>{activeTitle(activeItems)}</strong></span></OperatorAnalyticsLink> : null;
+const ActiveWorkLink = ({ activeItems }: { activeItems: DashboardOperationalItem[] }) => activeItems.length ? <OperatorAnalyticsLink className="operator-active-work" href={activeItems.every((item) => item.type === "supply-order") ? "/portal/orders?view=in-motion" : activeItems[0].destination} events={activeWorkEvents(activeItems)}><Package size={16} aria-hidden="true" /><span><small>Support</small><strong>{activeTitle(activeItems)}</strong><em>{activeItems[0].secondaryText}</em></span><ArrowRight size={17} aria-hidden="true" /></OperatorAnalyticsLink> : null;
 
 export const ActiveWorkPanel = ({ activeItems }: { activeItems: DashboardOperationalItem[] }) => {
   const onlySupplyOrders = activeItems.length > 0 && activeItems.every((item) => item.type === "supply-order");
@@ -91,19 +92,20 @@ export const OperatorStatusSummary = ({
   {attentionContent}
 </section>;
 
-export const AttentionItem = ({ item }: { item: OperatorAttentionItem }) => {
+export const AttentionItem = ({ item, prominent = false }: { item: OperatorAttentionItem; prominent?: boolean }) => {
   const Icon = item.icon;
   const route = item.analyticsType === "required_update" ? "/portal/bulletins" as const : item.analyticsType === "support_reply" ? "/portal/support" as const : "/portal/orders" as const;
   const events: OperatorAnalyticsEvent[] = [{ event: "operator_attention_item_opened", properties: { attention_type: item.analyticsType, module_id: "operator-status", route } }];
   if (item.analyticsType === "required_update") events.push({ event: "operator_bulletin_opened", properties: { module_id: "operator-status", route } });
   if (item.analyticsType === "support_reply") events.push({ event: "operator_support_opened", properties: { module_id: "operator-status", route } });
   if (item.analyticsType === "order_exception") events.push({ event: "operator_order_opened", properties: { module_id: "operator-status", route, order_status_category: item.orderStatusCategory } });
-  return <li><OperatorAnalyticsLink href={item.href} events={events} ariaLabel={`${item.category}: ${item.title}. ${item.accessibleStateLabel}${item.dueLabel ? `. ${item.dueLabel}` : ""}.`}><Icon size={19} aria-hidden="true" /><span className="operator-attention-copy"><small>{item.category}</small><strong>{item.title}</strong><span><StatusBadge label={item.status} priority={item.priority} />{item.dueLabel ? <time dateTime={item.dueDateTime}>{item.dueLabel}</time> : null}</span></span></OperatorAnalyticsLink></li>;
+  const prominentOrder = prominent && item.analyticsType === "order_exception";
+  return <li data-attention-type={item.analyticsType}><OperatorAnalyticsLink href={item.href} events={events} ariaLabel={`${item.category}: ${item.title}. ${item.accessibleStateLabel}${item.dueLabel ? `. ${item.dueLabel}` : ""}.`}><Icon size={19} aria-hidden="true" /><span className="operator-attention-copy"><small>{item.category}</small><strong>{item.title}</strong>{prominentOrder ? item.detail ? <span className="operator-attention-detail">{item.detail}</span> : null : <span><StatusBadge label={item.status} priority={item.priority} />{item.dueLabel ? <time dateTime={item.dueDateTime}>{item.dueLabel}</time> : null}</span>}</span>{prominentOrder ? <><span className="operator-attention-delay">{item.status}</span><span className="operator-attention-cta">View shipment <ArrowRight size={17} aria-hidden="true" /></span></> : null}</OperatorAnalyticsLink></li>;
 };
 
-export const AttentionList = ({ items, idPrefix, limit = 4, embedded = false }: { items: OperatorAttentionItem[]; idPrefix: string; limit?: number; embedded?: boolean }) => {
+export const AttentionList = ({ items, idPrefix, limit = 4, embedded = false, mobileDashboard = false }: { items: OperatorAttentionItem[]; idPrefix: string; limit?: number; embedded?: boolean; mobileDashboard?: boolean }) => {
   if (!items.length) return null;
   const visibleItems = items.slice(0, limit);
   if (embedded) return <div className="desktop-attention-list"><ul aria-label={`${countLabel(items.length)} attention ${items.length === 1 ? "item" : "items"}`}>{visibleItems.map((item) => <AttentionItem key={item.id} item={item} />)}</ul>{items.length > limit ? <p className="operator-attention-overflow">Showing the {limit} highest-priority items.</p> : null}</div>;
-  return <section className="home-attention" aria-labelledby={`${idPrefix}-attention-heading`}><header><div><p className="home-section-label">Next actions</p><h2 id={`${idPrefix}-attention-heading`}>Needs attention</h2></div><span aria-label={`${countLabel(items.length)} ${items.length === 1 ? "item" : "items"}`}>{countLabel(items.length)}</span></header><ul>{visibleItems.map((item) => <AttentionItem key={item.id} item={item} />)}</ul>{items.length > limit ? <p className="operator-attention-overflow">Showing the {limit} highest-priority items.</p> : null}</section>;
+  return <section className={`home-attention${mobileDashboard ? " home-attention-mobile" : ""}`} aria-labelledby={`${idPrefix}-attention-heading`}><header>{mobileDashboard ? <><p className="home-section-label" id={`${idPrefix}-attention-heading`}>Action required</p><OperatorAnalyticsLink href="/portal/orders?view=needs-attention" events={[{ event: "operator_orders_view_all", properties: { route: "/portal/orders", module_id: "operator-status" } }]}>View all <ArrowRight size={16} aria-hidden="true" /></OperatorAnalyticsLink></> : <><div><p className="home-section-label">Next actions</p><h2 id={`${idPrefix}-attention-heading`}>Needs attention</h2></div><span aria-label={`${countLabel(items.length)} ${items.length === 1 ? "item" : "items"}`}>{countLabel(items.length)}</span></>}</header><ul>{visibleItems.map((item) => <AttentionItem key={item.id} item={item} prominent />)}</ul>{items.length > limit ? <p className="operator-attention-overflow">Showing the {limit} highest-priority items.</p> : null}</section>;
 };

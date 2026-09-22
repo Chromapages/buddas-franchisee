@@ -81,6 +81,8 @@ export const Navbar = ({
     };
   }, [isMobileMenuOpen]);
 
+  if (pathname === "/franchise/login" || pathname === "/franchise/login/reset") return null;
+
   return (
     <>
       {/* Skip to Main Content Link for Keyboard & Screen Reader Users */}

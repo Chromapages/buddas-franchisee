@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./operator-mobile.css";
+import "./operator-sidebar.css";
 import { Suspense, type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getPortalSession } from "@/src/features/auth/session";
