@@ -36,6 +36,14 @@
 .support-request-panel-heading p, .support-quick-answers header p { margin-top: .15rem; color: var(--bds-color-brand-cocoa); font-size: .8125rem; }
 .support-request-panel > .mobile-workspace-panel { margin: 0 1.25rem 1rem; border-radius: .625rem; box-shadow: none; }
 .support-request-panel > .grid { margin: 0 1.25rem 1.25rem; }
+.support-request-panel [aria-label="Tickets list"] { display: grid; gap: .625rem; }
+.support-ticket-row { display: grid; min-height: 0; grid-template-columns: minmax(0,1fr); gap: .45rem; border-color: var(--bds-workspace-border) !important; border-radius: .75rem !important; padding: 1rem !important; box-shadow: 0 1px 2px rgb(21 73 66 / .03); text-decoration: none; }
+.support-ticket-row:hover, .support-ticket-row:focus-visible { box-shadow: 0 .4rem 1rem rgb(21 73 66 / .08); transform: translateY(-1px); }
+.support-ticket-row > div:first-child { gap: .5rem; }
+.support-ticket-row > div:first-child > div { align-items: center; }
+.support-ticket-row > div:first-child p { font-size: .9375rem; line-height: 1.3; }
+.support-ticket-row > div:last-child { gap: .75rem; margin-top: .2rem !important; padding-top: .75rem; border-top: 1px solid var(--bds-workspace-border); }
+.support-ticket-row-action { display: inline-flex; align-items: center; gap: .25rem; margin-left: auto; color: var(--bds-color-brand-teal-dark); font-weight: 700; }
 .support-empty-state { display: grid; justify-items: center; min-height: 17rem; align-content: center; padding: 2rem 1.25rem 2.5rem; text-align: center; }
 .support-empty-state > span { display: grid; width: 4.5rem; height: 4.5rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--bds-color-brand-teal) 12%, white); color: var(--bds-color-brand-teal-dark); }
 .support-empty-state > span svg { width: 2.15rem; height: 2.15rem; }
@@ -59,6 +67,15 @@
 .support-page-footer { display: flex; align-items: center; gap: .65rem; padding: .1rem .15rem; color: var(--bds-color-brand-cocoa); font-size: .75rem; }
 .support-page-footer > svg { width: 1.15rem; height: 1.15rem; flex: 0 0 auto; color: var(--bds-color-brand-teal-dark); }
 .support-page-footer :is(a,button) { color: var(--bds-color-brand-teal-dark); font-weight: 700; text-decoration: underline; text-underline-offset: .15rem; }
+
+/* Ticket conversations have their own route; keep this screen focused on the request. */
+.support-request-detail-heading { display: grid; gap: .5rem; }
+.support-request-detail-heading .support-back-link { display: inline-flex; width: fit-content; align-items: center; gap: .4rem; }
+.support-workspace-detail-only > :is(.support-primary-actions, .support-metrics, .support-quick-answers, .support-page-footer) { display: none; }
+.support-workspace-detail-only .support-request-panel { overflow: visible; border: 0; background: transparent; }
+.support-workspace-detail-only .support-request-panel-heading, .support-workspace-detail-only .support-request-panel > .mobile-workspace-panel, .support-workspace-detail-only [aria-label="Tickets list"] { display: none; }
+.support-workspace-detail-only .support-request-panel > .grid { display: block; margin: 0; }
+.support-workspace-detail-only [aria-label="Selected ticket detail"] { max-width: 60rem; margin-inline: auto; }
 
 /* Guided support intake */
 .support-page:has(.support-intake) > .support-page-heading, .support-page:has(.support-intake) .support-primary-actions { display: none; }

@@ -570,6 +570,7 @@ export const CatalogBrowser = ({
           <li key={product.id}><article className="catalog-product-card product-order-row mobile-workspace-panel rounded-2xl border border-bds-teal-dark/15 bg-white p-5 shadow-sm">
             <header className="catalog-product-card-header">
               <p className="catalog-product-category">{product.category}</p>
+              {priorOrder ? <p className="catalog-product-history"><Clock3 size={16} aria-hidden="true" />Last ordered {priorOrder.lastOrderedLabel} · {priorOrder.lastQuantity} {purchaseUnitQuantityLabel(purchaseUnit, priorOrder.lastQuantity)}</p> : null}
             </header>
             <div className="catalog-product-identity">
             <div className="catalog-product-image-link">
@@ -588,7 +589,6 @@ export const CatalogBrowser = ({
               <div className="catalog-product-action">
               {canOrder ? <CatalogQuantityAction product={product} unit={purchaseUnit} quantity={stagedQuantities[product.sku] || selectedQuantity} confirmedQuantity={currentQuantity} pending={pendingSku !== null} onQuantity={(quantity) => setStagedQuantities((current) => ({ ...current, [product.sku]: quantity }))} onCommit={(quantity) => handleSaveQuantity(product, quantity)} /> : <CatalogProductStateBadge product={product} includeDescription />}
               </div>
-              {priorOrder ? <p className="catalog-product-history"><Clock3 size={16} aria-hidden="true" />Last ordered {priorOrder.lastOrderedLabel} · {priorOrder.lastQuantity} {purchaseUnitQuantityLabel(purchaseUnit, priorOrder.lastQuantity)}</p> : null}
             </footer>
           </article></li>
           );

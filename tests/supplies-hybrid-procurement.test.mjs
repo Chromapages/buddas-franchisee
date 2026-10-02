@@ -25,15 +25,15 @@ test("supplies offers persistent Browse and native Quick Order workflows", () =>
 
 test("supplies keeps a compact workflow header, toolbar, and data-backed Order Again", () => {
   assert.doesNotMatch(page, /Everything you need\./);
-  assert.match(page, /Approved products and pricing for \{session\.locationName\}/);
+  assert.match(page, /Approved purchasing for \{session\.locationName\}/);
   assert.match(browser, /aria-label="Catalog workspace mode"/);
   assert.doesNotMatch(browser, /catalog-search-submit/);
-  assert.match(controls, /catalog-category-pills/);
-  assert.match(controls, /aria-pressed=\{filters\.category === category\}/);
+  assert.match(controls, /catalog-category-select/);
+  assert.match(controls, /<select value=\{filters\.category\} onChange=\{\(event\) => onCategory\(event\.target\.value\)\}>/);
   assert.match(reorder, /Recent supplies for this location/);
   assert.match(reorder, /No longer available in this catalog/);
   assert.match(reorder, /Find replacement/);
-  assert.match(styles, /\.catalog-category-pills button \{ min-height: 2\.75rem/);
+  assert.match(styles, /\.catalog-desktop-control-row \.catalog-category-select select \{ width: min\(100%, 15rem\)/);
 });
 
 test("illustrative procurement arithmetic stays exact in minor units", () => {

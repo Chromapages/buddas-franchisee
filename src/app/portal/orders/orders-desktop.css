@@ -223,5 +223,5 @@
 }
 
 @media (min-width: 90rem) {
-  .orders-page-layout { grid-template-columns: minmax(0, 1fr) minmax(28rem, 30rem); }
+  .orders-page-layout { grid-template-columns: minmax(0, 1fr); }
 }

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { SupportWorkspace } from "@/src/components/portal/support-workspace";
 import { defaultPortalStorage } from "@/src/features/portal/storage-adapter";
@@ -20,6 +21,7 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
   const session = await requirePortalPermission("VIEW_SUPPORT");
   assertPortalPermission(session, "CREATE_SUPPORT");
   const { ticketId, view, orderId } = await searchParams;
+  if (ticketId) redirect(`/portal/support/${encodeURIComponent(ticketId)}`);
   const initialView: SupportViewMode | undefined = view === "needs-attention" || view === "open" || view === "resolved" || view === "all" ? view : undefined;
   const initialOrderId = orderId && /^[A-Za-z0-9-]{1,64}$/.test(orderId) ? orderId : undefined;
 

@@ -34,6 +34,7 @@ import {
   replySupportCaseAction,
 } from "@/src/features/portal/actions";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   areSupportCriteriaEqual,
   deleteCustomView,
@@ -58,6 +59,7 @@ type SupportWorkspaceProps = {
   initialTicketId?: string;
   initialView?: SupportViewFilter;
   initialOrderId?: string;
+  detailOnly?: boolean;
 };
 
 const ReplySubmitButton = () => {
@@ -109,6 +111,7 @@ export const SupportWorkspace = ({
   initialTicketId,
   initialView,
   initialOrderId,
+  detailOnly = false,
 }: SupportWorkspaceProps) => {
   const router = useRouter();
   const commandIds = useRef(new Map<string, string>());
@@ -283,14 +286,6 @@ export const SupportWorkspace = ({
     resolved: ticketsList.filter((ticket) => ticket.status === "Resolved").length,
   }), [ticketsList]);
 
-  const handleSelectTicket = (ticketId: string) => {
-    setSelectedTicketId(ticketId);
-    setIsCreatingNew(false);
-    setActionFeedback(null);
-    setReplyMessage("");
-    setReopenReason("");
-  };
-
   const handleOpenCreateForm = () => {
     setIsCreatingNew(true);
     setActionFeedback(null);
@@ -322,7 +317,7 @@ export const SupportWorkspace = ({
   const handleCloseAction = async (formData: FormData) => submitTicketUpdate(formData, closeSupportCaseAction, "RESOLVE");
   const handleReopenAction = async (formData: FormData) => submitTicketUpdate(formData, reopenSupportCaseAction, "REOPEN");
   return (
-    <div className="support-workspace">
+    <div className={`support-workspace${detailOnly ? " support-workspace-detail-only" : ""}`}>
       <section className="support-primary-actions" aria-label="Operations Support contact options">
         <div>
           {!isCreatingNew ? <button
@@ -559,11 +554,11 @@ export const SupportWorkspace = ({
           </section>
 
           {/* Master-Detail Layout */}
-          <div className={`grid gap-5 ${filteredTickets.length > 0 ? "lg:grid-cols-5" : ""}`}>
+          <div className="grid gap-5">
             {/* Left Column: Master List */}
             <section
               aria-label="Tickets list"
-              className={filteredTickets.length > 0 ? "space-y-3 lg:col-span-2" : "space-y-3"}
+              className={detailOnly && filteredTickets.length > 0 ? "space-y-3 lg:col-span-2" : "space-y-3"}
             >
               {filteredTickets.length === 0 ? (
                 <div role="status" className="portal-empty-state space-y-1">
@@ -578,17 +573,16 @@ export const SupportWorkspace = ({
                 </div>
               ) : (
                 filteredTickets.map((ticket) => {
-                  const isSelected = selectedTicket?.id === ticket.id;
+                  const isSelected = detailOnly && selectedTicket?.id === ticket.id;
                   const isResolved = ticket.status === "Resolved";
                   const isInReview = ticket.status === "In Review";
 
                   return (
-                    <button
+                    <Link
                       key={ticket.id}
-                      type="button"
-                      onClick={() => handleSelectTicket(ticket.id)}
-                      aria-pressed={isSelected}
-                      className={`touch-target w-full rounded-2xl border p-4 text-left transition-all ${
+                      href={`/portal/support/${encodeURIComponent(ticket.id)}`}
+                      aria-current={isSelected ? "page" : undefined}
+                      className={`support-ticket-row touch-target w-full rounded-2xl border p-4 text-left transition-all ${
                         isSelected
                           ? "border-bds-teal-dark bg-bds-cream/60 shadow-md ring-2 ring-bds-teal/40"
                           : "border-bds-teal-dark/10 bg-white hover:border-bds-teal hover:bg-bds-cream/20"
@@ -637,14 +631,15 @@ export const SupportWorkspace = ({
                             {ticket.messages.length} message{ticket.messages.length === 1 ? "" : "s"}
                           </span>
                         ) : null}
+                        <span className="support-ticket-row-action">View request <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
                       </div>
-                    </button>
+                    </Link>
                   );
                 })
               )}
             </section>
 
-            {filteredTickets.length > 0 ? (
+            {detailOnly && filteredTickets.length > 0 ? (
             /* Right Column: Detail View */
             <section
               aria-label="Selected ticket detail"

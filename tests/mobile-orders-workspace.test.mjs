@@ -27,9 +27,13 @@ test("mobile Orders uses a location-scoped list and a dedicated detail route", (
   assert.match(firestore, /collection\("units"\)\.doc\(locationId\)\.collection\("orders"\)\.doc\(orderId\)/);
   assert.doesNotMatch(firestore, /const units = await this\.getLocations\(\)/);
   assert.match(detail, /Order unavailable/);
- const mobileDetail = read("src/components/portal/mobile-order-detail.tsx");
-  const desktopDetail = read("src/components/portal/orders-workspace.tsx");
+  const mobileDetail = read("src/components/portal/mobile-order-detail.tsx");
+  const ordersWorkspace = read("src/components/portal/orders-workspace.tsx");
+  const desktopDetail = read("src/components/portal/desktop-order-detail.tsx");
   const summaryFacts = read("src/components/portal/order-summary-facts.tsx");
+  assert.doesNotMatch(ordersWorkspace, /OrderPreview/);
+  assert.doesNotMatch(ordersWorkspace, /Preview order/);
+  assert.match(ordersWorkspace, /<Link href=\{href\} className=\{actionLabel === "View" \? undefined : "is-primary"\}/);
   assert.match(mobileDetail, /mobile-order-detail__header-status/);
   assert.match(mobileDetail, /Placed \{formatPortalDate\(order\.createdAt, locationId\)\}/);
   assert.match(mobileDetail, /Invoice \{order\.invoiceId\}/);

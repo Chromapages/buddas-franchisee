@@ -7,14 +7,9 @@ import {
   ArrowRight,
   Bookmark,
   BookmarkPlus,
-  CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Circle,
   ClipboardList,
-  DollarSign,
-  Headphones,
-  Package,
   PackageCheck,
   Plus,
   RotateCcw,
@@ -99,7 +94,6 @@ export const OrdersWorkspace = ({
   const [sort, setSort] = useState<OrderSort>("newest");
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
-  const [previewOrder, setPreviewOrder] = useState<PortalOrder | null>(orders[0] ?? null);
 
   const [customViews, setCustomViews] = useState<SavedOrderView[]>([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -466,14 +460,14 @@ export const OrdersWorkspace = ({
                 const actionLabel = getOrderActionLabel(order);
                 const fulfillment = getOrderFulfillmentLabel(order);
                 const href = `/portal/orders/${encodeURIComponent(order.id)}`;
-                return <tr key={order.id} className={previewOrder?.id === order.id ? "is-previewing" : undefined}>
+                return <tr key={order.id}>
                   <td><Link href={href} className="orders-table-order" onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage })}><strong>{order.id}</strong><small>{order.invoiceId}</small></Link></td>
                   <td><span className="orders-table-status" data-tone={status.presentation.tone} aria-label={getOrderStatusAccessibleLabel(order.status)}>{status.label}</span><small>{status.meaning}</small></td>
                   <td><strong>{order.items.length} item{order.items.length === 1 ? "" : "s"}</strong><small>{order.items[0]?.name || "Order items"}{order.items.length > 1 ? ` +${order.items.length - 1}` : ""}</small></td>
                   <td><strong>{fulfillment}</strong><small>{isOrderTerminal(order.status) ? status.meaning : "Ships from approved vendor"}</small></td>
                   <td className="orders-table-total">{orderCurrency.format(order.total)}</td>
                   <td><time dateTime={order.createdAt}>{formatPortalDate(order.createdAt, locationId)}<small>{formatOrderTime(order.createdAt, locationId)}</small></time></td>
-                  <td><span className="orders-table-action-cell">{actionLabel === "View" ? <button type="button" aria-label={`Preview order ${order.id}`} aria-pressed={previewOrder?.id === order.id} onClick={() => setPreviewOrder(order)}>View order <ArrowRight size={15} aria-hidden="true" /></button> : <Link href={href} className="is-primary" onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage })}>{actionLabel}<ArrowRight size={15} aria-hidden="true" /></Link>}</span></td>
+                  <td><span className="orders-table-action-cell"><Link href={href} className={actionLabel === "View" ? undefined : "is-primary"} onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: getOrderStatusAnalytics(order.status).lifecycleStage })}>{actionLabel === "View" ? "View order" : actionLabel}<ArrowRight size={15} aria-hidden="true" /></Link></span></td>
                 </tr>;
               })}
               {pagedOrders.length === 0 ? <tr><td colSpan={7} className="orders-table-empty">No orders match this view.</td></tr> : null}
@@ -485,27 +479,7 @@ export const OrdersWorkspace = ({
         </>
       )}
       </div>
-      {orders.length ? <aside className="orders-preview-rail" aria-label="Order preview">{previewOrder ? <OrderPreview order={previewOrder} locationId={locationId} locationName={locationName} onClose={() => setPreviewOrder(null)} /> : <div className="orders-preview-empty"><ClipboardList size={28} aria-hidden="true" /><h2>Select an order</h2><p>Choose an order to review its shipment and line items.</p></div>}</aside> : null}
       </div>
     </div>
   );
-};
-
-const OrderPreview = ({ order, locationId, locationName, onClose }: { order: PortalOrder; locationId: string; locationName: string; onClose: () => void }) => {
-  const status = getOrderStatus(order.status);
-  const href = `/portal/orders/${encodeURIComponent(order.id)}`;
-  const actionRequired = requiresOrderOperatorAction(order.status);
-  const primaryItem = order.items[0];
-  const remainingItems = order.items.slice(1);
-
-  return <div className="order-preview-surface">
-    <header><div><p>Order preview</p><h2 id="order-preview-title">Order {order.id}</h2></div><button type="button" onClick={onClose} aria-label="Close order preview"><X size={20} aria-hidden="true" /></button></header>
-    <div className="order-preview-heading"><span className="orders-table-status" data-tone={status.presentation.tone} aria-label={getOrderStatusAccessibleLabel(order.status)}>{status.label}</span><p>Invoice {order.invoiceId}</p><time dateTime={order.createdAt}>Placed {formatPortalDate(order.createdAt, locationId)} · {formatOrderTime(order.createdAt, locationId)}</time></div>
-    <section className="order-preview-callout" data-tone={actionRequired ? "attention" : "progress"} aria-labelledby="order-preview-callout-title">{actionRequired ? <AlertCircle aria-hidden="true" /> : <Package aria-hidden="true" />}<div><h3 id="order-preview-callout-title">{actionRequired ? status.notification.title : `${status.label} order`}</h3><p>{status.notification.body || status.meaning}</p></div><Link href={href}>{actionRequired ? status.notification.actionLabel : "View fulfillment details"}<ArrowRight size={17} aria-hidden="true" /></Link><Link href={`/portal/support?orderId=${encodeURIComponent(order.id)}`} className="order-preview-callout-support">Contact fulfillment support</Link></section>
-    <dl className="order-preview-impact"><div><Package aria-hidden="true" /><dt>Items</dt><dd>{order.items.length}</dd></div><div><ClipboardList aria-hidden="true" /><dt>Unit</dt><dd>{locationName}<small>{order.locationId}</small></dd></div><div><DollarSign aria-hidden="true" /><dt>Order total</dt><dd>{orderCurrency.format(order.total)}</dd></div></dl>
-    <p className="order-preview-guidance" role="status"><CheckCircle2 aria-hidden="true" />{actionRequired ? "Review the order status and resolution options before continuing." : "No action is required while this order continues through fulfillment."}</p>
-    <section className="order-preview-items" aria-labelledby="order-preview-items-title"><h3 id="order-preview-items-title">Items ({order.items.length})</h3>{primaryItem ? <article className="order-preview-primary-item"><span><Package aria-hidden="true" /></span><div><strong>{primaryItem.name}</strong><small>SKU {primaryItem.sku}</small><b>Qty {primaryItem.quantity}</b></div><em>{orderCurrency.format(primaryItem.quantity * primaryItem.price)}</em></article> : <p>No line items are available.</p>}{remainingItems.length ? <details className="order-preview-other-items"><summary>Other items in order: {remainingItems.length}</summary><ul>{remainingItems.map((item, index) => <li key={`${item.sku}-${index}`}><div><strong>{item.name}</strong><small>SKU {item.sku} · Qty {item.quantity}</small></div><span>{orderCurrency.format(item.quantity * item.price)}</span></li>)}</ul></details> : null}</section>
-    <section className="order-preview-activity" aria-labelledby="order-preview-activity-title"><header><h3 id="order-preview-activity-title">Order activity</h3><Link href={href}>View full timeline <ArrowRight size={15} aria-hidden="true" /></Link></header><ol><li><CheckCircle2 aria-hidden="true" /><div><strong>Order submitted</strong><small>{formatPortalDate(order.createdAt, locationId)} · {formatOrderTime(order.createdAt, locationId)}</small></div><span>Order received and confirmed.</span></li><li data-tone={actionRequired ? "attention" : "complete"}>{actionRequired ? <AlertCircle aria-hidden="true" /> : <CheckCircle2 aria-hidden="true" />}<div><strong>{status.label}</strong><small>{status.meaning}</small></div><span>{status.notification.body}</span></li>{!isOrderTerminal(order.status) && order.eta ? <li><Circle aria-hidden="true" /><div><strong>Estimated arrival</strong><small>{order.eta}</small></div><span>We&apos;ll notify you if timing changes.</span></li> : null}</ol></section>
-    <footer><Link href={href} onClick={() => trackOperatorWorkspaceEvent("operator_order_opened", { route: "/portal/orders", order_status_category: status.analytics.lifecycleStage })}>View full order <ArrowRight size={17} aria-hidden="true" /></Link><Link href={`/portal/support?orderId=${encodeURIComponent(order.id)}`} className="order-preview-support"><Headphones size={17} aria-hidden="true" />Contact support</Link></footer>
-  </div>;
 };
