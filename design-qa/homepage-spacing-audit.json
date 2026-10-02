@@ -1,0 +1,1193 @@
+{
+  "route": "/franchise",
+  "date": "2026-09-29",
+  "scale": {
+    "base": "--section-rhythm",
+    "relatedRatio": 0.5,
+    "topicRatio": 1
+  },
+  "measurements": [
+    {
+      "width": 320,
+      "rhythm": 48,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 56,
+          "bottom": 56
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Operator support",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Process",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Concept in practice",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "FAQ",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Final CTA",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Footer navigation",
+          "top": 20,
+          "bottom": 8
+        },
+        {
+          "section": "Footer legal",
+          "top": 12,
+          "bottom": 8
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Operator support",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Process",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Concept in practice",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "FAQ",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Final CTA",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Footer navigation",
+          "top": 24,
+          "bottom": 12
+        },
+        {
+          "section": "Footer legal",
+          "top": 12,
+          "bottom": 24
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    },
+    {
+      "width": 375,
+      "rhythm": 48,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 56,
+          "bottom": 56
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Operator support",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Process",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Concept in practice",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "FAQ",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Final CTA",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Footer navigation",
+          "top": 20,
+          "bottom": 8
+        },
+        {
+          "section": "Footer legal",
+          "top": 12,
+          "bottom": 8
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Operator support",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Process",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Concept in practice",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "FAQ",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Final CTA",
+          "top": 24,
+          "bottom": 24
+        },
+        {
+          "section": "Footer navigation",
+          "top": 24,
+          "bottom": 12
+        },
+        {
+          "section": "Footer legal",
+          "top": 12,
+          "bottom": 24
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    },
+    {
+      "width": 768,
+      "rhythm": 64,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Operator support",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Process",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Concept in practice",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "FAQ",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Final CTA",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Footer navigation",
+          "top": 20,
+          "bottom": 8
+        },
+        {
+          "section": "Footer legal",
+          "top": 12,
+          "bottom": 8
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Operator support",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Process",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Concept in practice",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "FAQ",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Final CTA",
+          "top": 32,
+          "bottom": 32
+        },
+        {
+          "section": "Footer navigation",
+          "top": 32,
+          "bottom": 16
+        },
+        {
+          "section": "Footer legal",
+          "top": 16,
+          "bottom": 32
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    },
+    {
+      "width": 1024,
+      "rhythm": 80,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Operator support",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Process",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Concept in practice",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "FAQ",
+          "top": 64,
+          "bottom": 64
+        },
+        {
+          "section": "Final CTA",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Footer navigation",
+          "top": 64,
+          "bottom": 32
+        },
+        {
+          "section": "Footer legal",
+          "top": 28,
+          "bottom": 28
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Operator support",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Process",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Concept in practice",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "FAQ",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Final CTA",
+          "top": 40,
+          "bottom": 40
+        },
+        {
+          "section": "Footer navigation",
+          "top": 40,
+          "bottom": 20
+        },
+        {
+          "section": "Footer legal",
+          "top": 20,
+          "bottom": 40
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    },
+    {
+      "width": 1440,
+      "rhythm": 96,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Operator support",
+          "top": 86.4,
+          "bottom": 86.4
+        },
+        {
+          "section": "Process",
+          "top": 86.4,
+          "bottom": 86.4
+        },
+        {
+          "section": "Concept in practice",
+          "top": 86.4,
+          "bottom": 86.4
+        },
+        {
+          "section": "FAQ",
+          "top": 86.4,
+          "bottom": 86.4
+        },
+        {
+          "section": "Final CTA",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Footer navigation",
+          "top": 64,
+          "bottom": 32
+        },
+        {
+          "section": "Footer legal",
+          "top": 28,
+          "bottom": 28
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Operator support",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Process",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Concept in practice",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "FAQ",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Final CTA",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Footer navigation",
+          "top": 48,
+          "bottom": 24
+        },
+        {
+          "section": "Footer legal",
+          "top": 24,
+          "bottom": 48
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    },
+    {
+      "width": 1920,
+      "rhythm": 96,
+      "before": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Operator support",
+          "top": 96,
+          "bottom": 96
+        },
+        {
+          "section": "Process",
+          "top": 96,
+          "bottom": 96
+        },
+        {
+          "section": "Concept in practice",
+          "top": 96,
+          "bottom": 96
+        },
+        {
+          "section": "FAQ",
+          "top": 96,
+          "bottom": 96
+        },
+        {
+          "section": "Final CTA",
+          "top": 80,
+          "bottom": 80
+        },
+        {
+          "section": "Footer navigation",
+          "top": 64,
+          "bottom": 32
+        },
+        {
+          "section": "Footer legal",
+          "top": 28,
+          "bottom": 28
+        }
+      ],
+      "after": [
+        {
+          "section": "Hero",
+          "top": 0,
+          "bottom": 0
+        },
+        {
+          "section": "Qualification",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Why Budda’s",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Operator support",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Process",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Concept in practice",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "FAQ",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Final CTA",
+          "top": 48,
+          "bottom": 48
+        },
+        {
+          "section": "Footer navigation",
+          "top": 48,
+          "bottom": 24
+        },
+        {
+          "section": "Footer legal",
+          "top": 24,
+          "bottom": 48
+        }
+      ],
+      "verified": {
+        "noHorizontalOverflow": true,
+        "noClippedHeadings": true,
+        "stableSectionPositions": true,
+        "copyTypographyColorsPreserved": true,
+        "photoFramesPreserved": true
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary": "Hero → Qualification",
+      "width": 320,
+      "current": 56,
+      "new": 24,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Hero → Qualification",
+      "width": 375,
+      "current": 56,
+      "new": 24,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Hero → Qualification",
+      "width": 768,
+      "current": 64,
+      "new": 32,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Hero → Qualification",
+      "width": 1024,
+      "current": 80,
+      "new": 40,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Hero → Qualification",
+      "width": 1440,
+      "current": 80,
+      "new": 48,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Hero → Qualification",
+      "width": 1920,
+      "current": 80,
+      "new": 48,
+      "token": "--home-space-related",
+      "reason": "Related introduction and qualification; use the smaller step."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 320,
+      "current": 120,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 375,
+      "current": 120,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 768,
+      "current": 144,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 1024,
+      "current": 160,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 1440,
+      "current": 160,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Qualification → Why Budda’s",
+      "width": 1920,
+      "current": 160,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Outlier below the dominant topic spacing; normalize from the scale."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 320,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 375,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 768,
+      "current": 144,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 1024,
+      "current": 144,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 1440,
+      "current": 166.4,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Why Budda’s → Operator support",
+      "width": 1920,
+      "current": 176,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose stacked padding and viewport-driven drift."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 320,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 375,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 768,
+      "current": 128,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 1024,
+      "current": 128,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 1440,
+      "current": 172.8,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Operator support → Process",
+      "width": 1920,
+      "current": 192,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 320,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 375,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 768,
+      "current": 128,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 1024,
+      "current": 128,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 1440,
+      "current": 172.8,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Process → Concept in practice",
+      "width": 1920,
+      "current": 192,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 320,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 375,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 768,
+      "current": 128,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 1024,
+      "current": 128,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 1440,
+      "current": 172.8,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "Concept in practice → FAQ",
+      "width": 1920,
+      "current": 192,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Loose double padding; same rhythm as equivalent topic pairs."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 320,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 375,
+      "current": 128,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 768,
+      "current": 144,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 1024,
+      "current": 144,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 1440,
+      "current": 166.4,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "FAQ → Final CTA",
+      "width": 1920,
+      "current": 176,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Final CTA used a different edge rule; normalize the boundary."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 320,
+      "current": 84,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 375,
+      "current": 84,
+      "new": 48,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 768,
+      "current": 100,
+      "new": 64,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 1024,
+      "current": 144,
+      "new": 80,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 1440,
+      "current": 144,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Final CTA → Footer navigation",
+      "width": 1920,
+      "current": 144,
+      "new": 96,
+      "token": "--home-space-topic",
+      "reason": "Normalize the handoff to the existing footer without changing its content."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 320,
+      "current": 20,
+      "new": 24,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 375,
+      "current": 20,
+      "new": 24,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 768,
+      "current": 20,
+      "new": 32,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 1024,
+      "current": 60,
+      "new": 40,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 1440,
+      "current": 60,
+      "new": 48,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer navigation → Footer legal",
+      "width": 1920,
+      "current": 60,
+      "new": 48,
+      "token": "--home-space-related",
+      "reason": "Related footer groups; increase the tight mobile gap and reduce the loose desktop gap."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 320,
+      "current": 32,
+      "new": 24,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 375,
+      "current": 32,
+      "new": 24,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 768,
+      "current": 32,
+      "new": 32,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 1024,
+      "current": 52,
+      "new": 40,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 1440,
+      "current": 52,
+      "new": 48,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    },
+    {
+      "boundary": "Footer legal → page end",
+      "width": 1920,
+      "current": 52,
+      "new": 48,
+      "token": "--home-section-inset",
+      "reason": "Remove stacked legal/footer bottom padding; retain the device safe-area inset."
+    }
+  ],
+  "sourceFiles": [
+    "src/app/franchise/homepage-spacing.css",
+    "src/app/franchise/page.tsx",
+    "src/app/franchise/operator-support.css",
+    "src/app/franchise/development-path.css",
+    "src/app/franchise/concept-in-practice.css",
+    "src/app/franchise/homepage-faq.css",
+    "src/components/public/homepage-faq.tsx",
+    "src/components/public/franchise-final-cta.tsx"
+  ]
+}

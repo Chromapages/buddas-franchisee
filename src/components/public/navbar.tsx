@@ -21,7 +21,7 @@ const isCurrentPage = (pathname: string, href: string) => pathname === href;
 export const Navbar = ({
   primaryItems = primaryNavItems,
   utilityItems = utilityNavItems,
-  inquiryAction = { label: "Request Franchise Info", href: "/franchise/contact" },
+  inquiryAction = { label: "Request Franchise Information", href: "/franchise/contact" },
 }: {
   primaryItems?: readonly NavItem[];
   utilityItems?: readonly NavItem[];
@@ -208,7 +208,7 @@ export const Navbar = ({
                   {inquiryAction.label}<span className="sr-only"> (Current Page — scroll to form)</span>
                 </button>
               ) : (
-                <Link href={inquiryAction.href} tabIndex={0} aria-label={inquiryAction.label} className="btn-outline text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 shadow-none hover:!bg-bds-cream transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                <Link href={inquiryAction.href} tabIndex={0} aria-label={inquiryAction.label} className="btn-outline !border-bds-teal-dark text-xs lg:text-sm !py-2.5 !px-3 lg:!px-5 shadow-none hover:!bg-bds-cream transition-all duration-200 focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
                   {inquiryAction.label}
                 </Link>
               )}
@@ -216,12 +216,12 @@ export const Navbar = ({
 
             {/* 4. Mobile Top Bar: Persistent secondary CTA + Accessible Hamburger Toggle */}
             <div className="public-navbar-mobile-actions absolute right-0 nav:hidden flex shrink-0 items-center gap-2 sm:gap-3">
-              {isInquiryPage ? (
+              {pathname === "/franchise" ? null : isInquiryPage ? (
                 <button type="button" onClick={() => { trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: "#inquiry-form" }); scrollToInquiryForm(); }} aria-label="Request Franchise Information" aria-current="page" className="public-navbar-mobile-cta touch-target nav:hidden text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap rounded-xl bg-bds-action-primary text-bds-action-primary-text font-bold shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
                   <span className="hidden sm:inline">{inquiryAction.label}</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="sr-only"> (Current Page — scroll to form)</span>
                 </button>
               ) : (
-                <Link href={inquiryAction.href} onClick={() => trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: inquiryAction.href })} tabIndex={0} aria-label={inquiryAction.label} className="public-navbar-mobile-cta touch-target nav:hidden btn-outline !border-bds-action-primary/70 text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-none hover:!bg-bds-cream transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
+                <Link href={inquiryAction.href} onClick={() => trackFunnelEvent("mobile_nav_request_info_click", { page_path: pathname, nav_destination: inquiryAction.href })} tabIndex={0} aria-label={inquiryAction.label} className="public-navbar-mobile-cta touch-target nav:hidden btn-outline !border-bds-teal-dark text-xs sm:text-sm !py-2 !px-3 sm:!px-4 whitespace-nowrap shadow-none hover:!bg-bds-cream transition-all duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2">
                   <span className="hidden sm:inline">{inquiryAction.label}</span><span className="public-navbar-mobile-cta-default sm:hidden">Request info</span><span className="public-navbar-mobile-cta-compact hidden">Info</span>
                 </Link>
               )}

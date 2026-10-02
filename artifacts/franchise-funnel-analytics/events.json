@@ -1,0 +1,124 @@
+{
+  "homepageEvents": [
+    {
+      "event": "franchise_home_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    }
+  ],
+  "opportunityEvents": [
+    {
+      "event": "franchise_home_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "franchise_hero_primary_clicked",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "web_vital",
+      "page_path": "/franchise",
+      "web_vital_name": "LCP",
+      "web_vital_value": 312,
+      "web_vital_rating": "good"
+    },
+    {
+      "event": "franchise_opportunity_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    }
+  ],
+  "inquiryEvents": [
+    {
+      "event": "franchise_home_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "franchise_hero_primary_clicked",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "web_vital",
+      "page_path": "/franchise",
+      "web_vital_name": "LCP",
+      "web_vital_value": 312,
+      "web_vital_rating": "good"
+    },
+    {
+      "event": "franchise_opportunity_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "franchise_home_viewed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "franchise_hero_inquiry_clicked",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas"
+    },
+    {
+      "event": "web_vital",
+      "page_path": "/franchise/the-opportunity",
+      "web_vital_name": "LCP",
+      "web_vital_value": 312,
+      "web_vital_rating": "good"
+    },
+    {
+      "event": "web_vital",
+      "page_path": "/franchise",
+      "web_vital_name": "LCP",
+      "web_vital_value": 312,
+      "web_vital_rating": "good"
+    },
+    {
+      "event": "franchise_inquiry_started",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas",
+      "form_version": "inquiry-prequalifier-v1"
+    },
+    {
+      "event": "franchise_inquiry_step_completed",
+      "viewport_group": "mobile",
+      "entry_page": "/franchise",
+      "traffic_source": "google",
+      "campaign": "next_buddas",
+      "form_version": "inquiry-prequalifier-v1",
+      "form_step": 1
+    },
+    {
+      "event": "web_vital",
+      "page_path": "/franchise/contact",
+      "web_vital_name": "LCP",
+      "web_vital_value": 312,
+      "web_vital_rating": "good"
+    }
+  ],
+  "inquiryStep": "Step 2 of 3: Location & Fit"
+}

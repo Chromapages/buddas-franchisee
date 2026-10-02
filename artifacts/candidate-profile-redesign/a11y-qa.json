@@ -1,0 +1,821 @@
+{
+  "reports": [
+    {
+      "viewport": "320x568",
+      "horizontalOverflow": false,
+      "h2Count": 1,
+      "h3Count": 4,
+      "criteriaCount": 3,
+      "listCount": 3,
+      "controls": [
+        {
+          "name": "See financial qualifications →",
+          "tag": "A",
+          "width": 219.734375,
+          "height": 44,
+          "outline": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "View Qualifications",
+          "tag": "A",
+          "width": 280,
+          "height": 52,
+          "outline": "none",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "Start the 3-Step Inquiry",
+          "tag": "A",
+          "width": 244.53125,
+          "height": 44,
+          "outline": "none",
+          "outlineWidth": "3px"
+        }
+      ],
+      "imageAlt": "A baker arranging freshly baked rolls at a sunlit bakery counter",
+      "rootBackground": "rgb(255, 248, 232)",
+      "text": [
+        {
+          "text": "Candidate Profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What we look for in an operator.",
+          "color": "rgb(28, 95, 86)",
+          "size": "30px"
+        },
+        {
+          "text": "Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.",
+          "color": "rgb(90, 58, 31)",
+          "size": "16px"
+        },
+        {
+          "text": "01 · Operating Experience",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Lead restaurant operations at scale.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Relevant leadership may include multi-unit or high-volume restaurant operations.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "02 · Financial Readiness",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Have the resources to develop responsibly.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Financial qualifications are discussed during the mutual evaluation process.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "See financial qualifications →",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        },
+        {
+          "text": "03 · Owner Stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Protect the product. Lead the team. Serve the community.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Lead teams while upholding Budda's standards and community responsibilities.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "The partnership works both ways.",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What you bring",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓Restaurant leadership✓Financial readiness✓Hands-on owner stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "What Budda's brings",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓A distinctive signature product✓Bakery and product standards",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "Preliminary candidate profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "11px"
+        },
+        {
+          "text": "Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.",
+          "color": "rgb(90, 58, 31)",
+          "size": "14px"
+        },
+        {
+          "text": "View Qualifications",
+          "color": "rgb(255, 248, 232)",
+          "size": "14px"
+        },
+        {
+          "text": "Opens the Mutual Operator Fit section of the franchise opportunity.",
+          "color": "rgba(90, 58, 31, 0.8)",
+          "size": "11px"
+        },
+        {
+          "text": "Start the 3-Step Inquiry",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        }
+      ],
+      "focus": {
+        "active": true,
+        "top": 2927.796875,
+        "bottom": 2971.796875,
+        "headerBottom": 65,
+        "outline": "solid",
+        "outlineWidth": "3px"
+      },
+      "readingOrder": "- region \"What we look for in an operator.\":\n  - paragraph: Candidate Profile\n  - heading \"What we look for in an operator.\" [level=2]\n  - paragraph: Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.\n  - list \"Operator standards\":\n    - listitem:\n      - paragraph: 01Operating Experience\n      - heading \"Lead restaurant operations at scale.\" [level=3]\n      - paragraph: Relevant leadership may include multi-unit or high-volume restaurant operations.\n    - listitem:\n      - paragraph: 02Financial Readiness\n      - heading \"Have the resources to develop responsibly.\" [level=3]\n      - paragraph: Financial qualifications are discussed during the mutual evaluation process.\n      - link \"See financial qualifications →\":\n        - /url: /franchise/the-opportunity#financial-requirements\n    - listitem:\n      - paragraph: 03Owner Stewardship\n      - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n      - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n  - figure \"Product handling in practice.\":\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n    - text: Product handling in practice.\n  - heading \"The partnership works both ways.\" [level=3]\n  - term: What you bring\n  - definition:\n    - list:\n      - listitem: Restaurant leadership\n      - listitem: Financial readiness\n      - listitem: Hands-on owner stewardship\n  - term: What Budda's brings\n  - definition:\n    - list:\n      - listitem: A distinctive signature product\n      - listitem: Bakery and product standards\n  - paragraph: Preliminary candidate profile\n  - paragraph: Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.\n  - link \"View Qualifications\":\n    - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n  - paragraph: Opens the Mutual Operator Fit section of the franchise opportunity.\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_candidate_profile"
+    },
+    {
+      "viewport": "360x800",
+      "horizontalOverflow": false,
+      "h2Count": 1,
+      "h3Count": 4,
+      "criteriaCount": 3,
+      "listCount": 3,
+      "controls": [
+        {
+          "name": "See financial qualifications →",
+          "tag": "A",
+          "width": 219.734375,
+          "height": 44,
+          "outline": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "View Qualifications",
+          "tag": "A",
+          "width": 320,
+          "height": 52,
+          "outline": "none",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "Start the 3-Step Inquiry",
+          "tag": "A",
+          "width": 244.53125,
+          "height": 44,
+          "outline": "none",
+          "outlineWidth": "3px"
+        }
+      ],
+      "imageAlt": "A baker arranging freshly baked rolls at a sunlit bakery counter",
+      "rootBackground": "rgb(255, 248, 232)",
+      "text": [
+        {
+          "text": "Candidate Profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What we look for in an operator.",
+          "color": "rgb(28, 95, 86)",
+          "size": "30.6px"
+        },
+        {
+          "text": "Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.",
+          "color": "rgb(90, 58, 31)",
+          "size": "16px"
+        },
+        {
+          "text": "01 · Operating Experience",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Lead restaurant operations at scale.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Relevant leadership may include multi-unit or high-volume restaurant operations.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "02 · Financial Readiness",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Have the resources to develop responsibly.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Financial qualifications are discussed during the mutual evaluation process.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "See financial qualifications →",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        },
+        {
+          "text": "03 · Owner Stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Protect the product. Lead the team. Serve the community.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Lead teams while upholding Budda's standards and community responsibilities.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "The partnership works both ways.",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What you bring",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓Restaurant leadership✓Financial readiness✓Hands-on owner stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "What Budda's brings",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓A distinctive signature product✓Bakery and product standards",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "Preliminary candidate profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "11px"
+        },
+        {
+          "text": "Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.",
+          "color": "rgb(90, 58, 31)",
+          "size": "14px"
+        },
+        {
+          "text": "View Qualifications",
+          "color": "rgb(255, 248, 232)",
+          "size": "14px"
+        },
+        {
+          "text": "Opens the Mutual Operator Fit section of the franchise opportunity.",
+          "color": "rgba(90, 58, 31, 0.8)",
+          "size": "11px"
+        },
+        {
+          "text": "Start the 3-Step Inquiry",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        }
+      ],
+      "focus": {
+        "active": true,
+        "top": 2738.765625,
+        "bottom": 2782.765625,
+        "headerBottom": 65,
+        "outline": "solid",
+        "outlineWidth": "3px"
+      },
+      "readingOrder": "- region \"What we look for in an operator.\":\n  - paragraph: Candidate Profile\n  - heading \"What we look for in an operator.\" [level=2]\n  - paragraph: Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.\n  - list \"Operator standards\":\n    - listitem:\n      - paragraph: 01Operating Experience\n      - heading \"Lead restaurant operations at scale.\" [level=3]\n      - paragraph: Relevant leadership may include multi-unit or high-volume restaurant operations.\n    - listitem:\n      - paragraph: 02Financial Readiness\n      - heading \"Have the resources to develop responsibly.\" [level=3]\n      - paragraph: Financial qualifications are discussed during the mutual evaluation process.\n      - link \"See financial qualifications →\":\n        - /url: /franchise/the-opportunity#financial-requirements\n    - listitem:\n      - paragraph: 03Owner Stewardship\n      - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n      - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n  - figure \"Product handling in practice.\":\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n    - text: Product handling in practice.\n  - heading \"The partnership works both ways.\" [level=3]\n  - term: What you bring\n  - definition:\n    - list:\n      - listitem: Restaurant leadership\n      - listitem: Financial readiness\n      - listitem: Hands-on owner stewardship\n  - term: What Budda's brings\n  - definition:\n    - list:\n      - listitem: A distinctive signature product\n      - listitem: Bakery and product standards\n  - paragraph: Preliminary candidate profile\n  - paragraph: Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.\n  - link \"View Qualifications\":\n    - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n  - paragraph: Opens the Mutual Operator Fit section of the franchise opportunity.\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_candidate_profile"
+    },
+    {
+      "viewport": "390x844",
+      "horizontalOverflow": false,
+      "h2Count": 1,
+      "h3Count": 4,
+      "criteriaCount": 3,
+      "listCount": 3,
+      "controls": [
+        {
+          "name": "See financial qualifications →",
+          "tag": "A",
+          "width": 219.734375,
+          "height": 44,
+          "outline": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "View Qualifications",
+          "tag": "A",
+          "width": 350,
+          "height": 52,
+          "outline": "none",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "Start the 3-Step Inquiry",
+          "tag": "A",
+          "width": 244.53125,
+          "height": 44,
+          "outline": "none",
+          "outlineWidth": "3px"
+        }
+      ],
+      "imageAlt": "A baker arranging freshly baked rolls at a sunlit bakery counter",
+      "rootBackground": "rgb(255, 248, 232)",
+      "text": [
+        {
+          "text": "Candidate Profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What we look for in an operator.",
+          "color": "rgb(28, 95, 86)",
+          "size": "33.15px"
+        },
+        {
+          "text": "Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.",
+          "color": "rgb(90, 58, 31)",
+          "size": "16px"
+        },
+        {
+          "text": "01 · Operating Experience",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Lead restaurant operations at scale.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Relevant leadership may include multi-unit or high-volume restaurant operations.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "02 · Financial Readiness",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Have the resources to develop responsibly.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Financial qualifications are discussed during the mutual evaluation process.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "See financial qualifications →",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        },
+        {
+          "text": "03 · Owner Stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Protect the product. Lead the team. Serve the community.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Lead teams while upholding Budda's standards and community responsibilities.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "The partnership works both ways.",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What you bring",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓Restaurant leadership✓Financial readiness✓Hands-on owner stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "What Budda's brings",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓A distinctive signature product✓Bakery and product standards",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "Preliminary candidate profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "11px"
+        },
+        {
+          "text": "Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.",
+          "color": "rgb(90, 58, 31)",
+          "size": "14px"
+        },
+        {
+          "text": "View Qualifications",
+          "color": "rgb(255, 248, 232)",
+          "size": "14px"
+        },
+        {
+          "text": "Opens the Mutual Operator Fit section of the franchise opportunity.",
+          "color": "rgba(90, 58, 31, 0.8)",
+          "size": "11px"
+        },
+        {
+          "text": "Start the 3-Step Inquiry",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        }
+      ],
+      "focus": {
+        "active": true,
+        "top": 2709.765625,
+        "bottom": 2753.765625,
+        "headerBottom": 65,
+        "outline": "solid",
+        "outlineWidth": "3px"
+      },
+      "readingOrder": "- region \"What we look for in an operator.\":\n  - paragraph: Candidate Profile\n  - heading \"What we look for in an operator.\" [level=2]\n  - paragraph: Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.\n  - list \"Operator standards\":\n    - listitem:\n      - paragraph: 01Operating Experience\n      - heading \"Lead restaurant operations at scale.\" [level=3]\n      - paragraph: Relevant leadership may include multi-unit or high-volume restaurant operations.\n    - listitem:\n      - paragraph: 02Financial Readiness\n      - heading \"Have the resources to develop responsibly.\" [level=3]\n      - paragraph: Financial qualifications are discussed during the mutual evaluation process.\n      - link \"See financial qualifications →\":\n        - /url: /franchise/the-opportunity#financial-requirements\n    - listitem:\n      - paragraph: 03Owner Stewardship\n      - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n      - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n  - figure \"Product handling in practice.\":\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n    - text: Product handling in practice.\n  - heading \"The partnership works both ways.\" [level=3]\n  - term: What you bring\n  - definition:\n    - list:\n      - listitem: Restaurant leadership\n      - listitem: Financial readiness\n      - listitem: Hands-on owner stewardship\n  - term: What Budda's brings\n  - definition:\n    - list:\n      - listitem: A distinctive signature product\n      - listitem: Bakery and product standards\n  - paragraph: Preliminary candidate profile\n  - paragraph: Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.\n  - link \"View Qualifications\":\n    - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n  - paragraph: Opens the Mutual Operator Fit section of the franchise opportunity.\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_candidate_profile"
+    },
+    {
+      "viewport": "393x852",
+      "horizontalOverflow": false,
+      "h2Count": 1,
+      "h3Count": 4,
+      "criteriaCount": 3,
+      "listCount": 3,
+      "controls": [
+        {
+          "name": "See financial qualifications →",
+          "tag": "A",
+          "width": 219.734375,
+          "height": 44,
+          "outline": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "View Qualifications",
+          "tag": "A",
+          "width": 353,
+          "height": 52,
+          "outline": "none",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "Start the 3-Step Inquiry",
+          "tag": "A",
+          "width": 244.53125,
+          "height": 44,
+          "outline": "none",
+          "outlineWidth": "3px"
+        }
+      ],
+      "imageAlt": "A baker arranging freshly baked rolls at a sunlit bakery counter",
+      "rootBackground": "rgb(255, 248, 232)",
+      "text": [
+        {
+          "text": "Candidate Profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What we look for in an operator.",
+          "color": "rgb(28, 95, 86)",
+          "size": "33.405px"
+        },
+        {
+          "text": "Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.",
+          "color": "rgb(90, 58, 31)",
+          "size": "16px"
+        },
+        {
+          "text": "01 · Operating Experience",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Lead restaurant operations at scale.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Relevant leadership may include multi-unit or high-volume restaurant operations.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "02 · Financial Readiness",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Have the resources to develop responsibly.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Financial qualifications are discussed during the mutual evaluation process.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "See financial qualifications →",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        },
+        {
+          "text": "03 · Owner Stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Protect the product. Lead the team. Serve the community.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Lead teams while upholding Budda's standards and community responsibilities.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "The partnership works both ways.",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What you bring",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓Restaurant leadership✓Financial readiness✓Hands-on owner stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "What Budda's brings",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓A distinctive signature product✓Bakery and product standards",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "Preliminary candidate profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "11px"
+        },
+        {
+          "text": "Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.",
+          "color": "rgb(90, 58, 31)",
+          "size": "14px"
+        },
+        {
+          "text": "View Qualifications",
+          "color": "rgb(255, 248, 232)",
+          "size": "14px"
+        },
+        {
+          "text": "Opens the Mutual Operator Fit section of the franchise opportunity.",
+          "color": "rgba(90, 58, 31, 0.8)",
+          "size": "11px"
+        },
+        {
+          "text": "Start the 3-Step Inquiry",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        }
+      ],
+      "focus": {
+        "active": true,
+        "top": 2757.421875,
+        "bottom": 2801.421875,
+        "headerBottom": 65,
+        "outline": "solid",
+        "outlineWidth": "3px"
+      },
+      "readingOrder": "- region \"What we look for in an operator.\":\n  - paragraph: Candidate Profile\n  - heading \"What we look for in an operator.\" [level=2]\n  - paragraph: Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.\n  - list \"Operator standards\":\n    - listitem:\n      - paragraph: 01Operating Experience\n      - heading \"Lead restaurant operations at scale.\" [level=3]\n      - paragraph: Relevant leadership may include multi-unit or high-volume restaurant operations.\n    - listitem:\n      - paragraph: 02Financial Readiness\n      - heading \"Have the resources to develop responsibly.\" [level=3]\n      - paragraph: Financial qualifications are discussed during the mutual evaluation process.\n      - link \"See financial qualifications →\":\n        - /url: /franchise/the-opportunity#financial-requirements\n    - listitem:\n      - paragraph: 03Owner Stewardship\n      - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n      - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n  - figure \"Product handling in practice.\":\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n    - text: Product handling in practice.\n  - heading \"The partnership works both ways.\" [level=3]\n  - term: What you bring\n  - definition:\n    - list:\n      - listitem: Restaurant leadership\n      - listitem: Financial readiness\n      - listitem: Hands-on owner stewardship\n  - term: What Budda's brings\n  - definition:\n    - list:\n      - listitem: A distinctive signature product\n      - listitem: Bakery and product standards\n  - paragraph: Preliminary candidate profile\n  - paragraph: Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.\n  - link \"View Qualifications\":\n    - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n  - paragraph: Opens the Mutual Operator Fit section of the franchise opportunity.\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_candidate_profile"
+    },
+    {
+      "viewport": "430x932",
+      "horizontalOverflow": false,
+      "h2Count": 1,
+      "h3Count": 4,
+      "criteriaCount": 3,
+      "listCount": 3,
+      "controls": [
+        {
+          "name": "See financial qualifications →",
+          "tag": "A",
+          "width": 219.734375,
+          "height": 44,
+          "outline": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "View Qualifications",
+          "tag": "A",
+          "width": 382,
+          "height": 52,
+          "outline": "none",
+          "outlineWidth": "3px"
+        },
+        {
+          "name": "Start the 3-Step Inquiry",
+          "tag": "A",
+          "width": 244.53125,
+          "height": 44,
+          "outline": "none",
+          "outlineWidth": "3px"
+        }
+      ],
+      "imageAlt": "A baker arranging freshly baked rolls at a sunlit bakery counter",
+      "rootBackground": "rgb(255, 248, 232)",
+      "text": [
+        {
+          "text": "Candidate Profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What we look for in an operator.",
+          "color": "rgb(28, 95, 86)",
+          "size": "34px"
+        },
+        {
+          "text": "Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.",
+          "color": "rgb(90, 58, 31)",
+          "size": "16px"
+        },
+        {
+          "text": "01 · Operating Experience",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Lead restaurant operations at scale.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Relevant leadership may include multi-unit or high-volume restaurant operations.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "02 · Financial Readiness",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Have the resources to develop responsibly.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Financial qualifications are discussed during the mutual evaluation process.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "See financial qualifications →",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        },
+        {
+          "text": "03 · Owner Stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "Protect the product. Lead the team. Serve the community.",
+          "color": "rgb(28, 95, 86)",
+          "size": "18px"
+        },
+        {
+          "text": "Lead teams while upholding Budda's standards and community responsibilities.",
+          "color": "rgb(90, 58, 31)",
+          "size": "15px"
+        },
+        {
+          "text": "The partnership works both ways.",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "What you bring",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓Restaurant leadership✓Financial readiness✓Hands-on owner stewardship",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "What Budda's brings",
+          "color": "rgb(28, 95, 86)",
+          "size": "12px"
+        },
+        {
+          "text": "✓A distinctive signature product✓Bakery and product standards",
+          "color": "rgb(28, 95, 86)",
+          "size": "16px"
+        },
+        {
+          "text": "Preliminary candidate profile",
+          "color": "rgb(28, 95, 86)",
+          "size": "11px"
+        },
+        {
+          "text": "Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.",
+          "color": "rgb(90, 58, 31)",
+          "size": "14px"
+        },
+        {
+          "text": "View Qualifications",
+          "color": "rgb(255, 248, 232)",
+          "size": "14px"
+        },
+        {
+          "text": "Opens the Mutual Operator Fit section of the franchise opportunity.",
+          "color": "rgba(90, 58, 31, 0.8)",
+          "size": "11px"
+        },
+        {
+          "text": "Start the 3-Step Inquiry",
+          "color": "rgb(28, 95, 86)",
+          "size": "14px"
+        }
+      ],
+      "focus": {
+        "active": true,
+        "top": 2787.125,
+        "bottom": 2831.125,
+        "headerBottom": 65,
+        "outline": "solid",
+        "outlineWidth": "3px"
+      },
+      "readingOrder": "- region \"What we look for in an operator.\":\n  - paragraph: Candidate Profile\n  - heading \"What we look for in an operator.\" [level=2]\n  - paragraph: Strong candidates bring restaurant leadership, financial readiness, and an ownership mindset that protects the product, team, and guest experience.\n  - list \"Operator standards\":\n    - listitem:\n      - paragraph: 01Operating Experience\n      - heading \"Lead restaurant operations at scale.\" [level=3]\n      - paragraph: Relevant leadership may include multi-unit or high-volume restaurant operations.\n    - listitem:\n      - paragraph: 02Financial Readiness\n      - heading \"Have the resources to develop responsibly.\" [level=3]\n      - paragraph: Financial qualifications are discussed during the mutual evaluation process.\n      - link \"See financial qualifications →\":\n        - /url: /franchise/the-opportunity#financial-requirements\n    - listitem:\n      - paragraph: 03Owner Stewardship\n      - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n      - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n  - figure \"Product handling in practice.\":\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n    - text: Product handling in practice.\n  - heading \"The partnership works both ways.\" [level=3]\n  - term: What you bring\n  - definition:\n    - list:\n      - listitem: Restaurant leadership\n      - listitem: Financial readiness\n      - listitem: Hands-on owner stewardship\n  - term: What Budda's brings\n  - definition:\n    - list:\n      - listitem: A distinctive signature product\n      - listitem: Bakery and product standards\n  - paragraph: Preliminary candidate profile\n  - paragraph: Meeting preliminary criteria does not constitute approval. An inquiry is not an application, territory reservation, or offer of a franchise.\n  - link \"View Qualifications\":\n    - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n  - paragraph: Opens the Mutual Operator Fit section of the franchise opportunity.\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_candidate_profile"
+    }
+  ],
+  "zoom": {
+    "horizontalOverflow": false
+  },
+  "motion": {
+    "duration": "0.001s",
+    "property": "none"
+  }
+}

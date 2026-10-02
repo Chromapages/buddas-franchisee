@@ -1,0 +1,453 @@
+[
+  {
+    "width": 320,
+    "height": 568,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 280,
+        "height": 73.4375,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 280,
+        "height": 96,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 280,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "width": 360,
+    "height": 800,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 320,
+        "height": 73.4375,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 320,
+        "height": 72,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 320,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 350,
+        "height": 79.53125,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "39px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 350,
+        "height": 72,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 350,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "width": 393,
+    "height": 852,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 353,
+        "height": 80.15625,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "39.3px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 353,
+        "height": 72,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 353,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "width": 430,
+    "height": 932,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 390,
+        "height": 87.71875,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "43px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 390,
+        "height": 72,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 390,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "width": 667,
+    "height": 375,
+    "overflow": false,
+    "heroOverflow": false,
+    "elements": [
+      {
+        "text": "Build the NextBudda's.",
+        "tag": "H1",
+        "width": 576,
+        "height": 93.8125,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "46px"
+      },
+      {
+        "text": "A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.",
+        "tag": "P",
+        "width": 576,
+        "height": 48,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "16px"
+      },
+      {
+        "text": "2 Utah restaurants operating today",
+        "tag": "DD",
+        "width": 236.84375,
+        "height": 21,
+        "color": "rgb(90, 58, 31)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "\"DM Sans\", \"DM Sans Fallback\", \"DM Sans\", sans-serif",
+        "size": "14px"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "tag": "A",
+        "width": 576,
+        "height": 56,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "15px"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "tag": "A",
+        "width": 212.40625,
+        "height": 44,
+        "color": "rgb(28, 95, 86)",
+        "background": "rgba(0, 0, 0, 0)",
+        "font": "Poppins, \"Poppins Fallback\", Poppins, sans-serif",
+        "size": "14px"
+      }
+    ]
+  },
+  {
+    "condition": "200% text enlargement",
+    "overflow": false
+  },
+  {
+    "condition": "text spacing",
+    "overflow": false
+  },
+  {
+    "condition": "keyboard and reduced motion",
+    "keyboard": [
+      {
+        "text": "Skip to main content",
+        "top": 15,
+        "bottom": 39,
+        "focusVisible": true,
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "scrollMargin": "0px",
+        "transition": "0.001s"
+      },
+      {
+        "text": "",
+        "top": 10,
+        "bottom": 54,
+        "focusVisible": true,
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "scrollMargin": "0px",
+        "transition": "0.001s"
+      },
+      {
+        "text": "",
+        "top": 9,
+        "bottom": 55,
+        "focusVisible": true,
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "scrollMargin": "0px",
+        "transition": "0.001s"
+      },
+      {
+        "text": "Explore the Opportunity",
+        "top": 394.4375,
+        "bottom": 450.4375,
+        "focusVisible": true,
+        "shadow": "none",
+        "scrollMargin": "80px",
+        "transition": "0.001s"
+      },
+      {
+        "text": "Start the 3-Step Inquiry",
+        "top": 444.4375,
+        "bottom": 488.4375,
+        "focusVisible": true,
+        "shadow": "none",
+        "scrollMargin": "80px",
+        "transition": "0.001s"
+      },
+      {
+        "text": "01 · PRODUCTThe Roll sets Budda's apart.+",
+        "top": 300.015625,
+        "bottom": 364.515625,
+        "focusVisible": true,
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "scrollMargin": "0px",
+        "transition": "0.001s"
+      }
+    ]
+  },
+  {
+    "condition": "CTA activation",
+    "index": 0,
+    "focus": {
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "color": "rgb(28, 95, 86)"
+    },
+    "hover": {
+      "color": "rgb(255, 248, 232)",
+      "background": "rgb(28, 95, 86)"
+    },
+    "press": {
+      "active": true,
+      "color": "rgb(255, 248, 232)",
+      "background": "rgb(21, 73, 66)"
+    },
+    "destination": "http://localhost:3000/franchise/the-opportunity"
+  },
+  {
+    "condition": "CTA activation",
+    "index": 1,
+    "focus": {
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "color": "rgb(28, 95, 86)"
+    },
+    "hover": {
+      "color": "rgb(28, 95, 86)",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "press": {
+      "active": true,
+      "color": "rgb(28, 95, 86)",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "destination": "http://localhost:3000/franchise/contact?source_page=homepage_hero"
+  }
+]

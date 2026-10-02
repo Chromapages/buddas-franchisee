@@ -1,0 +1,362 @@
+[
+  {
+    "scenario": "supplies-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Supplies Catalog | Budda's Operator Portal",
+    "heading": "Authorized Supplies Catalog",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "orders-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Orders & Shipments | Budda's Operator Portal",
+    "heading": "Orders & Shipments",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-new-1-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "cart-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Wholesale Cart | Budda's Operator Portal",
+    "heading": "Supply cart",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "checkout-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Review Supply Order | Budda's Operator Portal",
+    "heading": "Review & place your order",
+    "inputSize": "14px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "resources-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Resource Center | Budda's Operator Portal",
+    "heading": "Operations Manuals & SOPs",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "bulletins-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Bulletins | Budda's Operator Portal",
+    "heading": "Corporate bulletins",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "account-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Account Profile | Budda's Operator Portal",
+    "heading": "Account profile",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "expansion-320",
+    "status": 200,
+    "overflow": 0,
+    "title": "Growth Requests | Budda's Operator Portal",
+    "heading": "Growth requests",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "supplies-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Supplies Catalog | Budda's Operator Portal",
+    "heading": "Authorized Supplies Catalog",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "orders-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Orders & Shipments | Budda's Operator Portal",
+    "heading": "Orders & Shipments",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-new-1-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "cart-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Wholesale Cart | Budda's Operator Portal",
+    "heading": "Supply cart",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "checkout-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Review Supply Order | Budda's Operator Portal",
+    "heading": "Review & place your order",
+    "inputSize": "14px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "resources-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Resource Center | Budda's Operator Portal",
+    "heading": "Operations Manuals & SOPs",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "bulletins-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Bulletins | Budda's Operator Portal",
+    "heading": "Corporate bulletins",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "account-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Account Profile | Budda's Operator Portal",
+    "heading": "Account profile",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "expansion-430",
+    "status": 200,
+    "overflow": 0,
+    "title": "Growth Requests | Budda's Operator Portal",
+    "heading": "Growth requests",
+    "inputSize": "16px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "supplies-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Supplies Catalog | Budda's Operator Portal",
+    "heading": "Authorized Supplies Catalog",
+    "inputSize": "32px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "orders-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Orders & Shipments | Budda's Operator Portal",
+    "heading": "Orders & Shipments",
+    "inputSize": "32px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "support-new-1-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": "32px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "cart-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Wholesale Cart | Budda's Operator Portal",
+    "heading": "Supply cart",
+    "inputSize": "32px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "checkout-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Review Supply Order | Budda's Operator Portal",
+    "heading": "Review & place your order",
+    "inputSize": "28px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "resources-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Resource Center | Budda's Operator Portal",
+    "heading": "Operations Manuals & SOPs",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "bulletins-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Bulletins | Budda's Operator Portal",
+    "heading": "Corporate bulletins",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "account-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Account Profile | Budda's Operator Portal",
+    "heading": "Account profile",
+    "inputSize": null,
+    "gutter": "20px"
+  },
+  {
+    "scenario": "expansion-320-text200",
+    "status": 200,
+    "overflow": 0,
+    "title": "Growth Requests | Budda's Operator Portal",
+    "heading": "Growth requests",
+    "inputSize": "32px",
+    "gutter": "20px"
+  },
+  {
+    "scenario": "supplies-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Supplies Catalog | Budda's Operator Portal",
+    "heading": "Authorized Supplies Catalog",
+    "inputSize": "14px",
+    "gutter": "32px"
+  },
+  {
+    "scenario": "orders-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Orders & Shipments | Budda's Operator Portal",
+    "heading": "Orders & Shipments",
+    "inputSize": "14px",
+    "gutter": "32px"
+  },
+  {
+    "scenario": "support-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": null,
+    "gutter": "32px"
+  },
+  {
+    "scenario": "support-new-1-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Support | Budda's Operator Portal",
+    "heading": "Operations Support & Ticketing",
+    "inputSize": "15px",
+    "gutter": "32px"
+  },
+  {
+    "scenario": "cart-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Wholesale Cart | Budda's Operator Portal",
+    "heading": "Supply cart",
+    "inputSize": "15px",
+    "gutter": "32px"
+  },
+  {
+    "scenario": "checkout-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Review Supply Order | Budda's Operator Portal",
+    "heading": "Review & place your order",
+    "inputSize": "14px",
+    "gutter": "32px"
+  },
+  {
+    "scenario": "resources-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Resource Center | Budda's Operator Portal",
+    "heading": "Operations Manuals & SOPs",
+    "inputSize": null,
+    "gutter": "32px"
+  },
+  {
+    "scenario": "bulletins-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Operations Bulletins | Budda's Operator Portal",
+    "heading": "Corporate bulletins",
+    "inputSize": null,
+    "gutter": "32px"
+  },
+  {
+    "scenario": "account-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Account Profile | Budda's Operator Portal",
+    "heading": "Account profile",
+    "inputSize": null,
+    "gutter": "32px"
+  },
+  {
+    "scenario": "expansion-1280",
+    "status": 200,
+    "overflow": 0,
+    "title": "Growth Requests | Budda's Operator Portal",
+    "heading": "Growth requests",
+    "inputSize": "16px",
+    "gutter": "32px"
+  }
+]

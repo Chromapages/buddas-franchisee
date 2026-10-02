@@ -358,7 +358,9 @@ export function CatalogBulkPublisher({ stores, canPublishUniversal }: { stores: 
   }
 
 
-  if (view === "REVIEW") return <div className="corporate-catalog-bulk"><header className="catalog-flow-heading"><p>Store Catalog</p><h2>Review and add</h2><span>Step 3 of 3</span></header>{stepRail}{consequenceBanner}<section className="corporate-panel" aria-label="Review item and stores"><div className="catalog-review">
+  if (view === "REVIEW") return <div className="corporate-catalog-bulk">
+    <header className="corporate-work-masthead catalog-work-masthead"><div className="corporate-work-masthead-top"><div className="corporate-work-masthead-intro"><p>Store catalog</p><h1>Review and add</h1><span>Review the item and selected stores before confirming the publication.</span></div></div></header>
+    {stepRail}{consequenceBanner}<section className="corporate-panel" aria-label="Review item and stores"><div className="catalog-review">
     <p><strong>{editing ? "Update " : "Add "}{name} · {packSize} · {formatCurrency(draft.price)} per pack</strong></p>
     <p>{catalogScope === "UNIVERSAL" ? `To all active stores. ${selectedEligible.length} stores are currently ready, and future active stores will inherit this item.` : `To ${selectedEligible.map((entry) => entry.location.name).join(", ")}.`}</p>
     <p>{mode === "NOW" ? "Available immediately." : "Available " + new Date(scheduledAt).toLocaleString() + "."} Expected shipping time: {leadTimeDays} days.</p>
@@ -369,7 +371,17 @@ export function CatalogBulkPublisher({ stores, canPublishUniversal }: { stores: 
   </div></section></div>;
 
   return <div className="corporate-catalog-bulk">
-    <header className="catalog-flow-heading">{itemIntent === "ADD" || editing ? <button type="button" className="catalog-back-link" onClick={() => { setItemIntent("EDIT"); setEditing(false); go(1); }}>← Back to store catalog</button> : null}<p>Store Catalog</p><h2 ref={headingRef} tabIndex={-1}>{itemIntent === "EDIT" && !editing ? "Store catalog" : editing ? "Edit item" : step === 1 ? "Add item" : "Choose stores"}</h2><span>{itemIntent === "EDIT" && !editing ? "Choose an item to update, hide, or remove." : editing ? "Update this catalog item for its assigned stores." : "Create a new item to make it available for ordering at selected locations."}</span>{itemIntent === "EDIT" && !editing ? <button type="button" className="corporate-button" onClick={startNewItem}>Add item</button> : null}</header>
+    <header className="corporate-work-masthead catalog-work-masthead">
+      <div className="corporate-work-masthead-top">
+        <div className="corporate-work-masthead-intro">
+          {itemIntent === "ADD" || editing ? <button type="button" className="catalog-back-link" onClick={() => { setItemIntent("EDIT"); setEditing(false); go(1); }}>← Back to store catalog</button> : null}
+          <p>Store catalog</p>
+          <h1 ref={headingRef} tabIndex={-1}>{itemIntent === "EDIT" && !editing ? "Store catalog" : editing ? "Edit item" : step === 1 ? "Add item" : "Choose stores"}</h1>
+          <span>{itemIntent === "EDIT" && !editing ? "Choose an item to update, hide, or remove." : editing ? "Update this catalog item for its assigned stores." : "Create a new item to make it available for ordering at selected locations."}</span>
+        </div>
+        {itemIntent === "EDIT" && !editing ? <button type="button" className="corporate-button" onClick={startNewItem}>Add item</button> : null}
+      </div>
+    </header>
     {itemIntent === "ADD" || editing ? stepRail : null}
     {itemIntent === "ADD" || editing ? consequenceBanner : null}
     {hasSavedDraft ? <aside className="catalog-saved-draft"><p>You have a saved draft.</p><button className="corporate-text-link" type="button" disabled={pending} onClick={resume}>Resume</button></aside> : null}

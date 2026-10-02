@@ -124,11 +124,11 @@ export const OPERATOR_SUPPORT_CONTENT = {
     alt: "Budda's bakery team member preparing a tray of rolls in the bakery.",
   },
   areas: [
-    { index: "01", label: "Opening + training", title: "Prepare the team and the restaurant.", description: "Product knowledge, team preparation, and opening guidance help the team get ready to operate." },
-    { index: "02", label: "Operating standards", title: "Operate from clear standards.", description: "Recipes, preparation methods, service behaviors, and operating procedures keep the standard visible." },
-    { index: "03", label: "Brand + marketing", title: "Use approved brand tools.", description: "Brand guidelines, approved assets, and local-store marketing resources support consistent market expression." },
-    { index: "04", label: "Supply + procurement", title: "Order against the approved catalog.", description: "The Operator Portal provides location-aware access to approved supplies, materials, pricing, and current orders." },
-    { index: "05", label: "Ongoing operations", title: "Use current operating guidance.", description: "Support channels, operating resources, and standards updates keep guidance available after opening." },
+    { index: "01", label: "Opening + training", title: "Prepare the team and the restaurant.", description: "Product training, team preparation, and opening guidance." },
+    { index: "02", label: "Operating standards", title: "Operate from clear standards.", description: "Recipes, preparation methods, service expectations, and daily procedures." },
+    { index: "03", label: "Brand + marketing", title: "Use approved brand tools.", description: "Brand guidelines, approved assets, and local marketing resources." },
+    { index: "04", label: "Supply + procurement", title: "Order against the approved catalog.", description: "Approved supplies, materials, pricing, and orders in the Operator Portal." },
+    { index: "05", label: "Ongoing operations", title: "Use current operating guidance.", description: "Support channels, resources, and standards updates after opening." },
   ],
   action: { href: "/franchise/process", label: "See How It Works", microcopy: "Review the mutual evaluation and development process." },
   governance: {

@@ -137,10 +137,11 @@ export const getHomepageSocialProof = cache(async (): Promise<HomepageSocialProo
 });
 
 export const getSiteSettings = cache(async () => {
-  const fallback = { organizationName: "Budda's Hawaiian Bakery & Grill", siteUrl: "https://buddasfranchise.com", defaultSeo: { title: "Budda's Hawaiian Bakery & Grill — Franchise Opportunity", description: "Explore Budda's Hawaiian Bakery & Grill franchise information." }, primaryNavigation: primaryNavItems, utilityNavigation: utilityNavItems, inquiryAction: { label: "Request Franchise Info", href: "/franchise/contact" }, ...FOOTER_CONTENT, footerNavigation: FOOTER_NAVIGATION };
+  const fallback = { organizationName: "Budda's Hawaiian Bakery & Grill", siteUrl: "https://buddasfranchise.com", defaultSeo: { title: "Budda's Hawaiian Bakery & Grill — Franchise Opportunity", description: "Explore Budda's Hawaiian Bakery & Grill franchise information." }, primaryNavigation: primaryNavItems, utilityNavigation: utilityNavItems, inquiryAction: { label: "Request Franchise Information", href: "/franchise/contact" }, ...FOOTER_CONTENT, footerNavigation: FOOTER_NAVIGATION };
   try {
     const parsed = siteSettingsSchema.safeParse(await sanityClient.fetch(SITE_SETTINGS_QUERY, {}, { next: { revalidate: 60, tags: ["sanity:site-settings"] } }));
     if (!parsed.success || !parsed.data) return fallback;
-    return { ...fallback, ...parsed.data };
+    // Keep the public inquiry route and footer groups consistent with the reviewed site structure.
+    return { ...fallback, ...parsed.data, inquiryAction: fallback.inquiryAction, footerNavigation: FOOTER_NAVIGATION };
   } catch { return fallback; }
 });

@@ -37,6 +37,56 @@ The source region has icon-and-copy pairs separated only by a central rule. The 
 
 final result: passed
 
+# Latest pass — Corporate Next Actions
+
+- Source visual truth: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-5f9f809a-d8e6-4c99-bb1d-8f2dd59f0f2f.png`, 1774 × 887px.
+- Implementation: `src/components/corporate/corporate-next-actions.tsx` and `src/app/corporate/corporate-next-actions.css`, used by `src/app/corporate/page.tsx`. User-supplied pre-fix capture: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-b81b2cbc-2907-4b8a-95cb-93fd28992b71.png` (840 × 733px crop). No final browser screenshot is available because the authenticated `/corporate` page remains blocked by browser policy.
+- Information architecture: Next Actions occupies the original left dashboard column beside the context rail. The heading shows the real attention count, priority-sorted rows carry record, location, state, next action, owner, and one full-row link, and a footer opens the complete queue. The standard work-queue table remains unchanged.
+- Typography and spacing: existing heading/body fonts and spacing scale are reused. Six columns appear only when the panel itself is wider than 64rem; the restored 840px panel uses a two-column row layout with readable title, state, location, action, and owner. Mobile uses one column. The post-fix layouts need rendered confirmation.
+- Color and assets: only existing teal, cocoa, cream, mint, and orange tokens and the installed icon library are used. No reference numbers, status values, team names, or decorative images were copied as data.
+- Copy and logic: state labels derive from authoritative `WorkRecord` fields. The shared attention predicate drives the masthead count, Next Actions list, and `view=attention` queue. Owner team slugs are formatted for display. Empty and invalid-age states have explicit copy.
+- Accessibility: one native link covers each row, the list has a name, focus is styled, and the footer action is keyboard reachable. These claims come from source inspection; keyboard interaction could not be browser-tested.
+
+| Evaluation | Success criterion | Status |
+| --- | --- | --- |
+| Data | Row count and fields derive from authorized work records. | Source verified |
+| Navigation | Each row and both queue actions resolve to permitted work routes. | Source verified |
+| Responsive layout | No clipped columns or horizontal page overflow at 390px and 1440px. | Browser check pending |
+| Keyboard use | All links are reachable with visible focus. | Browser check pending |
+
+- Comparison history: reference inspected at native dimensions. The first implementation widened Next Actions across the dashboard; the user corrected that width. The full-width override was removed and the original two-column dashboard grid restored. The supplied 840px capture then exposed a P1 sizing defect: six columns, badge text, record titles, and action arrows were cramped. The container breakpoint was raised from 50rem to 64rem and rows were rearranged by grid area. A post-fix browser capture remains unavailable under the browser URL policy, so the visual QA gate stays blocked.
+
+final result: blocked
+
+# Latest pass — Corporate signal masthead
+
+- Source visual truth: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-940a8a8c-c670-4c38-8649-6a7794e3c0f9.png`, 2171 × 724px. The main masthead and two alternate states are the target; presentation captions and footer are outside the app component.
+- Implementation: `src/app/corporate/page.tsx`, `src/app/corporate/corporate-masthead.css`, and the client location menu in `src/components/corporate/corporate-masthead-scope.tsx`. No final browser screenshot path or verified CSS viewport is available because the browser policy blocked the authenticated corporate page before this iteration.
+- Information architecture and copy: greeting, portfolio context, attention, waiting, due-today, freshness, and work-queue action share one surface. The empty state and authorized location filter derive from real records. No sample counts or location names from the mock were copied.
+- Typography and spacing: existing Poppins/DM Sans scale and 4/8px spacing rhythm are reused. The masthead has desktop columns, a stacked compact layout, and a mobile single-column signal list. These layouts need rendered confirmation.
+- Color and assets: existing teal, cocoa, cream, gold, mint, and orange tokens and installed Lucide icons are reused. Code-calculated contrast is 10.18:1 for ink on white, 7.45:1 for teal dark on white, and 3.29:1 for the attention icon on its tinted surface. The connected design verification service was unavailable, so these numbers are not live-browser certification.
+- Logic: attention uses the same predicate in masthead and work-queue `view=attention`; selected `locationId` is checked against authorized locations before the dashboard filters records. Work-queue filters preserve `locationId`. Due-today uses the working time zone.
+- Accessibility: native links and buttons, named filter region, Escape-to-close with trigger focus return, 44px-or-greater control heights, and focus styles are present in source. Keyboard behavior could not be browser-tested.
+- Comparison history: source inspected at native dimensions; no final rendered screenshot or matched-state crop could be captured. Visual QA therefore remains blocked rather than claiming fidelity from code alone.
+
+final result: blocked
+
+# Latest pass — Corporate portfolio header
+
+- Source visual truth: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-2a007fbc-5a80-4870-a47c-c6db27f2ea24.png` (1783 × 882px concept board). The header and four interaction panels are the reference; presentation text around them is not part of the app.
+- Implementation: authenticated `http://localhost:3000/corporate`, desktop Chrome viewport approximately 1910 × 900 CSS px. Browser captures of the default header, permitted-location panel, search results, and work activity appeared inline during this pass but could not be saved after the browser parked the tab.
+- Initial live evidence: header displayed portfolio, search, work activity, and account controls. Portfolio returned three authorized location links. Searching `BD-5244` returned the matching order. Work activity listed four real items needing attention. The latest portfolio label was shortened to `All locations` after an initial truncation finding.
+- Fonts and typography: existing portal font stack and hierarchy retained. The shorter displayed scope label avoids clipping; its accessible name keeps the full scope.
+- Spacing and layout: header uses an inset 88px desktop surface and responsive mobile controls. Desktop popovers were visible over page content in the earlier captures. Final 1440px and 390px layouts were not captured.
+- Colors and tokens: white, teal ink, cocoa, mint, and existing border tokens only. Calculated contrast ratios: ink on white 10.18:1, cocoa on white 10.2:1, teal dark on white 7.45:1, and ink on mint 7.54:1. The named design verification service was unavailable; these are code-calculated ratios, not a live WCAG certification.
+- Images and icons: no new raster asset was needed inside the header. Existing icon library is reused; no logo or image was fabricated.
+- Copy and content: portfolio entries, quick search matches, and attention counts come from authorized corporate records. Location rows open their actual directory records. Work activity does not claim unread state; no unsupported mark-as-read action was added.
+- Accessibility and interaction: controls use native buttons, links, and search inputs with labels and focus styles. The search and portfolio panels were exercised live. The browser then blocked an account-menu action under its URL policy and parked the tab. Account and mobile interaction checks could not continue through that browser surface.
+- Runtime evidence: the development server returned 200 for `/corporate` and `/api/corporate/header`. Fast Refresh reported a hook dependency-array size warning while code was edited; a fresh browser reload to clear that development state was unavailable after the policy block.
+- Comparison history: initial visible desktop comparison found the truncated portfolio label; source was updated. A final same-state screenshot comparison was blocked by the browser policy, so no pass is claimed.
+
+final result: blocked
+
 # Latest pass — Corporate footer name overflow
 
 - Reference: `C:/Users/ericb/AppData/Local/Temp/codex-clipboard-3215f0e7-f0de-40cd-84a3-f35c3b9323c6.png`.

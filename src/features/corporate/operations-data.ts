@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { QuerySnapshot } from "firebase-admin/firestore";
 import { firebaseDb } from "../../lib/firebase/admin";
 import { CORPORATE_BUNDLE_PERMISSIONS, hasCorporatePermission, isActiveCorporateMembership } from "./authorization";
 import { isCorporateSeedMode } from "./environment";
@@ -149,15 +150,26 @@ export async function listCorporateRequests(session: CorporateSession): Promise<
   if (!firebaseDb) throw new Error("Corporate request records are not configured.");
   const database = firebaseDb;
   const access = requestOrganizationAccess(session);
-  const snapshots = access.corporate
-    ? [await database.collectionGroup("expansionApplications").orderBy("submittedAt", "desc").limit(200).get()]
-    : await Promise.all(access.organizationIds.map((entityId) => database.collection("franchiseEntities").doc(entityId).collection("expansionApplications").orderBy("submittedAt", "desc").limit(100).get()));
-  return snapshots.flatMap((snapshot) => snapshot.docs.flatMap((doc) => {
+  let snapshots: QuerySnapshot[];
+  if (access.corporate) {
+    try {
+      snapshots = [await database.collectionGroup("expansionApplications").orderBy("submittedAt", "desc").limit(200).get()];
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.includes("COLLECTION_GROUP_DESC index for collection expansionApplications and field submittedAt")) throw error;
+      // The declared collection-group index may not be deployed yet; read each entity with its standard field index.
+      const entities = await database.collection("franchiseEntities").select().get();
+      snapshots = await Promise.all(entities.docs.map((entity) => entity.ref.collection("expansionApplications").orderBy("submittedAt", "desc").limit(200).get()));
+    }
+  } else {
+    snapshots = await Promise.all(access.organizationIds.map((entityId) => database.collection("franchiseEntities").doc(entityId).collection("expansionApplications").orderBy("submittedAt", "desc").limit(100).get()));
+  }
+  const requests = snapshots.flatMap((snapshot) => snapshot.docs.flatMap((doc) => {
     const entityId = doc.ref.parent.parent?.id;
     if (!entityId || !hasCorporatePermission(session, "VIEW_REQUESTS", { organizationId: entityId })) return [];
     const request = requestFromRecord(doc.id, entityId, doc.data());
     return request ? [request] : [];
   })).sort((left, right) => right.submittedAt.localeCompare(left.submittedAt));
+  return access.corporate ? requests.slice(0, 200) : requests;
 }
 
 export async function getCorporateRequest(session: CorporateSession, compoundId: string): Promise<CorporateRequest | null> {

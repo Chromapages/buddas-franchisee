@@ -338,7 +338,7 @@ const PortalShellComponent = ({
         aria-label="Operator Workspace sidebar"
         className="portal-sidebar hidden lg:h-dvh lg:overflow-hidden lg:flex w-[var(--bds-portal-rail-width)] shrink-0 flex-col justify-between border-r border-bds-teal-dark/20 bg-bds-teal-dark text-white"
       >
-        <div>
+        <div className="portal-sidebar-heading">
           {/* Brand Header */}
           <div className="portal-sidebar-brand p-5 border-b border-white/10">
             <Link
@@ -365,9 +365,10 @@ const PortalShellComponent = ({
           <div className={`portal-sidebar-unit ${locations.length <= 1 ? "portal-sidebar-unit-single" : "portal-sidebar-unit-multi"}`}>
             <LocationSelector id="portal-sidebar-unit" session={session} locations={locations} returnTo={returnTo} tone="sidebar" />
           </div>
+        </div>
 
-          {/* Navigation Links */}
-          <nav aria-label="Workspace primary navigation" className="portal-sidebar-nav px-4">
+        {/* Navigation Links */}
+        <nav aria-label="Workspace primary navigation" className="portal-sidebar-nav px-4">
             {desktopNavGroups.map(({ group, items }) => <section key={group} className="portal-sidebar-nav-group" aria-labelledby={`portal-nav-${group.toLowerCase()}`}><h2 id={`portal-nav-${group.toLowerCase()}`}>{group}</h2>{items.map((item) => {
               const Icon = item.icon;
               const isActive =
@@ -379,8 +380,7 @@ const PortalShellComponent = ({
 
               return isActive ? <span key={item.href} className={itemClassName} aria-current="page" aria-label={item.sidebarLabel} title={item.sidebarLabel}>{itemContent}<span className="sr-only">(Current page)</span></span> : <Link key={item.href} href={item.href} onClick={() => trackOperatorWorkspaceEvent("operator_sidebar_nav_selected", { role_category: session.role, location_scope_count: locations.length, viewport_group: "desktop", route: analyticsRoute(item.href) })} className={itemClassName} aria-label={item.sidebarLabel} title={item.sidebarLabel}>{itemContent}</Link>;
             })}</section>)}
-          </nav>
-        </div>
+        </nav>
 
         {/* Account context and session action */}
         <div ref={sidebarFooterRef} className="portal-sidebar-footer">

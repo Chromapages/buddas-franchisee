@@ -1,0 +1,81 @@
+- main:
+  - text: Franchise Opportunity
+  - heading "Build the Next Budda's." [level=1]
+  - paragraph: A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.
+  - term: Current footprint
+  - definition: 2 Utah restaurants operating today
+  - link "Explore the Opportunity":
+    - /url: /franchise/the-opportunity
+  - link "Start the 3-Step Inquiry":
+    - /url: /franchise/contact?source_page=homepage_hero
+  - figure:
+    - img "A baker arranging freshly baked rolls at a sunlit bakery counter"
+  - region "The Budda's Advantage":
+    - text: THE BUDDA'S ADVANTAGE
+    - heading "Why the model works for operators." [level=2]
+    - paragraph: "A connected model: product demand, operating consistency, teachable hospitality, and readiness-led growth."
+    - list "Operator model pillars":
+      - listitem:
+        - article:
+          - button "01 PRODUCT The Roll sets Budda's apart."
+      - listitem:
+        - article:
+          - button "02 SYSTEM Consistency teams can follow."
+      - listitem:
+        - article:
+          - button "03 EXPERIENCE Hospitality teams can learn."
+      - listitem:
+        - article:
+          - button "04 GROWTH Ready first. Growth second."
+    - link "Review the Franchise Opportunity":
+      - /url: /franchise/the-opportunity
+    - paragraph: No obligation — takes under 2 minutes.
+  - region "Built for operators who can build with us.":
+    - paragraph: CANDIDATE PROFILE
+    - heading "Built for operators who can build with us." [level=2]
+    - paragraph: The gate reviews restaurant leadership, financial readiness, and owner responsibility.
+    - list "Operator standards":
+      - listitem:
+        - paragraph: OPERATE — Restaurant leadership
+        - heading "Multi-unit or high-volume restaurant experience" [level=3]
+        - paragraph: Lead multiple locations or high-volume restaurant operations.
+      - listitem:
+        - paragraph: CAPITALIZE — Financial requirement
+        - heading "Financial readiness is reviewed during mutual evaluation." [level=3]
+        - link "Review financial qualification and disclosure status":
+          - /url: /franchise/the-opportunity#financial-requirements
+      - listitem:
+        - paragraph: STEWARD — Owner responsibility
+        - heading "Protect the product. Lead the team. Serve the community." [level=3]
+        - paragraph: Lead teams while upholding Budda's standards and community responsibilities.
+    - heading "THE PARTNERSHIP WORKS BOTH WAYS." [level=3]
+    - term: What you bring
+    - definition: Operate · Capitalize · Steward
+    - term: What Budda's brings
+    - definition: Signature product · Bakery standards · Operating systems · Support
+    - link "REVIEW QUALIFICATIONS":
+      - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications
+    - paragraph: No obligation — review the full candidate criteria.
+    - figure "OPERATING DISCIPLINE MORE TABLES. SAME STANDARD.":
+      - img "A baker arranging freshly baked rolls at a sunlit bakery counter"
+      - text: OPERATING DISCIPLINE MORE TABLES. SAME STANDARD.
+  - region "Franchise evaluation request":
+    - heading "Let's Build Something Together." [level=2]
+    - paragraph:
+      - text: For experienced operators ready for a confidential, two-way evaluation.
+      - link "See how we partner →":
+        - /url: /franchise/process
+    - link "Request a Mutual Evaluation":
+      - /url: /franchise/contact?source_page=%2Ffranchise
+    - paragraph: Takes 2 minutes · Response in 48 hrs. · In-House Corporate Review
+    - paragraph: Confidential inquiry only — not an application, territory reservation, or franchise offer.
+    - paragraph: "Current footprint: 2 Utah restaurants operating today"
+    - heading "Franchise Evaluation Benchmarks" [level=3]
+    - text: $150K Min. Liquid Capital $400K Min. Net Worth
+    - list "Four-stage mutual evaluation process":
+      - listitem: 1 Inquiry
+      - listitem: 2 Review
+      - listitem: 3 Diligence
+      - listitem: 4 Onboarding
+    - button "Explore the 4-stage process"
+    - paragraph: Direct leadership and operational onboarding throughout the evaluation.

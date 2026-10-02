@@ -164,26 +164,6 @@
   .corporate-nav-link { display: flex; min-height: 2.75rem; align-items: center; gap: .75rem; border-left: 3px solid transparent; border-radius: .625rem; padding: .65rem .75rem; color: rgb(255 255 255 / .78); font-size: .875rem; font-weight: 650; transition: background-color .15s ease, color .15s ease; }
   .corporate-nav-link:hover { background: rgb(255 255 255 / .1); color: white; }
   .corporate-nav-link[aria-current="page"] { border-left-color: var(--bds-color-brand-gold-accessible); background: rgb(255 255 255 / .13); color: white; }
-  .corporate-account { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 2.75rem; align-items: center; gap: .375rem; padding: 1rem; border-top: 1px solid rgb(255 255 255 / .12); }
-  .corporate-account-trigger { display: grid !important; grid-template-columns: 2.25rem minmax(0, 1fr) auto; width: 100% !important; min-height: 2.75rem; align-items: center; justify-items: stretch; gap: .625rem; overflow: hidden; padding: .25rem !important; text-align: left; transition: background-color .15s ease; }
-  .corporate-account-trigger:hover { background: rgb(255 255 255 / .1); }
-  .corporate-avatar { display: grid; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--bds-color-brand-gold-accessible); color: var(--bds-color-brand-teal-ink); font-size: .8125rem; font-weight: 800; }
-  .corporate-account-copy { min-width: 0; }
-  .corporate-account strong, .corporate-account small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .corporate-account strong { color: white; font-size: .75rem; }
-  .corporate-account small { margin-top: .125rem; color: rgb(255 255 255 / .62); font-size: .6875rem; }
-  .corporate-account > .corporate-sidebar-toggle { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border-radius: .5rem; color: rgb(255 255 255 / .7); }
-  .corporate-account > .corporate-sidebar-toggle:hover { background: rgb(255 255 255 / .12); color: white; }
-  .corporate-account-arrow { color: var(--bds-workspace-sidebar-accent); }
-  .corporate-account-menu { position: absolute; z-index: 60; right: .75rem; bottom: calc(100% + .5rem); left: .75rem; overflow: hidden; border: 1px solid rgb(255 255 255 / .22); border-radius: .875rem; background: #154942; box-shadow: 0 .875rem 2rem rgb(0 0 0 / .32); }
-  .corporate-account-menu-summary { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: center; gap: .625rem; padding: .875rem; border-bottom: 1px solid rgb(255 255 255 / .14); }
-  .corporate-account-menu-summary > span:last-child { display: grid; min-width: 0; gap: .125rem; }
-  .corporate-account-menu-summary strong { overflow-wrap: anywhere; color: white; font-size: .875rem; }
-  .corporate-account-menu-summary small { overflow-wrap: anywhere; color: rgb(255 255 255 / .72); font-size: .6875rem; }
-  .corporate-account-menu-actions { display: grid; gap: .125rem; padding: .375rem; }
-  .corporate-account-menu-actions a, .corporate-account-menu-signout { display: flex; width: 100%; min-height: 2.75rem; align-items: center; gap: .625rem; border: 0; border-radius: .5rem; padding: .5rem .625rem; background: transparent; color: rgb(255 255 255 / .92); font-size: .8125rem; font-weight: 700; text-align: left; }
-  .corporate-account-menu-actions a:hover, .corporate-account-menu-signout:hover { background: rgb(255 255 255 / .12); color: white; }
-  .corporate-account-menu form { border-top: 1px solid rgb(255 255 255 / .14); padding: .375rem; }
   .corporate-workspace { min-width: 0; flex: 1; }
   .corporate-topbar { position: sticky; top: 0; z-index: 30; display: flex; min-height: 4rem; align-items: center; gap: 1rem; border-bottom: 1px solid var(--bds-workspace-border); background: rgb(255 255 255 / .96); padding: .625rem 1rem; backdrop-filter: blur(10px); }
   .corporate-menu-button { display: inline-flex; min-height: 2.75rem; align-items: center; gap: .5rem; border: 1px solid var(--bds-workspace-border); border-radius: .625rem; padding: .5rem .75rem; color: var(--bds-color-brand-teal-dark); font-size: .75rem; font-weight: 700; }
@@ -3541,23 +3521,11 @@
   .corporate-shell[data-sidebar-collapsed] .corporate-brand-logo,
   .corporate-shell[data-sidebar-collapsed] .corporate-brand p,
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-label,
-  .corporate-shell[data-sidebar-collapsed] .corporate-nav-group > p,
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-copy,
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-arrow { display: none; }
+  .corporate-shell[data-sidebar-collapsed] .corporate-nav-group > p { display: none; }
 
   .corporate-shell[data-sidebar-collapsed] .corporate-brand-mark { display: block; width: 2rem; height: 2rem; }
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-groups { gap: .75rem; padding-inline: .5rem; }
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-link { justify-content: center; padding-inline: .5rem; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account { grid-template-columns: 1fr; justify-items: center; gap: .5rem; padding-inline: .5rem; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-trigger { grid-template-columns: 1fr; justify-items: center; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-menu {
-    position: fixed;
-    right: auto;
-    bottom: .75rem;
-    left: calc(var(--bds-corporate-rail-width) + .5rem);
-    width: min(18rem, calc(100vw - var(--bds-corporate-rail-width) - 1rem));
-  }
-
   .corporate-sidebar-toggle,
   .portal-sidebar-toggle {
     display: grid;

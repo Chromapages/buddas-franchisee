@@ -150,12 +150,13 @@ const FooterLegal = ({ pagePath, content }: { pagePath: string; content: FooterC
     <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
       <nav aria-label="Legal">
         <ul role="list" className="flex flex-wrap gap-x-5 gap-y-1">
-          {legalLinks.map((item) => <li key={item.href}><Link href={item.href} onClick={() => trackFunnelEvent("footer_legal_link_click", { page_path: pagePath, footer_destination: item.href })} className="inline-flex min-h-9 items-center font-body text-sm font-medium text-bds-text-body underline decoration-bds-teal-dark/35 underline-offset-4 transition-colors duration-150 hover:text-bds-action-primary hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white">{item.label}</Link></li>)}
+          {legalLinks.map((item) => <li key={item.href}><Link href={item.href} onClick={() => trackFunnelEvent("footer_legal_link_click", { page_path: pagePath, footer_destination: item.href })} className="inline-flex min-h-11 items-center font-body text-sm font-medium text-bds-text-body underline decoration-bds-teal-dark/35 underline-offset-4 transition-colors duration-150 hover:text-bds-action-primary hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bds-action-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white">{item.label}</Link></li>)}
         </ul>
       </nav>
       <p className="font-body text-sm text-bds-text-body">{content.copyright}</p>
     </div>
-    <p className="mt-4 max-w-[80ch] font-body text-[13px] leading-[1.6] text-bds-text-body">{content.legalDisclaimer}</p>
+      <p className="mt-4 max-w-[80ch] font-body text-[13px] leading-[1.6] text-bds-text-body">{content.inquiryDisclaimer}</p>
+      <p className="mt-2 max-w-[80ch] font-body text-[13px] leading-[1.6] text-bds-text-body">{content.legalDisclaimer}</p>
   </section>
   );
 };

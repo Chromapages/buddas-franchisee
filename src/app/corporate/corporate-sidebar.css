@@ -1,6 +1,7 @@
 @media (min-width: 64rem) {
   .corporate-shell:not([data-sidebar-collapsed]) { --bds-corporate-rail-width: 17.5rem; }
   .corporate-shell .corporate-rail { background: var(--bds-color-brand-teal-ink); }
+  .corporate-shell .corporate-rail-heading { flex: none; }
   .corporate-shell .corporate-rail-scroll { min-height: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; }
 
   .corporate-shell .corporate-brand { min-height: 8.25rem; margin-inline: 1.25rem; border-color: rgb(255 255 255 / .18); padding: 1.5rem 0 1.125rem; }
@@ -23,13 +24,8 @@
   .corporate-shell .corporate-nav-link[aria-current="page"]::before { position: absolute; top: 15%; bottom: 15%; left: -.45rem; width: .3rem; border-radius: 999px; background: var(--bds-workspace-sidebar-accent); content: ""; }
   .corporate-shell .corporate-nav-link:focus-visible { outline: 2px solid white; outline-offset: 2px; }
 
-  .corporate-shell .corporate-account { grid-template-columns: minmax(0,1fr); gap: .25rem; margin-inline: 1.25rem; border-color: rgb(255 255 255 / .18); padding: 1rem 0 1.25rem; }
-  .corporate-shell .corporate-account-trigger { grid-template-columns: 3rem minmax(0,1fr) auto; min-height: 4rem; gap: .75rem; border-radius: .625rem; padding: .25rem !important; }
-  .corporate-shell .corporate-avatar { width: 3rem; height: 3rem; background: var(--bds-workspace-sidebar-accent); color: var(--bds-color-brand-teal-ink); font-size: 1rem; }
-  .corporate-shell .corporate-account strong { font-size: .95rem; }
-  .corporate-shell .corporate-account small { color: rgb(255 255 255 / .82); font-size: .75rem; }
-  .corporate-shell .corporate-account > .corporate-sidebar-toggle { display: flex; width: 100%; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; color: rgb(255 255 255 / .86); font-size: .8125rem; }
-  .corporate-shell .corporate-account-trigger:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+  .corporate-shell .corporate-sidebar-footer { margin-inline: 1.25rem; border-top: 1px solid rgb(255 255 255 / .18); padding: 1rem 0 1.25rem; }
+  .corporate-shell .corporate-sidebar-footer .corporate-sidebar-toggle { display: flex; width: 100%; height: auto; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; color: rgb(255 255 255 / .86); font-size: .8125rem; }
 
   .corporate-shell[data-sidebar-collapsed] .corporate-brand { min-height: 8.25rem; margin-inline: .5rem; border-color: rgb(255 255 255 / .18); padding: 1rem .25rem; }
   .corporate-shell[data-sidebar-collapsed] .corporate-brand .corporate-brand-mark { width: 2.5rem; height: 2.5rem; }
@@ -41,37 +37,7 @@
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-group + .corporate-nav-group { border-top: 1px solid rgb(255 255 255 / .18); padding-top: 1rem; }
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-link { min-height: 3.25rem; justify-content: center; padding: .625rem; }
   .corporate-shell[data-sidebar-collapsed] .corporate-nav-link[aria-current="page"]::before { left: -.5rem; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account { gap: .5rem; margin-inline: .5rem; padding: 1rem 0; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-trigger { grid-template-columns: 1fr; min-height: 3rem; justify-items: center; padding: 0 !important; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-avatar { width: 2.75rem; height: 2.75rem; }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account > .corporate-sidebar-toggle { width: 2.75rem; min-height: 2.75rem; justify-self: center; }
+  .corporate-shell[data-sidebar-collapsed] .corporate-sidebar-footer { margin-inline: .5rem; padding: 1rem 0; }
+  .corporate-shell[data-sidebar-collapsed] .corporate-sidebar-footer .corporate-sidebar-toggle { width: 2.75rem; min-height: 2.75rem; margin-inline: auto; }
   .corporate-shell[data-sidebar-collapsed] .corporate-sidebar-toggle-label { display: none; }
-
-  .corporate-shell .corporate-account-menu { position: fixed; right: auto; bottom: 1rem; left: calc(var(--bds-corporate-rail-width) + .75rem); z-index: 60; display: flex; width: min(26rem, calc(100vw - var(--bds-corporate-rail-width) - 1.5rem)); max-height: calc(100dvh - 2rem); flex-direction: column; border-color: rgb(167 235 220 / .35); border-radius: .75rem; background: var(--bds-color-brand-teal-ink); box-shadow: 0 1rem 2rem rgb(21 73 66 / .22); }
-  .corporate-shell[data-sidebar-collapsed] .corporate-account-menu { right: auto; bottom: 1rem; left: calc(var(--bds-corporate-rail-width) + .75rem); width: min(26rem, calc(100vw - var(--bds-corporate-rail-width) - 1.5rem)); }
-  .corporate-shell .corporate-account-menu-summary { grid-template-columns: 3.25rem minmax(0,1fr) 2.75rem; min-height: 5.5rem; gap: .875rem; padding: 1rem 1.25rem; }
-  .corporate-shell .corporate-account-menu-summary .corporate-avatar { width: 3.25rem; height: 3.25rem; }
-  .corporate-shell .corporate-account-menu-summary > span:nth-child(2) { display: grid; min-width: 0; gap: .125rem; }
-  .corporate-shell .corporate-account-menu-summary strong { font-size: 1rem; line-height: 1.3; }
-  .corporate-shell .corporate-account-menu-summary small { color: rgb(255 255 255 / .82); font-size: .75rem; line-height: 1.35; }
-  .corporate-shell .corporate-account-menu-summary > button { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border-radius: .5rem; color: white; }
-  .corporate-shell .corporate-account-menu-summary > button:hover { background: rgb(255 255 255 / .12); }
-  .corporate-shell .corporate-account-menu-body { min-height: 0; overflow-y: auto; padding: .375rem 1rem; }
-  .corporate-shell .corporate-account-menu-section { padding: .75rem 0 1rem; border-bottom: 1px solid rgb(255 255 255 / .22); }
-  .corporate-shell .corporate-account-menu-section > h2 { display: flex; align-items: center; gap: .4rem; margin: .25rem .5rem .5rem; color: rgb(255 255 255 / .85); font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-  .corporate-shell .corporate-account-menu-row { display: grid; grid-template-columns: 2rem minmax(0,1fr) 1.25rem; min-height: 5rem; align-items: center; gap: .75rem; border-radius: .5rem; padding: .75rem .5rem; color: white; text-decoration: none; }
-  .corporate-shell .corporate-account-menu-row:hover { background: rgb(255 255 255 / .1); }
-  .corporate-shell .corporate-account-menu-row > span, .corporate-shell .corporate-account-menu-signout > span { display: grid; min-width: 0; gap: .125rem; }
-  .corporate-shell .corporate-account-menu-row strong, .corporate-shell .corporate-account-menu-signout strong { color: inherit; font-size: .875rem; font-weight: 700; }
-  .corporate-shell .corporate-account-menu-row small, .corporate-shell .corporate-account-menu-signout small { margin: 0; color: rgb(255 255 255 / .8); font-size: .75rem; font-weight: 400; line-height: 1.35; }
-  .corporate-shell .corporate-account-menu-context { display: grid; grid-template-columns: 2rem minmax(0,1fr) auto; min-height: 4.5rem; align-items: center; gap: .75rem; border-radius: .625rem; background: rgb(255 255 255 / .1); padding: .75rem .5rem; color: white; }
-  .corporate-shell .corporate-account-menu-context > span:nth-child(2) { display: grid; min-width: 0; gap: .1rem; }
-  .corporate-shell .corporate-account-menu-context strong { color: white; font-size: .875rem; font-weight: 700; }
-  .corporate-shell .corporate-account-menu-context small { margin: 0; color: rgb(255 255 255 / .8); font-size: .75rem; }
-  .corporate-shell .corporate-account-menu-context > span:last-child { border-radius: 999px; background: rgb(167 235 220 / .25); padding: .3rem .6rem; color: white; font-size: .75rem; font-weight: 700; }
-  .corporate-shell .corporate-account-menu-help { margin: .375rem 0; }
-  .corporate-shell .corporate-account-menu-logout { flex: 0 0 auto; border-top: 1px solid rgb(255 255 255 / .22); padding: .75rem 1rem; }
-  .corporate-shell .corporate-account-menu-signout { display: grid; grid-template-columns: 2rem minmax(0,1fr); min-height: 4.5rem; gap: .75rem; padding: .75rem .5rem; color: var(--bds-workspace-sidebar-accent); }
-  .corporate-shell .corporate-account-menu-signout:hover { color: white; }
-  .corporate-shell .corporate-account-menu :is(a, button):focus-visible { outline: 2px solid var(--bds-workspace-sidebar-accent); outline-offset: 2px; }
 }

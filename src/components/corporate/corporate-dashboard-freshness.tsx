@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const AUTO_REFRESH_MS = 2 * 60 * 1000;
 const STALE_AFTER_MS = 5 * 60 * 1000;
 
-export function CorporateDashboardFreshness({ updatedAt, timeZone }: { updatedAt: string; timeZone: string }) {
+export function CorporateDashboardFreshness({ updatedAt, timeZone, showRefreshIcon = false }: { updatedAt: string; timeZone: string; showRefreshIcon?: boolean }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOffline, setIsOffline] = useState(false);
@@ -61,5 +61,5 @@ export function CorporateDashboardFreshness({ updatedAt, timeZone }: { updatedAt
   const status = isOffline ? `Updated ${label}. Offline; information may be out of date.` : isPending ? "Updating corporate records…" : stale ? `Updated ${label}. Information may be out of date.` : `Updated ${label}`;
   const icon = isOffline ? <WifiOff size={15} aria-hidden="true" /> : stale ? <AlertCircle size={15} aria-hidden="true" /> : isPending ? <RefreshCw size={15} aria-hidden="true" /> : null;
 
-  return <div className="corporate-dashboard-freshness" data-state={isOffline ? "offline" : isPending ? "refreshing" : stale ? "stale" : "fresh"}><span role="status" aria-live="polite" aria-atomic="true">{icon}{status}</span><button type="button" onClick={refresh} disabled={isPending || isOffline}>{isPending ? "Refreshing" : "Refresh"}</button></div>;
+  return <div className="corporate-dashboard-freshness" data-state={isOffline ? "offline" : isPending ? "refreshing" : stale ? "stale" : "fresh"}><span role="status" aria-live="polite" aria-atomic="true">{icon}{status}</span><button type="button" onClick={refresh} disabled={isPending || isOffline}>{showRefreshIcon ? <RefreshCw size={18} aria-hidden="true" /> : null}{isPending ? "Refreshing" : "Refresh"}</button></div>;
 }

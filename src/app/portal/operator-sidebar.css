@@ -1,7 +1,7 @@
 @media (min-width: 64rem) {
   .portal-shell:not([data-sidebar-collapsed]) { --bds-portal-rail-width: 17.5rem; }
   .portal-shell .portal-sidebar { background: var(--bds-color-brand-teal-ink); }
-  .portal-shell .portal-sidebar > div:first-child { min-height: 0; flex: 1; overflow-y: auto; scrollbar-width: thin; }
+  .portal-shell .portal-sidebar-heading { flex: none; }
 
   .portal-shell .portal-sidebar-brand { min-height: 8.25rem; margin-inline: 1.25rem; border-color: rgb(255 255 255 / .18); padding: 1.5rem 0 1.125rem; }
   .portal-shell .portal-sidebar-brand > a { display: block; width: fit-content; max-width: 100%; padding: 0; }
@@ -15,7 +15,7 @@
   .portal-shell .portal-sidebar-unit :is(.portal-location-static-sidebar, .portal-location-trigger) strong { font-size: 1rem; white-space: normal; overflow-wrap: anywhere; }
   .portal-shell .portal-sidebar-unit :is(.portal-location-static-sidebar, .portal-location-trigger) small { color: rgb(255 255 255 / .82); font-size: .8125rem; }
 
-  .portal-shell .portal-sidebar-nav { gap: .75rem; padding: 0 1.25rem 1rem; }
+  .portal-shell .portal-sidebar-nav { min-height: 0; flex: 1; align-content: start; gap: .75rem; overflow-y: auto; scrollbar-width: thin; padding: 0 1.25rem 1rem; }
   .portal-shell .portal-sidebar-nav-group { gap: .25rem; }
   .portal-shell .portal-sidebar-nav-group > h2 { padding: .25rem .75rem .375rem; color: var(--bds-workspace-sidebar-accent); font-size: .7rem; font-weight: 800; letter-spacing: .18em; }
   .portal-shell .portal-sidebar-nav-link { position: relative; display: grid; grid-template-columns: 1.5rem minmax(0,1fr) auto; min-height: 3.25rem; align-items: center; gap: .75rem; border-radius: .625rem; padding: .5rem .75rem; color: white; font-size: 1rem; font-weight: 500; text-decoration: none; }

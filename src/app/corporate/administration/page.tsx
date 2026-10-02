@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Bell, Cable, KeyRound, Route, ScrollText } from "lucide-react";
-import { CorporatePageHeader, PermissionState } from "@/src/components/corporate/corporate-ui";
+import { PermissionState } from "@/src/components/corporate/corporate-ui";
 import { hasCorporatePermission } from "@/src/features/corporate/authorization";
 import { requireCorporateSession } from "@/src/features/corporate/session";
+import "../work/work-masthead.css";
 
 export default async function CorporateAdministrationPage() {
   const session = await requireCorporateSession();
@@ -14,5 +15,10 @@ export default async function CorporateAdministrationPage() {
     { href: "/corporate/administration/audit", title: "Audit", description: "Search committed actions and their safe field changes.", icon: ScrollText, show: hasCorporatePermission(session, "VIEW_AUDIT") },
   ].filter((item) => item.show);
   if (links.length === 1) return <PermissionState description="Your current access includes only personal notification settings." />;
-  return <div className="corporate-main-stack"><CorporatePageHeader eyebrow="Governance" title="Administration" description="Manage access, ownership, delivery recovery, and traceability within your granted scope." /><div className="corporate-admin-grid">{links.map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} className="corporate-admin-link"><div><h2>{item.title}</h2><Icon size={22} aria-hidden="true" /></div><p>{item.description}</p><span>Open {item.title.toLowerCase()} →</span></Link>; })}</div></div>;
+  return <div className="corporate-main-stack corporate-work-page">
+    <section className="corporate-work-masthead" aria-labelledby="corporate-administration-title">
+      <div className="corporate-work-masthead-top"><div className="corporate-work-masthead-intro"><p>Governance</p><h1 id="corporate-administration-title">Administration</h1><span>Manage access, ownership, delivery recovery, and traceability within your granted scope.</span></div></div>
+    </section>
+    <div className="corporate-admin-grid">{links.map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} className="corporate-admin-link"><div><h2>{item.title}</h2><Icon size={22} aria-hidden="true" /></div><p>{item.description}</p><span>Open {item.title.toLowerCase()} →</span></Link>; })}</div>
+  </div>;
 }

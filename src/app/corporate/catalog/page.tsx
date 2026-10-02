@@ -3,6 +3,8 @@ import { ErrorState, PermissionState } from "@/src/components/corporate/corporat
 import { canManageUniversalCatalog, getCatalogPublicationEligibility } from "@/src/features/corporate/catalog";
 import { hasCorporatePermission } from "@/src/features/corporate/authorization";
 import { requireCorporateSession } from "@/src/features/corporate/session";
+import "../work/work-masthead.css";
+import "./catalog-masthead.css";
 
 export default async function CorporateCatalogPage() {
   const session = await requireCorporateSession();

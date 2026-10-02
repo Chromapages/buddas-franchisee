@@ -1,0 +1,32 @@
+.franchise-home,
+body:has(.franchise-home) .site-footer {
+  --home-space-topic: var(--section-rhythm);
+  --home-space-related: calc(var(--home-space-topic) / 2);
+  --home-section-inset: calc(var(--home-space-topic) / 2);
+  --home-footer-group-inset: calc(var(--home-space-related) / 2);
+}
+
+/* Two shared edge insets make one topic gap, rather than two full gaps. */
+.franchise-home .home-section {
+  margin-block: 0;
+  padding-block: var(--home-section-inset);
+}
+
+/* Keep the hero photograph flush; the next inset supplies a related gap. */
+.franchise-home .home-section--edge-bleed { padding-block: 0; }
+.franchise-home .home-hero-copy { padding-block: var(--home-section-inset); }
+
+/* These selectors scope the existing shared footer to this homepage. */
+body:has(.franchise-home) .site-footer {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+body:has(.franchise-home) .footer-desktop-shell > section:first-child {
+  margin-block: 0;
+  padding-top: var(--home-section-inset);
+  padding-bottom: var(--home-footer-group-inset);
+}
+body:has(.franchise-home) .footer-desktop-shell > section:last-child {
+  margin-block: 0;
+  padding-top: var(--home-footer-group-inset);
+  padding-bottom: var(--home-section-inset);
+}

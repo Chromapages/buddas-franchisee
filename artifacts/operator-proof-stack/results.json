@@ -1,0 +1,251 @@
+{
+  "results": [
+    {
+      "viewport": 320,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 280,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": [
+        "Image with src \"/images/buddas-about-storefront.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"
+      ]
+    },
+    {
+      "viewport": 360,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 320,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": [
+        "Image with src \"/images/buddas-about-storefront.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"
+      ]
+    },
+    {
+      "viewport": 375,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 335,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": [
+        "Image with src \"/images/buddas-about-storefront.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"
+      ]
+    },
+    {
+      "viewport": 390,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 350,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": [
+        "Image with src \"/images/buddas-about-storefront.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"
+      ]
+    },
+    {
+      "viewport": 393,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 353,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": []
+    },
+    {
+      "viewport": 430,
+      "horizontalOverflow": false,
+      "mobileRows": 4,
+      "disclosureButtons": 4,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "01ProductThe Budda Roll creates distinction.",
+        "02SystemClear standards make execution teachable.",
+        "03ExperienceHospitality is designed into the standard.",
+        "04GrowthRepeatability comes before expansion."
+      ],
+      "openPanels": [
+        "operator-proof-panel-product"
+      ],
+      "bodySizes": [
+        "15px"
+      ],
+      "cta": {
+        "width": 382,
+        "height": 52,
+        "href": "/franchise/the-opportunity",
+        "text": "Explore the Opportunity"
+      },
+      "messages": []
+    },
+    {
+      "viewport": 768,
+      "horizontalOverflow": false,
+      "mobileRows": 0,
+      "disclosureButtons": 0,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "The Budda Roll creates distinction.",
+        "Clear standards make execution teachable.",
+        "Hospitality is designed into the standard.",
+        "Repeatability comes before expansion."
+      ],
+      "openPanels": [],
+      "bodySizes": [],
+      "cta": null,
+      "messages": [
+        "Image with src \"/images/buddas-about-storefront.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"
+      ]
+    },
+    {
+      "viewport": 1440,
+      "horizontalOverflow": false,
+      "mobileRows": 0,
+      "disclosureButtons": 0,
+      "visibleHeadings": [
+        "What makes the Budda's model different.",
+        "The Budda Roll creates distinction.",
+        "Clear standards make execution teachable.",
+        "Hospitality is designed into the standard.",
+        "Repeatability comes before expansion."
+      ],
+      "openPanels": [],
+      "bodySizes": [],
+      "cta": null,
+      "messages": []
+    }
+  ],
+  "defaultExpanded": "true",
+  "reducedMotionTransition": {
+    "duration": "0.001s",
+    "property": "none"
+  },
+  "normalMotionTransition": {
+    "duration": "0.2s",
+    "property": "grid-template-rows, opacity"
+  },
+  "productClosedWithSpace": "false",
+  "productPanelInertWhenClosed": "",
+  "productOpenedWithSpace": "true",
+  "systemExpandedAfterToggle": "true",
+  "productCollapsedAfterSystemOpen": "false",
+  "scrollBeforeSystemOpen": 324,
+  "scrollAfterSystemOpen": 426,
+  "systemInteractionLatencyMs": 60.60000002384186,
+  "dataRequestsDuringSystemExpansion": [],
+  "readingOrder": "- region \"What makes the Budda's model different.\":\n  - paragraph: The Budda's Advantage\n  - heading \"What makes the Budda's model different.\" [level=2]\n  - paragraph: A distinctive product is only the beginning. The opportunity depends on making the food, experience and operating standard clear enough to repeat.\n  - list \"Operator model pillars\":\n    - listitem:\n      - article:\n        - heading \"Product The Budda Roll creates distinction.\" [level=3]:\n          - button \"Product The Budda Roll creates distinction.\"\n    - listitem:\n      - article:\n        - heading \"System Clear standards make execution teachable.\" [level=3]:\n          - button \"System Clear standards make execution teachable.\" [expanded]\n        - region \"System Clear standards make execution teachable.\":\n          - paragraph: Training, ordering, and clear standards support consistent execution.\n    - listitem:\n      - article:\n        - heading \"Experience Hospitality is designed into the standard.\" [level=3]:\n          - button \"Experience Hospitality is designed into the standard.\"\n    - listitem:\n      - article:\n        - heading \"Growth Repeatability comes before expansion.\" [level=3]:\n          - button \"Growth Repeatability comes before expansion.\"\n  - link \"Explore the Opportunity\":\n    - /url: /franchise/the-opportunity\n  - paragraph: Review the full franchise opportunity.",
+  "analytics": [
+    {
+      "event": "franchise_advantage_item_opened",
+      "page_path": "/franchise",
+      "placement": "operator_proof_stack",
+      "item": "product",
+      "index": 1
+    },
+    {
+      "event": "franchise_advantage_viewed",
+      "page_path": "/franchise",
+      "placement": "operator_proof_mobile"
+    },
+    {
+      "event": "franchise_advantage_item_opened",
+      "page_path": "/franchise",
+      "placement": "operator_proof_stack",
+      "item": "system",
+      "index": 2
+    },
+    {
+      "event": "franchise_advantage_primary_cta_clicked",
+      "page_path": "/franchise",
+      "placement": "operator_proof_stack",
+      "destination": "/franchise/the-opportunity"
+    }
+  ],
+  "textZoomOverflow": false
+}

@@ -4,17 +4,20 @@ import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FranchiseFinalCtaDesktop } from "@/src/components/public/franchise-final-cta-desktop";
 import { FranchiseFinalCtaMobile } from "@/src/components/public/franchise-final-cta-mobile";
+import { FinalCtaAction } from "@/src/components/public/franchise-final-cta-shared";
 import { FRANCHISE_FINAL_CTA_CONTENT } from "@/src/features/franchise/final-cta-content";
 import { trackFunnelEvent, trackFranchiseFunnelEvent } from "@/src/lib/analytics";
 
 export type GlobalEvaluationCtaProps = {
   fullBleed?: boolean;
+  simplified?: boolean;
   content?: typeof FRANCHISE_FINAL_CTA_CONTENT;
 };
 
 /** Shared controller; the mobile and desktop components own their own presentation. */
 export const FranchiseFinalCta = ({
   fullBleed = true,
+  simplified = false,
   content = FRANCHISE_FINAL_CTA_CONTENT,
 }: GlobalEvaluationCtaProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -72,6 +75,15 @@ export const FranchiseFinalCta = ({
     onPrimaryClick,
     onProcessLinkClick,
   };
+
+  if (simplified) return <div ref={sectionRef}>
+    <section aria-labelledby="franchise-final-cta-title" className={fullBleed ? "home-section bg-bds-teal-dark text-bds-cream" : "home-section content-wide rounded-xl bg-bds-teal-dark p-8 text-bds-cream"}>
+      <div className="content-wide grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.7fr)] lg:items-center lg:gap-16">
+        <div><h2 id="franchise-final-cta-title" className="home-section-title text-bds-cream">{content.title}</h2><p className="home-section-intro text-bds-cream">We&apos;ll determine together whether Budda&apos;s is the right fit.</p></div>
+        <div><FinalCtaAction href={contactHref} label={content.primaryAction.label} onPrimaryClick={onPrimaryClick} fullWidth /><p className="mt-4 max-w-[48ch] font-body text-sm leading-6 text-bds-cream">{content.boundary}</p></div>
+      </div>
+    </section>
+  </div>;
 
   return <div ref={sectionRef}>
     <FranchiseFinalCtaMobile {...presentation} />

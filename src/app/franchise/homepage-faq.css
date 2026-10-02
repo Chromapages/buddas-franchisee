@@ -1,0 +1,95 @@
+.home-faq {
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bds-color-brand-cream) 58%, white);
+}
+.home-faq-layout { display: grid; grid-template-columns: minmax(0, .6fr) minmax(0, 1fr); gap: clamp(2rem, 3.5vw, 4rem); }
+.home-faq-intro, .home-faq-explorer { min-width: 0; }
+.home-faq-eyebrow, .home-faq-brand > span, .home-faq-opportunity h3, .home-faq-topics small, .home-faq-other-topics small {
+  color: var(--bds-color-brand-teal-dark);
+  font-family: var(--font-heading), Poppins, sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.home-faq-intro h2 { color: var(--bds-color-brand-teal-dark); }
+.home-faq-lede { color: var(--bds-color-brand-cocoa); }
+.home-faq-opportunity { display: grid; grid-template-columns: min(4.25rem,25%) minmax(0,1fr); gap: .6rem 1rem; margin-top: 2rem; border-radius: 1rem; background: color-mix(in srgb, var(--bds-color-brand-teal) 11%, white); padding: 1.4rem; }
+.home-faq-opportunity > svg { box-sizing: border-box; width: 100%; height: auto; aspect-ratio: 1; border-radius: 50%; background: color-mix(in srgb, var(--bds-color-brand-teal) 23%, white); padding: 25%; color: var(--bds-color-brand-teal-dark); stroke-width: 1.7; }
+.home-faq-opportunity h3 { max-width: 28ch; }
+.home-faq-opportunity p { margin-top: .45rem; color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .95rem; line-height: 1.45; }
+.home-faq-opportunity a { grid-column: 1 / -1; display: flex; min-height: 3.5rem; align-items: center; justify-content: center; gap: 1rem; margin-top: .35rem; border-radius: .6rem; background: var(--bds-color-brand-teal-dark); padding: .75rem 1rem; color: var(--bds-color-brand-cream); font-family: var(--font-heading), Poppins, sans-serif; font-size: 1rem; font-weight: 700; text-decoration: none; }
+.home-faq-opportunity a:hover, .home-faq-contact a:hover { background: var(--bds-color-brand-teal-ink); }
+.home-faq-opportunity a svg, .home-faq-contact a svg { width: 1.15rem; height: 1.15rem; }
+.home-faq-brand { position: relative; display: flex; min-height: 14rem; flex-direction: column; justify-content: center; margin-top: 1.5rem; }
+.home-faq-brand-image { position: absolute; inset: 0 0 0 auto; width: 52%; overflow: hidden; }
+.home-faq-brand img { object-fit: cover; object-position: 50% 50%; }
+.home-faq-brand > p, .home-faq-brand > span { position: relative; z-index: 1; }
+.home-faq-brand > p { width: 46%; color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: clamp(1.35rem, 1.7vw, 1.75rem); font-style: italic; font-weight: 600; line-height: 1.1; }
+.home-faq-brand > span { max-width: 14ch; margin-top: 1.1rem; font-size: .64rem; }
+.home-faq-topics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .7rem; }
+.home-faq-topics button, .home-faq-other-topics button { display: flex; min-width: 0; min-height: 7rem; align-items: center; gap: .8rem; border: 0; border-radius: 1rem; background: color-mix(in srgb, var(--bds-color-brand-teal) 9%, white); padding: 1rem; color: var(--bds-color-brand-teal-dark); text-align: left; cursor: pointer; }
+.home-faq-topics button:hover, .home-faq-other-topics button:hover { background: color-mix(in srgb, var(--bds-color-brand-teal) 17%, white); }
+.home-faq-topics button.is-active { background: var(--bds-color-brand-teal-dark); color: var(--bds-color-brand-cream); }
+.home-faq-topic-icon { display: grid; width: 3.4rem; height: 3.4rem; flex: 0 0 3.4rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--bds-color-brand-teal) 20%, white); color: var(--bds-color-brand-teal-dark); }
+.home-faq-topics .is-active .home-faq-topic-icon { background: color-mix(in srgb, var(--bds-color-brand-teal) 55%, var(--bds-color-brand-teal-dark)); color: white; }
+.home-faq-topic-icon svg { width: 1.8rem; height: 1.8rem; stroke-width: 1.7; }
+.home-faq-topics button > span:last-child, .home-faq-other-topics button > span:nth-child(2) { display: grid; min-width: 0; gap: .2rem; }
+.home-faq-topics strong, .home-faq-other-topics strong { font-family: var(--font-heading), Poppins, sans-serif; font-size: clamp(.95rem, 1.15vw, 1.25rem); font-weight: 700; line-height: 1.18; }
+.home-faq-topics small, .home-faq-other-topics small { font-size: .6rem; }
+.home-faq-topics .is-active small { color: var(--bds-color-brand-cream); }
+.home-faq-panel { margin-top: 1rem; border: 1px solid color-mix(in srgb, var(--bds-color-brand-teal-dark) 8%, transparent); border-radius: 1rem; background: white; padding: clamp(1.25rem, 2vw, 2rem); box-shadow: 0 12px 30px color-mix(in srgb, var(--bds-color-brand-teal-dark) 6%, transparent); }
+.home-faq-panel-heading { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1.3rem; }
+.home-faq-panel-heading h3 { color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: clamp(1.15rem, 1.5vw, 1.5rem); font-weight: 700; line-height: 1.25; }
+.home-faq-panel-heading p { margin-top: .2rem; color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .9rem; line-height: 1.4; }
+.home-faq-panel-heading > span { flex: 0 0 auto; color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .8rem; }
+.home-faq-questions { border-top: 1px solid color-mix(in srgb, var(--bds-color-brand-teal-dark) 22%, transparent); }
+.home-faq-questions details { border-bottom: 1px solid color-mix(in srgb, var(--bds-color-brand-teal-dark) 22%, transparent); }
+.home-faq-questions summary { display: flex; min-height: 5.4rem; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem .25rem; list-style: none; cursor: pointer; }
+.home-faq-questions summary::-webkit-details-marker { display: none; }
+.home-faq-questions summary > span { display: grid; gap: .2rem; }
+.home-faq-questions strong { color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: clamp(1rem, 1.25vw, 1.25rem); font-weight: 700; line-height: 1.25; }
+.home-faq-questions small { color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .85rem; line-height: 1.4; }
+.home-faq-questions summary > svg { box-sizing: content-box; width: 1.1rem; height: 1.1rem; flex: 0 0 1.1rem; border: 1.5px solid var(--bds-color-brand-teal-dark); border-radius: 50%; padding: .32rem; color: var(--bds-color-brand-teal-dark); transition: transform .2s ease; }
+.home-faq-questions details[open] summary > svg { transform: rotate(45deg); }
+.home-faq-questions details > p { max-width: 62ch; padding: 0 3.5rem 1.1rem .25rem; color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .9rem; line-height: 1.55; }
+.home-faq-resources { padding-top: 1rem; }
+.home-faq-resources h4 { color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: .85rem; font-weight: 700; }
+.home-faq-resources > div { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem; margin-top: .65rem; }
+.home-faq-resources a { display: flex; min-height: 3.4rem; align-items: center; gap: .7rem; border: 1px solid var(--bds-color-brand-teal-dark); border-radius: .65rem; padding: .5rem .8rem; color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: .85rem; font-weight: 700; text-decoration: none; }
+.home-faq-resources a:hover { background: color-mix(in srgb, var(--bds-color-brand-teal) 10%, white); }
+.home-faq-resources a svg:first-child { width: 1.7rem; height: 1.7rem; flex: 0 0 1.7rem; stroke-width: 1.7; }
+.home-faq-resources a svg:last-child { width: 1rem; height: 1rem; flex: 0 0 1rem; margin-left: auto; }
+.home-faq-other-topics { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .7rem; margin-top: 1rem; }
+.home-faq-other-topics button { min-height: 5.5rem; }
+.home-faq-other-topics button > svg { width: 1.3rem; height: 1.3rem; flex: 0 0 1.3rem; margin-left: auto; }
+.home-faq-contact { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.home-faq-contact > svg { width: 2.6rem; height: 2.6rem; flex: 0 0 2.6rem; color: var(--bds-color-brand-teal-dark); stroke-width: 1.6; }
+.home-faq-contact p { display: grid; gap: .15rem; }
+.home-faq-contact strong { color: var(--bds-color-brand-teal-dark); font-family: var(--font-heading), Poppins, sans-serif; font-size: .95rem; }
+.home-faq-contact span { color: var(--bds-color-brand-cocoa); font-family: var(--font-body), "DM Sans", sans-serif; font-size: .82rem; line-height: 1.35; }
+.home-faq-contact a { display: inline-flex; min-height: 3.3rem; flex: 0 0 auto; align-items: center; justify-content: center; gap: .5rem; margin-left: auto; border-radius: .6rem; background: var(--bds-color-brand-teal-dark); padding: .6rem 1rem; color: var(--bds-color-brand-cream); font-family: var(--font-heading), Poppins, sans-serif; font-size: .85rem; font-weight: 700; text-decoration: none; }
+.home-faq :is(a,button,summary):focus-visible { outline: 3px solid var(--bds-color-brand-orange) !important; outline-offset: 3px !important; box-shadow: none !important; }
+
+@media (max-width: 75rem) {
+  .home-faq-layout { grid-template-columns: 1fr; }
+  .home-faq-layout { row-gap: var(--home-content-gap, 2rem); }
+  .home-faq-intro { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+  .home-faq-eyebrow, .home-faq-intro h2, .home-faq-lede { grid-column: 1; }
+  .home-faq-opportunity { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
+  .home-faq-brand { display: none; }
+}
+@media (max-width: 48rem) {
+  .home-faq-intro { display: block; }
+  .home-faq-opportunity { margin-top: 1.6rem; }
+  .home-faq-topics { grid-template-columns: 1fr; }
+  .home-faq-topics button { min-height: 4.8rem; }
+  .home-faq-topic-icon { width: 3rem; height: 3rem; flex-basis: 3rem; }
+  .home-faq-other-topics, .home-faq-resources > div { grid-template-columns: 1fr; }
+  .home-faq-contact { flex-wrap: wrap; }
+  .home-faq-contact a { width: 100%; margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-faq-questions summary > svg { transition: none; }
+}

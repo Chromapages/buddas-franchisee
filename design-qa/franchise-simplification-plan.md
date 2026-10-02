@@ -1,0 +1,13 @@
+# Franchise homepage simplification plan
+
+Audience: experienced restaurant operators. Preserve existing brand tokens, typography, logo, food photography, and legal text. The confirmed visitor inquiry has 3 form steps; franchise development has 4 stages.
+
+| Severity | Problem and consequence | Files or components | Minimal change | Verification |
+| --- | --- | --- | --- | --- |
+| Blocker | Placeholder leadership quote and inconsistent inquiry labels undermine trust and obscure the next action. | `src/app/franchise/page.tsx`, `src/components/public/navbar.tsx`, `src/features/footer/footer-content.ts` | Remove placeholder quote from homepage; use one primary CTA label and destination; distinguish inquiry form from development process in supporting copy. | No placeholder text; all primary CTAs say “Request Franchise Information” and lead to `/franchise/contact`; 3 and 4 counts describe different journeys. |
+| High | Repeated product, system, and support sections create a long scan. | `src/app/franchise/page.tsx`, homepage styles | Recompose existing content into hero, qualification, Why, What you receive, process, proof, FAQ, final CTA. Use at most four Why points and one five-item support list. | Section order and heading hierarchy match brief; first two sections identify concept, audience, criteria, and next step. |
+| High | Qualification and process appear late or more than once. | `src/app/franchise/page.tsx`, governed candidate and process content | Put three criteria immediately below hero; render four sourced process stage titles once and one “See the Process” link. | Counts match the three-step form and four-stage process destination; investment and territory detail stay on Opportunity. |
+| Medium | FAQ and footer have too many competing links, making diligence harder to scan. | `src/app/franchise/page.tsx`, `src/features/footer/footer-content.ts`, `src/components/public/footer.tsx` | Show six short FAQs and three footer link groups. Preserve legal links and disclaimer. | Desktop and mobile visual review, keyboard focus, 44px mobile targets, contrast, and disclaimer near final CTA and footer. |
+| Optional | The social gallery repeats product imagery and draws attention away from diligence. | `src/app/franchise/page.tsx` | Condense proof to one footprint fact, one sourced brand statement without quote attribution, one existing product image, and one restaurant-site link. | Confirm there is no gallery or social link cluster on the homepage and no placeholder quote. |
+
+No approved operator quote is available. Do not publish one until the brand provides its exact wording and attribution.

@@ -1,0 +1,1465 @@
+[
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      320,
+      568
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 69.75,
+      "top": 0,
+      "right": 320,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 236,
+      "height": 44.75,
+      "top": 12,
+      "right": 252,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 260,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 304,
+      "bottom": 56.375,
+      "left": 260
+    },
+    "nav": {
+      "x": 0,
+      "y": 507,
+      "width": 320,
+      "height": 61,
+      "top": 507,
+      "right": 320,
+      "bottom": 568,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0005470796512058154,
+      "lcp": 500,
+      "inp": null
+    },
+    "scenario": "hnl-320x568"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      360,
+      800
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 360,
+      "height": 69.75,
+      "top": 0,
+      "right": 360,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 276,
+      "height": 44.75,
+      "top": 12,
+      "right": 292,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 300,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 344,
+      "bottom": 56.375,
+      "left": 300
+    },
+    "nav": {
+      "x": 0,
+      "y": 739,
+      "width": 360,
+      "height": 61,
+      "top": 739,
+      "right": 360,
+      "bottom": 800,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.00024514031304253474,
+      "lcp": 200,
+      "inp": null
+    },
+    "scenario": "hnl-360x800"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      366,
+      898
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 366,
+      "height": 69.75,
+      "top": 0,
+      "right": 366,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 282,
+      "height": 44.75,
+      "top": 12,
+      "right": 298,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 306,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 350,
+      "bottom": 56.375,
+      "left": 306
+    },
+    "nav": {
+      "x": 0,
+      "y": 837,
+      "width": 366,
+      "height": 61,
+      "top": 837,
+      "right": 366,
+      "bottom": 898,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.00019136541535893153,
+      "lcp": 196,
+      "inp": null
+    },
+    "scenario": "hnl-366x898"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.004136633494208869,
+      "lcp": 224,
+      "inp": null
+    },
+    "scenario": "hnl-390x844"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      393,
+      852
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 393,
+      "height": 69.75,
+      "top": 0,
+      "right": 393,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 309,
+      "height": 44.75,
+      "top": 12,
+      "right": 325,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 333,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 377,
+      "bottom": 56.375,
+      "left": 333
+    },
+    "nav": {
+      "x": 0,
+      "y": 791,
+      "width": 393,
+      "height": 61,
+      "top": 791,
+      "right": 393,
+      "bottom": 852,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.00019798189243523998,
+      "lcp": 176,
+      "inp": null
+    },
+    "scenario": "hnl-393x852"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      430,
+      932
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 430,
+      "height": 69.75,
+      "top": 0,
+      "right": 430,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 346,
+      "height": 44.75,
+      "top": 12,
+      "right": 362,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 370,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 414,
+      "bottom": 56.375,
+      "left": 370
+    },
+    "nav": {
+      "x": 0,
+      "y": 871,
+      "width": 430,
+      "height": 61,
+      "top": 871,
+      "right": 430,
+      "bottom": 932,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.00015121571622554484,
+      "lcp": 208,
+      "inp": null
+    },
+    "scenario": "hnl-430x932"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      568,
+      320
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 568,
+      "height": 69.75,
+      "top": 0,
+      "right": 568,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 24,
+      "y": 12,
+      "width": 468,
+      "height": 44.75,
+      "top": 12,
+      "right": 492,
+      "bottom": 56.75,
+      "left": 24
+    },
+    "cart": {
+      "x": 500,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 544,
+      "bottom": 56.375,
+      "left": 500
+    },
+    "nav": {
+      "x": 0,
+      "y": 259,
+      "width": 568,
+      "height": 61,
+      "top": 259,
+      "right": 568,
+      "bottom": 320,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0004508000521214324,
+      "lcp": 228,
+      "inp": null
+    },
+    "scenario": "hnl-568x320"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      667,
+      375
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 667,
+      "height": 69.75,
+      "top": 0,
+      "right": 667,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 24,
+      "y": 12,
+      "width": 414.28125,
+      "height": 44.75,
+      "top": 12,
+      "right": 438.28125,
+      "bottom": 56.75,
+      "left": 24
+    },
+    "cart": {
+      "x": 599,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 643,
+      "bottom": 56.375,
+      "left": 599
+    },
+    "nav": {
+      "x": 0,
+      "y": 314,
+      "width": 667,
+      "height": 61,
+      "top": 314,
+      "right": 667,
+      "bottom": 375,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0008285479636493598,
+      "lcp": 192,
+      "inp": null
+    },
+    "scenario": "hnl-667x375"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69,
+      "top": 0,
+      "right": 390,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44,
+      "top": 12,
+      "right": 322,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12,
+      "width": 44,
+      "height": 44,
+      "top": 12,
+      "right": 374,
+      "bottom": 56,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "Sugar House Bakery & Grill\nSLC-302",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\nYou're caught up\n\nNo action needed right now.\n\n1 order is in motion",
+    "metrics": {
+      "cls": 0.00012333338156755757,
+      "lcp": 160,
+      "inp": null
+    },
+    "scenario": "slc-all-clear-single-location"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69,
+      "top": 0,
+      "right": 390,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44,
+      "top": 12,
+      "right": 322,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12,
+      "width": 44,
+      "height": 44,
+      "top": 12,
+      "right": 374,
+      "bottom": 56,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "Kaka'ako Urban Kitchen\nOAH-207",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n1 item needs your attention\n\nReview the highest-priority items below.\n\nNEXT ACTIONS\n\nNeeds attention\n1\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST",
+    "metrics": {
+      "cls": 0.0003429210372633139,
+      "lcp": 180,
+      "inp": null
+    },
+    "scenario": "oah-cancelled-order"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      320,
+      568
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 69,
+      "top": 0,
+      "right": 320,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 236,
+      "height": 44,
+      "top": 12,
+      "right": 252,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 260,
+      "y": 12,
+      "width": 44,
+      "height": 44,
+      "top": 12,
+      "right": 304,
+      "bottom": 56,
+      "left": 260
+    },
+    "nav": {
+      "x": 0,
+      "y": 507,
+      "width": 320,
+      "height": 61,
+      "top": 507,
+      "right": 320,
+      "bottom": 568,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Restaurant Bakery and Community Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0004508000521214324,
+      "lcp": 180,
+      "inp": null
+    },
+    "scenario": "long-location"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69,
+      "top": 0,
+      "right": 390,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 244.734375,
+      "height": 44,
+      "top": 12,
+      "right": 260.734375,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 268.734375,
+      "y": 12,
+      "width": 105.265625,
+      "height": 44,
+      "top": 12,
+      "right": 374,
+      "bottom": 56,
+      "left": 268.734375
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0015380687692432957,
+      "lcp": 176,
+      "inp": null
+    },
+    "scenario": "cart-one"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69,
+      "top": 0,
+      "right": 390,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 242.046875,
+      "height": 44,
+      "top": 12,
+      "right": 258.046875,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 266.046875,
+      "y": 12,
+      "width": 107.953125,
+      "height": 44,
+      "top": 12,
+      "right": 374,
+      "bottom": 56,
+      "left": 266.046875
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.005614733163142113,
+      "lcp": 192,
+      "inp": null
+    },
+    "scenario": "cart-nine"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69,
+      "top": 0,
+      "right": 390,
+      "bottom": 69,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44,
+      "top": 12,
+      "right": 322,
+      "bottom": 56,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12,
+      "width": 44,
+      "height": 44,
+      "top": 12,
+      "right": 374,
+      "bottom": 56,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0041518677699957495,
+      "lcp": 196,
+      "inp": null
+    },
+    "scenario": "reduced-motion"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      195,
+      422
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 195,
+      "height": 69.75,
+      "top": 0,
+      "right": 195,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 111,
+      "height": 44.75,
+      "top": 12,
+      "right": 127,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 135,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 179,
+      "bottom": 56.375,
+      "left": 135
+    },
+    "nav": {
+      "x": 0,
+      "y": 309,
+      "width": 195,
+      "height": 113,
+      "top": 309,
+      "right": 195,
+      "bottom": 422,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.0006113350462962164,
+      "lcp": 188,
+      "inp": null
+    },
+    "scenario": "browser-zoom-200"
+  },
+  {
+    "scenario": "accessibility-tree",
+    "mainCount": 1,
+    "navigationCount": 1,
+    "dashboardHeadingCount": 1,
+    "statusCount": 2
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.004127323659005776,
+      "lcp": 244,
+      "inp": 24
+    },
+    "scenario": "offline-retained"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.004127323659005776,
+      "lcp": 244,
+      "inp": 24
+    },
+    "scenario": "background-refreshing",
+    "loadingShell": false
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 138.5,
+      "top": 0,
+      "right": 390,
+      "bottom": 138.5,
+      "left": 0
+    },
+    "location": {
+      "x": 32,
+      "y": 24,
+      "width": 222,
+      "height": 89.5,
+      "top": 24,
+      "right": 254,
+      "bottom": 113.5,
+      "left": 32
+    },
+    "cart": {
+      "x": 270,
+      "y": 24.75,
+      "width": 88,
+      "height": 88,
+      "top": 24.75,
+      "right": 358,
+      "bottom": 112.75,
+      "left": 270
+    },
+    "nav": {
+      "x": 0,
+      "y": 711.625,
+      "width": 390,
+      "height": 132.375,
+      "top": 711.625,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.9556635508550164,
+      "lcp": 244,
+      "inp": 24
+    },
+    "scenario": "text-200-percent",
+    "reducedMotion": true
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 775.5,
+      "width": 390,
+      "height": 68.5,
+      "top": 775.5,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.9556635508550164,
+      "lcp": 244,
+      "inp": 24
+    },
+    "scenario": "text-spacing"
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.003958922042838902,
+      "lcp": 1556,
+      "inp": null
+    },
+    "scenario": "slow-initial",
+    "loadingModules": 0
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      390,
+      844
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 69.75,
+      "top": 0,
+      "right": 390,
+      "bottom": 69.75,
+      "left": 0
+    },
+    "location": {
+      "x": 16,
+      "y": 12,
+      "width": 306,
+      "height": 44.75,
+      "top": 12,
+      "right": 322,
+      "bottom": 56.75,
+      "left": 16
+    },
+    "cart": {
+      "x": 330,
+      "y": 12.375,
+      "width": 44,
+      "height": 44,
+      "top": 12.375,
+      "right": 374,
+      "bottom": 56.375,
+      "left": 330
+    },
+    "nav": {
+      "x": 0,
+      "y": 783,
+      "width": 390,
+      "height": 61,
+      "top": 783,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "locationText": "La'ie Origin Grill\nHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "RIGHT NOW\n\n3 items need your attention\n\nReview the highest-priority items below.\n\n2 orders are in motion\n\nNEXT ACTIONS\n\nNeeds attention\n3\nREQUIRED UPDATE\nTurbo Deck Oven Gasket & Steam Purge Maintenance\nOverdue\nDue Sep 6, 2026, 1:59 PM HST\nSUPPORT\nSteam deck gasket replacement needed\nReply requested\nSUPPLY ORDER\nOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042\nDelayed",
+    "metrics": {
+      "cls": 0.004035338923625929,
+      "lcp": 1556,
+      "inp": null
+    },
+    "scenario": "slow-connection",
+    "navigationMs": 17921,
+    "resourceCount": 12
+  },
+  {
+    "scenario": "expired-session",
+    "status": 200,
+    "url": "http://localhost:3100/franchise/login"
+  },
+  {
+    "scenario": "unauthorized-location",
+    "status": 200,
+    "url": "http://localhost:3100/franchise/login"
+  },
+  {
+    "scenario": "insufficient-role",
+    "status": 200,
+    "url": "http://localhost:3100/franchise/login"
+  },
+  {
+    "scenario": "more-resize-to-desktop",
+    "dialogCount": 0,
+    "mainInert": false,
+    "headerInert": false
+  },
+  {
+    "url": "http://localhost:3100/portal",
+    "title": "Dashboard | Budda's Operator Portal",
+    "viewport": [
+      1280,
+      800
+    ],
+    "horizontalOverflow": 0,
+    "headerOverlap": false,
+    "header": {
+      "x": 264,
+      "y": 0,
+      "width": 1016,
+      "height": 69,
+      "top": 0,
+      "right": 1280,
+      "bottom": 69,
+      "left": 264
+    },
+    "location": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    },
+    "cart": {
+      "x": 1204,
+      "y": 12,
+      "width": 44,
+      "height": 44,
+      "top": 12,
+      "right": 1248,
+      "bottom": 56,
+      "left": 1204
+    },
+    "nav": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    },
+    "locationText": "La'ie Origin GrillHNL-014",
+    "locationClippedOutsideHeader": false,
+    "smallTargets": [],
+    "visibleLevelOneHeadings": [
+      "Dashboard"
+    ],
+    "devOverlay": false,
+    "foodImages": [],
+    "statusText": "Right now3 items need your attentionReview the highest-priority items below.2 orders are in motionNext actionsNeeds attention3Required updateTurbo Deck Oven Gasket & Steam Purge MaintenanceOverdueDue Sep 6, 2026, 1:59 PM HSTSupportSteam deck gasket replacement neededReply requestedSupply orderOrder ORD-2026-HNL-VERY-LONG-REFERENCE-000042Delayed",
+    "metrics": {
+      "cls": 0.04251869204044342,
+      "lcp": 264,
+      "inp": null
+    },
+    "scenario": "desktop-shared"
+  }
+]

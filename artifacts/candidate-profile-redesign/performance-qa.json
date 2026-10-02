@@ -1,0 +1,87 @@
+[
+  {
+    "width": 320,
+    "lazy": "lazy",
+    "before": {
+      "x": 21,
+      "y": 3242.796875,
+      "width": 278,
+      "height": 208.5
+    },
+    "after": {
+      "x": 21,
+      "y": 449.796875,
+      "width": 278,
+      "height": 208.5
+    },
+    "imageResponses": [
+      {
+        "url": "http://localhost:3000/_next/image?url=%2Fimages%2Fbuddas-about-storefront.png&w=320&q=75",
+        "type": "image/avif",
+        "length": "11206"
+      }
+    ],
+    "horizontalOverflow": false,
+    "cls": 0.030704747714517797
+  },
+  {
+    "width": 390,
+    "lazy": "lazy",
+    "before": {
+      "x": 21,
+      "y": 3021.765625,
+      "width": 348,
+      "height": 261
+    },
+    "after": {
+      "x": 21,
+      "y": 365.765625,
+      "width": 348,
+      "height": 261
+    },
+    "imageResponses": [
+      {
+        "url": "http://localhost:3000/_next/image?url=%2Fimages%2Fbuddas-about-storefront.png&w=390&q=75",
+        "type": "image/avif",
+        "length": "14385"
+      },
+      {
+        "url": "http://localhost:3000/_next/image?url=%2Fimages%2Fbuddas-about-storefront.png&w=360&q=75",
+        "type": "image/avif",
+        "length": "12991"
+      }
+    ],
+    "horizontalOverflow": false,
+    "cls": 0
+  },
+  {
+    "width": 430,
+    "lazy": "lazy",
+    "before": {
+      "x": 25,
+      "y": 3057.125,
+      "width": 380,
+      "height": 285
+    },
+    "after": {
+      "x": 25,
+      "y": 350.125,
+      "width": 380,
+      "height": 285
+    },
+    "imageResponses": [
+      {
+        "url": "http://localhost:3000/_next/image?url=%2Fimages%2Fbuddas-about-storefront.png&w=430&q=75",
+        "type": "image/avif",
+        "length": "16692"
+      },
+      {
+        "url": "http://localhost:3000/_next/image?url=%2Fimages%2Fbuddas-about-storefront.png&w=384&q=75",
+        "type": "image/avif",
+        "length": "13709"
+      }
+    ],
+    "horizontalOverflow": false,
+    "cls": 0
+  }
+]

@@ -5,7 +5,7 @@ export type FooterNavItem = {
 };
 
 export type FooterNavSection = {
-  id: "concept" | "development" | "ecosystem" | "governance";
+  id: "explore" | "operators" | "company" | "governance";
   title: string;
   items: readonly FooterNavItem[];
 };
@@ -21,38 +21,38 @@ export const FOOTER_CONTENT = {
   copyright: "© 2026 Budda's Franchising LLC. All rights reserved.",
   legalDisclaimer:
     "This website is informational and does not constitute an offer to sell or the solicitation of an offer to buy a franchise in any registration state where registration or exemption is required.",
+  inquiryDisclaimer:
+    "This begins an inquiry—not an application, territory reservation, franchise offer, or approval decision.",
 } as const;
 
 export const FOOTER_NAVIGATION: readonly FooterNavSection[] = [
   {
-    id: "concept",
-    title: "Concept & Model",
+    id: "explore",
+    title: "Explore",
     items: [
       { label: "Why Budda's", href: "/franchise/why-buddas" },
       { label: "The Opportunity", href: "/franchise/the-opportunity" },
-      { label: "Our Story & Heritage", href: "/franchise/about" },
-      { label: "4-Step Process", href: "/franchise/process" },
-      { label: "FAQ & Diligence", href: "/franchise/faq" },
+      { label: "See the Process", href: "/franchise/process" },
+      { label: "FAQ", href: "/franchise/faq" },
     ],
   },
   {
-    id: "development",
-    title: "Franchise Development",
+    id: "operators",
+    title: "For operators",
     items: [
-      { label: "Operator Criteria", href: "/franchise/the-opportunity#qualifications" },
-      { label: "Investment Overview", href: "/franchise/the-opportunity#financials" },
-      { label: "Territory & Market Growth", href: "/franchise/the-opportunity#territory" },
-      { label: "Start Franchise Inquiry", href: "/franchise/contact" },
-    ],
-  },
-  {
-    id: "ecosystem",
-    title: "Resources & Portals",
-    items: [
-      { label: "Consumer Restaurant Site", href: "https://buddasbakerygrill.com", external: true },
+      { label: "Operator Criteria", href: "/franchise/the-opportunity#mutual-operator-fit" },
+      { label: "Investment Overview", href: "/franchise/the-opportunity#capital-disclosure" },
+      { label: "Territory & Market Growth", href: "/franchise/the-opportunity#markets-territory" },
+      { label: "Request Franchise Information", href: "/franchise/contact" },
       { label: "Operator Portal Login", href: "/franchise/login" },
-      { label: "Franchise Opportunity Guide", href: "/franchise/the-opportunity" },
-      { label: "How Franchising Works", href: "/franchise/process" },
+    ],
+  },
+  {
+    id: "company",
+    title: "Company",
+    items: [
+      { label: "Our Story & Heritage", href: "/franchise/about" },
+      { label: "Restaurant & Menu", href: "https://buddasbakerygrill.com", external: true },
     ],
   },
   {

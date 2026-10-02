@@ -1,0 +1,416 @@
+{
+  "results": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 280,
+        "height": 73.4375,
+        "top": 119,
+        "left": 20,
+        "fontSize": "36px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 280,
+        "height": 56,
+        "top": 394.4375,
+        "left": 20,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 280,
+        "height": 44,
+        "top": 462.4375,
+        "left": 20,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 320,
+        "height": 213.328125,
+        "top": 526.4375,
+        "left": 0,
+        "objectPosition": "83% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 320,
+        "height": 81.59375,
+        "top": 119,
+        "left": 20,
+        "fontSize": "40px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 320,
+        "height": 56,
+        "top": 378.59375,
+        "left": 20,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 320,
+        "height": 44,
+        "top": 446.59375,
+        "left": 20,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 360,
+        "height": 240,
+        "top": 510.59375,
+        "left": 0,
+        "objectPosition": "81% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 350,
+        "height": 85.65625,
+        "top": 119,
+        "left": 20,
+        "fontSize": "42px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 350,
+        "height": 56,
+        "top": 382.65625,
+        "left": 20,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 350,
+        "height": 44,
+        "top": 450.65625,
+        "left": 20,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 390,
+        "height": 260,
+        "top": 514.65625,
+        "left": 0,
+        "objectPosition": "79% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 353,
+        "height": 85.65625,
+        "top": 119,
+        "left": 20,
+        "fontSize": "42px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 353,
+        "height": 56,
+        "top": 382.65625,
+        "left": 20,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 353,
+        "height": 44,
+        "top": 450.65625,
+        "left": 20,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 393,
+        "height": 262,
+        "top": 514.65625,
+        "left": 0,
+        "objectPosition": "79% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 382,
+        "height": 89.75,
+        "top": 119,
+        "left": 24,
+        "fontSize": "44px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 382,
+        "height": 56,
+        "top": 386.75,
+        "left": 24,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 382,
+        "height": 44,
+        "top": 454.75,
+        "left": 24,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 430,
+        "height": 286.65625,
+        "top": 518.75,
+        "left": 0,
+        "objectPosition": "76% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 307.21875,
+        "height": 134.625,
+        "top": 137.390625,
+        "left": 38.390625,
+        "fontSize": "44px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 307.21875,
+        "height": 56,
+        "top": 450.015625,
+        "left": 38.390625,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 307.21875,
+        "height": 44,
+        "top": 518.015625,
+        "left": 38.390625,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 384,
+        "height": 535.40625,
+        "top": 65,
+        "left": 384,
+        "objectPosition": "78% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "left": 0,
+        "fontSize": "44px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "left": 0,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "left": 0,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 835.1875,
+        "height": 556.78125,
+        "top": 81,
+        "left": 604.8125,
+        "objectPosition": "72% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "horizontalOverflow": false,
+      "h1Count": 1,
+      "heading": {
+        "width": 337.625,
+        "height": 89.75,
+        "top": 141.1875,
+        "left": 42.1875,
+        "fontSize": "44px",
+        "color": "rgb(28, 95, 86)"
+      },
+      "primary": {
+        "width": 337.625,
+        "height": 56,
+        "top": 408.9375,
+        "left": 42.1875,
+        "color": "rgb(255, 248, 232)",
+        "background": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "secondary": {
+        "width": 337.625,
+        "height": 44,
+        "top": 476.9375,
+        "left": 42.1875,
+        "color": "rgb(28, 95, 86)",
+        "contrast": 7.035363566069269
+      },
+      "media": {
+        "width": 422,
+        "height": 498.125,
+        "top": 65,
+        "left": 422,
+        "objectPosition": "78% 52%",
+        "loading": "eager",
+        "fetchPriority": "high",
+        "sizes": "(max-width: 67.1875rem) 100vw, 58vw"
+      },
+      "animations": [],
+      "consoleMessages": []
+    }
+  ],
+  "keyboard": [
+    {
+      "text": "Skip to main content",
+      "href": "#main-content",
+      "focusVisible": true,
+      "top": 15,
+      "bottom": 39
+    },
+    {
+      "text": "",
+      "href": "/franchise",
+      "focusVisible": true,
+      "top": 10,
+      "bottom": 54
+    },
+    {
+      "text": "Request Franchise InfoRequest infoInfo",
+      "href": "/franchise/contact",
+      "focusVisible": true,
+      "top": 10,
+      "bottom": 54
+    },
+    {
+      "text": "",
+      "href": null,
+      "focusVisible": true,
+      "top": 9,
+      "bottom": 55
+    },
+    {
+      "text": "Explore the Opportunity",
+      "href": "/franchise/the-opportunity",
+      "focusVisible": true,
+      "top": 382.65625,
+      "bottom": 438.65625
+    },
+    {
+      "text": "Start the 3-Step Inquiry",
+      "href": "/franchise/contact?source_page=homepage_hero",
+      "focusVisible": true,
+      "top": 450.65625,
+      "bottom": 494.65625
+    }
+  ],
+  "screenReaderOrder": "- main:\n  - text: Franchise Opportunity\n  - heading \"Build the Next Budda's.\" [level=1]\n  - paragraph: A Hawaiian Bakery & Grill franchise built around the Budda Roll, bakery-led differentiation, and generous hospitality.\n  - term: Current footprint\n  - definition: 2 Utah restaurants operating today\n  - link \"Explore the Opportunity\":\n    - /url: /franchise/the-opportunity\n  - link \"Start the 3-Step Inquiry\":\n    - /url: /franchise/contact?source_page=homepage_hero\n  - figure:\n    - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n  - region \"The Budda's Advantage\":\n    - text: THE BUDDA'S ADVANTAGE\n    - heading \"Why the model works for operators.\" [level=2]\n    - paragraph: \"A connected model: product demand, operating consistency, teachable hospitality, and readiness-led growth.\"\n    - list \"Operator model pillars\":\n      - listitem:\n        - article:\n          - button \"01 PRODUCT The Roll sets Budda's apart.\"\n      - listitem:\n        - article:\n          - button \"02 SYSTEM Consistency teams can follow.\"\n      - listitem:\n        - article:\n          - button \"03 EXPERIENCE Hospitality teams can learn.\"\n      - listitem:\n        - article:\n          - button \"04 GROWTH Ready first. Growth second.\"\n    - link \"Review the Franchise Opportunity\":\n      - /url: /franchise/the-opportunity\n    - paragraph: No obligation — takes under 2 minutes.\n  - region \"Built for operators who can build with us.\":\n    - paragraph: CANDIDATE PROFILE\n    - heading \"Built for operators who can build with us.\" [level=2]\n    - paragraph: The gate reviews restaurant leadership, financial readiness, and owner responsibility.\n    - list \"Operator standards\":\n      - listitem:\n        - paragraph: OPERATE — Restaurant leadership\n        - heading \"Multi-unit or high-volume restaurant experience\" [level=3]\n        - paragraph: Lead multiple locations or high-volume restaurant operations.\n      - listitem:\n        - paragraph: CAPITALIZE — Financial requirement\n        - heading \"Financial readiness is reviewed during mutual evaluation.\" [level=3]\n        - link \"Review financial qualification and disclosure status\":\n          - /url: /franchise/the-opportunity#financial-requirements\n      - listitem:\n        - paragraph: STEWARD — Owner responsibility\n        - heading \"Protect the product. Lead the team. Serve the community.\" [level=3]\n        - paragraph: Lead teams while upholding Budda's standards and community responsibilities.\n    - heading \"THE PARTNERSHIP WORKS BOTH WAYS.\" [level=3]\n    - term: What you bring\n    - definition: Operate · Capitalize · Steward\n    - term: What Budda's brings\n    - definition: Signature product · Bakery standards · Operating systems · Support\n    - link \"REVIEW QUALIFICATIONS\":\n      - /url: /franchise/the-opportunity?source_page=homepage_candidate_profile#qualifications\n    - paragraph: No obligation — review the full candidate criteria.\n    - figure \"OPERATING DISCIPLINE MORE TABLES. SAME STANDARD.\":\n      - img \"A baker arranging freshly baked rolls at a sunlit bakery counter\"\n      - text: OPERATING DISCIPLINE MORE TABLES. SAME STANDARD.\n  - region \"Franchise evaluation request\":\n    - heading \"Let's Build Something Together.\" [level=2]\n    - paragraph:\n      - text: For experienced operators ready for a confidential, two-way evaluation.\n      - link \"See how we partner →\":\n        - /url: /franchise/process\n    - link \"Request a Mutual Evaluation\":\n      - /url: /franchise/contact?source_page=%2Ffranchise\n    - paragraph: Takes 2 minutes · Response in 48 hrs. · In-House Corporate Review\n    - paragraph: Confidential inquiry only — not an application, territory reservation, or franchise offer.\n    - paragraph: \"Current footprint: 2 Utah restaurants operating today\"\n    - heading \"Franchise Evaluation Benchmarks\" [level=3]\n    - text: $150K Min. Liquid Capital $400K Min. Net Worth\n    - list \"Four-stage mutual evaluation process\":\n      - listitem: 1 Inquiry\n      - listitem: 2 Review\n      - listitem: 3 Diligence\n      - listitem: 4 Onboarding\n    - button \"Explore the 4-stage process\"\n    - paragraph: Direct leadership and operational onboarding throughout the evaluation.",
+  "textZoomOverflow": false,
+  "reducedMotion": {
+    "runningHeroAnimations": [],
+    "stickyTransition": "none"
+  },
+  "opportunityUrl": "http://localhost:3000/franchise/the-opportunity",
+  "backUrl": "http://localhost:3000/franchise"
+}
