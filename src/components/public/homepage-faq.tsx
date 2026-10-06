@@ -1,84 +1,54 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, FileText, Flag, MessageCircle, Plus, Settings2, Star, UserRound, UsersRound } from "lucide-react";
+import { ArrowRight, FileText, MessagesSquare, Plus } from "lucide-react";
 import "@/src/app/franchise/homepage-faq.css";
 
-const topics = [
-  {
-    title: "Is Budda's right for me?",
-    cue: "Fit & opportunity",
-    heading: "Questions about fit and the opportunity",
-    description: "Who we're looking for and what makes the concept distinct.",
-    Icon: UserRound,
-    questions: [
-      { title: "Who is Budda's looking for?", hint: "Restaurant experience, financial readiness, and hands-on ownership.", answer: "Experienced restaurant leaders with financial readiness and a hands-on approach to ownership." },
-      { title: "What makes the concept different?", hint: "The signature product behind Budda's Hawaiian Bakery & Grill.", answer: "A Hawaiian Bakery & Grill centered on the signature Budda Roll." },
-    ],
-  },
-  {
-    title: "What do I receive?",
-    cue: "Support & investment",
-    heading: "Questions about support and investment",
-    description: "The support system and where to find financial details.",
-    Icon: Settings2,
-    questions: [
-      { title: "What support does an operator receive?", hint: "Training, standards, supplies, and ongoing resources.", answer: "Opening and training guidance, operating standards, brand tools, approved supply access, and ongoing resources." },
-      { title: "Where can I review investment and territory details?", hint: "Find the full details on The Opportunity page.", answer: "The Opportunity page covers financial qualifications, investment, and territory information." },
-    ],
-  },
-  {
-    title: "What happens next?",
-    cue: "The process",
-    heading: "Questions about the next steps",
-    description: "What an inquiry starts and what it does not commit you to.",
-    Icon: Flag,
-    questions: [
-      { title: "What happens after I inquire?", hint: "The three-step inquiry starts a four-stage evaluation.", answer: "The inquiry form has three steps. It begins a four-stage mutual evaluation, with each side deciding whether to continue." },
-      { title: "Does an inquiry reserve a territory or count as an application?", hint: "Understand what submitting an inquiry means.", answer: "No. An inquiry is not an application, territory reservation, franchise offer, or approval decision." },
-    ],
-  },
+// Preserve existing homepage answers. New timeline, cost, and territory claims
+// require client approval; do not promote unreviewed answers from the full FAQ.
+const questions = [
+  { id: "fit", title: "Who is Budda's looking for?", answer: "Experienced restaurant leaders with financial readiness and a hands-on approach to ownership. We look for operators who share our values, have relevant restaurant experience, and are excited to be part of a people- and community-focused brand." },
+  { id: "concept", title: "What makes the concept different?", answer: "A Hawaiian Bakery & Grill centered on the signature Budda Roll." },
+  { id: "support", title: "What support does an operator receive?", answer: "Opening and training guidance, operating standards, brand tools, approved supply access, and ongoing resources." },
+  { id: "opportunity", title: "Where can I review investment and territory details?", answer: "The Opportunity page covers financial qualifications, investment, and territory information." },
+  { id: "inquiry", title: "What happens after I inquire?", answer: "It begins a four-stage mutual evaluation, with each side deciding whether to continue." },
+  { id: "boundary", title: "Does an inquiry reserve a territory or count as an application?", answer: "No. An inquiry is not an application, territory reservation, franchise offer, or approval decision." },
 ] as const;
 
 export function HomepageFaq() {
-  const [active, setActive] = useState(0);
-  const topic = topics[active];
+  const [openQuestion, setOpenQuestion] = useState<string | null>("fit");
 
   return <section className="home-section home-faq" aria-labelledby="franchise-faq-title">
     <div className="content-wide home-faq-layout">
       <div className="home-faq-intro">
-        <p className="home-faq-eyebrow home-eyebrow">Common questions</p>
+        <p className="home-eyebrow">Answers for what&apos;s next</p>
         <h2 id="franchise-faq-title" className="home-section-title">Your franchise questions, answered</h2>
         <p className="home-faq-lede home-section-intro">Get quick answers about fit, support, investment, territory details, and what happens after you inquire.</p>
-
         <aside className="home-faq-opportunity">
           <FileText aria-hidden="true" />
-          <div><h3>Looking for investment and territory details?</h3><p>The full information is on The Opportunity page.</p></div>
-          <Link href="/franchise/the-opportunity">Explore the Opportunity<ArrowRight aria-hidden="true" /></Link>
+          <div><p className="home-faq-label">Investment + territory</p><h3>Looking for investment and territory details?</h3><p>The full information is on The Opportunity page.</p></div>
+          <Link href="/franchise/the-opportunity">View opportunity details<ArrowRight aria-hidden="true" /></Link>
         </aside>
-
-        <div className="home-faq-brand">
-          <p>Great food<br />brings opportunity.</p>
-          <span>A brighter tomorrow together.</span>
-          <div className="home-faq-brand-image"><Image src="/images/franchise-hero-signature-roll.png" alt="Signature Budda Roll with its soft crumb visible" fill sizes="(max-width: 1023px) 40vw, 28vw" /></div>
-        </div>
       </div>
 
       <div className="home-faq-explorer">
-        <div className="home-faq-topics" role="group" aria-label="Question topics">
-          {topics.map(({ title, cue, Icon }, index) => <button key={title} type="button" className={index === active ? "is-active" : ""} aria-pressed={index === active} aria-controls="home-faq-panel" onClick={() => setActive(index)}><span className="home-faq-topic-icon"><Icon aria-hidden="true" /></span><span><strong>{title}</strong><small>{cue}</small></span></button>)}
+        <div className="home-faq-questions">
+          {questions.map(({ id, title, answer }) => {
+            const isOpen = openQuestion === id;
+            const buttonId = `home-faq-${id}-button`;
+            const panelId = `home-faq-${id}-answer`;
+            return <div className={`home-faq-question${isOpen ? " is-open" : ""}`} key={id}>
+              <h3><button id={buttonId} type="button" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpenQuestion(isOpen ? null : id)}><span>{title}</span><Plus aria-hidden="true" /></button></h3>
+              <div id={panelId} role="region" aria-labelledby={buttonId} hidden={!isOpen}><p>{answer}</p>{id === "fit" && <Link className="home-faq-profile-link" href="/franchise/the-opportunity#mutual-operator-fit">View the full candidate profile<ArrowRight aria-hidden="true" /></Link>}</div>
+            </div>;
+          })}
         </div>
-
-        <div id="home-faq-panel" className="home-faq-panel" aria-live="polite">
-          <div className="home-faq-panel-heading"><div><h3>{topic.heading}</h3><p>{topic.description}</p></div><span>{topic.questions.length} questions</span></div>
-          <div className="home-faq-questions">{topic.questions.map(({ title, hint, answer }) => <details key={title}><summary><span><strong>{title}</strong><small>{hint}</small></span><Plus aria-hidden="true" /></summary><p>{answer}</p></details>)}</div>
-          <div className="home-faq-resources"><h4>Related resources</h4><div><Link href="/franchise/the-opportunity"><UsersRound aria-hidden="true" />Explore the Opportunity<ArrowRight aria-hidden="true" /></Link><Link href="/franchise/process"><Star aria-hidden="true" />See the Process<ArrowRight aria-hidden="true" /></Link></div></div>
+        <div className="home-faq-contact">
+          <span className="home-faq-contact-icon" aria-hidden="true"><MessagesSquare /></span>
+          <div className="home-faq-contact-copy"><p className="home-faq-label">Ready to continue the conversation?</p><h3>Request Franchise Information</h3><p>Tell us a bit about yourself and our team will be in touch.</p></div>
+          <Link href="/franchise/contact">Request Franchise Information<ArrowRight aria-hidden="true" /></Link>
         </div>
-
-        <div className="home-faq-other-topics">{topics.map(({ title, cue, Icon }, index) => index === active ? null : <button key={title} type="button" onClick={() => setActive(index)}><span className="home-faq-topic-icon"><Icon aria-hidden="true" /></span><span><strong>{title}</strong><small>{cue}</small></span><ArrowRight aria-hidden="true" /></button>)}</div>
-        <div className="home-faq-contact"><MessageCircle aria-hidden="true" /><p><strong>Still have a question?</strong><span>Reach out and our team will help you find the information you need.</span></p><Link href="/franchise/contact">Request Franchise Information<ArrowRight aria-hidden="true" /></Link></div>
       </div>
     </div>
   </section>;

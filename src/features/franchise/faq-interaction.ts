@@ -12,6 +12,8 @@ export type SearchableFaq = {
 
 export const FAQ_CANONICAL_URL = "https://buddasfranchise.com/franchise/faq";
 
+export const getFaqTopicCategory = (category: string) => category === "Supply & Ingredients" ? "Concept & Operations" : category;
+
 export const normalizeFaqSearchTerm = (value: string) => value
   .normalize("NFKD")
   .replace(/\p{M}/gu, "")

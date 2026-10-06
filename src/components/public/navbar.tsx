@@ -30,6 +30,7 @@ export const Navbar = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
+  const visibleUtilityItems = utilityItems.filter((item) => item.href !== "/franchise/login");
   const isInquiryPage = isCurrentPage(pathname, "/franchise/contact");
   const scrollToInquiryForm = () => {
     document.querySelector(".inquiry-form")?.scrollIntoView({
@@ -164,7 +165,7 @@ export const Navbar = ({
               {/* Secondary Utilities Container */}
               <nav aria-label="Account and Reference" className="hidden nav:block bg-bds-cream/70 p-1 rounded-xl border border-bds-cocoa/10">
                 <ul role="list" className="flex items-center gap-1">
-                  {utilityItems.map((item) => {
+                  {visibleUtilityItems.map((item) => {
                     if (item.external) {
                       return (
                         <li key={item.href}>
@@ -291,7 +292,7 @@ export const Navbar = ({
                 Utilities
               </span>
               <ul role="list" className="flex flex-col gap-4">
-                {utilityItems.map((item) => {
+                {visibleUtilityItems.map((item) => {
                   if (item.external) {
                     return (
                       <li key={item.href}>

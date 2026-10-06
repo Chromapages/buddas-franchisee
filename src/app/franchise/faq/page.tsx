@@ -31,7 +31,7 @@ export default function FaqPage() {
         descriptionClassName="faq-intro"
         eyebrow={{ label: "Franchise FAQ" }}
         title="Frequently Asked Questions"
-        description={FAQ_DESCRIPTION}
+        description="Straight answers about the concept, investment, territory, support, and development process."
       />
       <section className="faq-desk-surface">
         <Suspense fallback={<div className="faq-frame py-8 text-sm text-bds-text-body">Loading FAQs…</div>}>

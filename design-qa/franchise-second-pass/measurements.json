@@ -1,0 +1,496 @@
+{
+  "mobile": {
+    "documentWidth": 382,
+    "faqAnswers": [
+      "Experienced restaurant leaders with financial readiness and a hands-on approach to ownership.",
+      "A Hawaiian Bakery & Grill centered on the signature Budda Roll.",
+      "Opening and training guidance, operating standards, brand tools, approved supply access, and ongoing resources.",
+      "The Opportunity page covers financial qualifications, investment, and territory information.",
+      "It begins a four-stage mutual evaluation, with each side deciding whether to continue.",
+      "No. An inquiry is not an application, territory reservation, franchise offer, or approval decision."
+    ],
+    "faqButtons": 6,
+    "footprintCount": 1,
+    "heroPrimary": {
+      "href": "/franchise/contact",
+      "noWrap": "nowrap",
+      "rect": {
+        "bottom": 405.78125,
+        "height": 56,
+        "left": 24,
+        "right": 358,
+        "top": 349.78125,
+        "width": 334,
+        "x": 24,
+        "y": 349.78125
+      },
+      "text": "Request Franchise Information"
+    },
+    "overflow": [],
+    "smallTargets": [],
+    "supportItems": 5,
+    "supportNestedLists": 0,
+    "tabs": 0,
+    "taglineCount": 1,
+    "topLogin": 0,
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  "expandedMobileTargets": {
+    "pageWidth": 382,
+    "targets": [
+      {
+        "h": 44,
+        "text": "",
+        "w": 124
+      },
+      {
+        "h": 46,
+        "text": "",
+        "w": 46
+      },
+      {
+        "h": 48,
+        "text": "Home (Current Page)",
+        "w": 350
+      },
+      {
+        "h": 48,
+        "text": "Why Budda's",
+        "w": 350
+      },
+      {
+        "h": 48,
+        "text": "The Opportunity",
+        "w": 350
+      },
+      {
+        "h": 48,
+        "text": "How It Works",
+        "w": 350
+      },
+      {
+        "h": 48,
+        "text": "FAQ",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Restaurant & Menu (opens in a new tab)↗",
+        "w": 350
+      },
+      {
+        "h": 56,
+        "text": "Request Franchise Information",
+        "w": 334
+      },
+      {
+        "h": 44,
+        "text": "Explore the Opportunity",
+        "w": 199.796875
+      },
+      {
+        "h": 64,
+        "text": "View the full candidate profile",
+        "w": 328.765625
+      },
+      {
+        "h": 64,
+        "text": "See the Process",
+        "w": 350
+      },
+      {
+        "h": 64,
+        "text": "See Budda's in operation (opens in a new tab)",
+        "w": 350
+      },
+      {
+        "h": 56,
+        "text": "Explore the Opportunity",
+        "w": 302
+      },
+      {
+        "h": 58,
+        "text": "Who is Budda's looking for?",
+        "w": 350
+      },
+      {
+        "h": 80,
+        "text": "What makes the concept different?",
+        "w": 350
+      },
+      {
+        "h": 80,
+        "text": "What support does an operator receive?",
+        "w": 350
+      },
+      {
+        "h": 80,
+        "text": "Where can I review investment and territory details?",
+        "w": 350
+      },
+      {
+        "h": 58,
+        "text": "What happens after I inquire?",
+        "w": 350
+      },
+      {
+        "h": 80,
+        "text": "Does an inquiry reserve a territory or count as an application?",
+        "w": 350
+      },
+      {
+        "h": 56,
+        "text": "Request Franchise Information",
+        "w": 350
+      },
+      {
+        "h": 52,
+        "text": "Request Franchise Information",
+        "w": 350
+      },
+      {
+        "h": 48,
+        "text": "Email usbuddasbakery@gmail.com",
+        "w": 171
+      },
+      {
+        "h": 48,
+        "text": "Call us(801) 701-0617",
+        "w": 171
+      },
+      {
+        "h": 56,
+        "text": "Explore",
+        "w": 350
+      },
+      {
+        "h": 56,
+        "text": "For operators",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Operator Criteria",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Investment Overview",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Territory & Market Growth",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Request Franchise Information",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Operator Portal Login",
+        "w": 350
+      },
+      {
+        "h": 56,
+        "text": "Company",
+        "w": 350
+      },
+      {
+        "h": 44,
+        "text": "Privacy Policy",
+        "w": 91.09375
+      },
+      {
+        "h": 44,
+        "text": "Terms of Use",
+        "w": 85.0625
+      },
+      {
+        "h": 44,
+        "text": "Accessibility",
+        "w": 84.296875
+      }
+    ],
+    "topLogin": 0,
+    "width": 390
+  },
+  "keyboard": [
+    {
+      "answer": "Opening and training guidance, operating standards, brand tools, approved supply access, and ongoing resources.",
+      "expanded": "true",
+      "focus": "home-faq-support-button",
+      "id": "support",
+      "panelHidden": false
+    },
+    {
+      "answer": "The Opportunity page covers financial qualifications, investment, and territory information.",
+      "expanded": "true",
+      "focus": "home-faq-opportunity-button",
+      "id": "opportunity",
+      "panelHidden": false
+    },
+    {
+      "answer": "It begins a four-stage mutual evaluation, with each side deciding whether to continue.",
+      "expanded": "true",
+      "focus": "home-faq-inquiry-button",
+      "id": "inquiry",
+      "panelHidden": false
+    },
+    {
+      "answer": "No. An inquiry is not an application, territory reservation, franchise offer, or approval decision.",
+      "expanded": "true",
+      "focus": "home-faq-boundary-button",
+      "id": "boundary",
+      "panelHidden": false
+    },
+    {
+      "answer": "Experienced restaurant leaders with financial readiness and a hands-on approach to ownership.",
+      "expanded": "true",
+      "focus": "home-faq-fit-button",
+      "id": "fit",
+      "panelHidden": false
+    }
+  ],
+  "focus": [
+    {
+      "height": 44,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Budda's Hawaiian Bakery & Grill - Franchise Opportunity Home",
+      "width": 124
+    },
+    {
+      "height": 46,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Open navigation menu",
+      "width": 46
+    },
+    {
+      "height": 56,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Request Franchise Information",
+      "width": 334
+    },
+    {
+      "height": 44,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Explore the Opportunity",
+      "width": 199.796875
+    },
+    {
+      "height": 64,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "View the full candidate profile",
+      "width": 328.765625
+    },
+    {
+      "height": 64,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "See the Process",
+      "width": 350
+    },
+    {
+      "height": 64,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "See Budda's in operation (opens in a new tab)",
+      "width": 350
+    },
+    {
+      "height": 56,
+      "id": "",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgb(244, 185, 66) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Explore the Opportunity",
+      "width": 302
+    },
+    {
+      "height": 58,
+      "id": "home-faq-fit-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Who is Budda's looking for?",
+      "width": 350
+    },
+    {
+      "height": 80,
+      "id": "home-faq-concept-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "What makes the concept different?",
+      "width": 350
+    },
+    {
+      "height": 80,
+      "id": "home-faq-support-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "What support does an operator receive?",
+      "width": 350
+    },
+    {
+      "height": 80,
+      "id": "home-faq-opportunity-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Where can I review investment and territory details?",
+      "width": 350
+    },
+    {
+      "height": 58,
+      "id": "home-faq-inquiry-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "What happens after I inquire?",
+      "width": 350
+    },
+    {
+      "height": 80,
+      "id": "home-faq-boundary-button",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Does an inquiry reserve a territory or count as an application?",
+      "width": 350
+    },
+    {
+      "height": 56,
+      "id": "",
+      "outline": "rgb(28, 95, 86) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Request Franchise Information",
+      "width": 350
+    },
+    {
+      "height": 52,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Request Franchise Information",
+      "width": 350
+    },
+    {
+      "height": 48,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Email usbuddasbakery@gmail.com",
+      "width": 171
+    },
+    {
+      "height": 48,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Call us(801) 701-0617",
+      "width": 171
+    },
+    {
+      "height": 56,
+      "id": "footer-accordion-header-explore",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Explore",
+      "width": 350
+    },
+    {
+      "height": 56,
+      "id": "footer-accordion-header-operators",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "For operators",
+      "width": 350
+    },
+    {
+      "height": 56,
+      "id": "footer-accordion-header-company",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "BUTTON",
+      "text": "Company",
+      "width": 350
+    },
+    {
+      "height": 44,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Privacy Policy",
+      "width": 91.09375
+    },
+    {
+      "height": 44,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Terms of Use",
+      "width": 85.0625
+    },
+    {
+      "height": 44,
+      "id": "",
+      "outline": "rgb(244, 185, 66) solid 3px",
+      "shadow": "rgba(28, 31, 28, 0.92) 0px 0px 0px 5px",
+      "tag": "A",
+      "text": "Accessibility",
+      "width": 84.296875
+    }
+  ],
+  "contrast": {
+    "mobile": {
+      "checked": 106,
+      "minimum": 4.94,
+      "failures": []
+    },
+    "tablet": {
+      "checked": 110,
+      "minimum": 4.94,
+      "failures": []
+    },
+    "desktop": {
+      "checked": 124,
+      "minimum": 4.94,
+      "failures": []
+    }
+  },
+  "method": "Read-only DOM inspection, WCAG sRGB contrast computation, live browser keyboard interactions. Decorative aria-hidden glyphs excluded from text thresholds. No automated suite or build run."
+}

@@ -131,10 +131,10 @@ const FooterNavigation = ({ pagePath, content }: { pagePath: string; content: Fo
       <FooterBrand />
       <div className="lg:order-last lg:pl-8">
         <FooterContact pagePath={pagePath} content={content} />
-        <div className="mt-8 border-t border-bds-teal-dark/25 pt-7">
+        {pagePath !== "/franchise" ? <div className="mt-8 border-t border-bds-teal-dark/25 pt-7">
           <p className="max-w-[24ch] font-heading text-xs font-bold uppercase leading-6 tracking-[0.2em] text-bds-text-heading">Good food brings people together.</p>
           <span className="mt-5 block h-px w-9 bg-bds-action-primary/70" aria-hidden="true" />
-        </div>
+        </div> : null}
       </div>
       <div className="mt-2 border-t border-bds-teal-dark/15 lg:hidden">{primaryFooterNavigation.map((section) => <FooterMobileNavGroup key={section.id} section={section} pagePath={pagePath} />)}</div>
       <div className="hidden lg:contents">{primaryFooterNavigation.map((section) => <div className="pl-8" key={section.id}><FooterDesktopNavGroup section={section} pagePath={pagePath} /></div>)}</div>

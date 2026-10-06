@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import Link from "next/link";
-import { Printer, Search, ThumbsDown, ThumbsUp, X } from "lucide-react";
+import { ArrowRight, ChevronRight, CircleHelp, Coins, FileText, Leaf, Link2, MapPin, Printer, Search, Store, ThumbsDown, ThumbsUp, UsersRound, X } from "lucide-react";
 import { AccordionItem } from "@/src/components/ui/accordion";
 import { StructuredListHighlight, type StructuredListData } from "@/src/components/public/structured-list-highlight";
 import { trackFunnelEvent } from "@/src/lib/analytics";
 import { FOOTER_CONTENT } from "@/src/features/footer/footer-content";
-import { copyFaqAnswer, faqAnswerUrl, faqInteractionReducer, findFaqFragment, initialFaqState, matchesFaqSearch, normalizeFaqSearchTerm } from "@/src/features/franchise/faq-interaction";
+import { copyFaqAnswer, faqAnswerUrl, faqInteractionReducer, findFaqFragment, getFaqTopicCategory, initialFaqState, matchesFaqSearch, normalizeFaqSearchTerm } from "@/src/features/franchise/faq-interaction";
 
 export type FaqItem = {
   id: string;
@@ -31,6 +31,58 @@ export type FaqRetrievalConfig = {
   };
 };
 
+const faqTopics: Record<string, {
+  Icon: typeof Store;
+  heading: string;
+  description: string;
+  resources: { title: string; description: string; href: string; label: string; Icon: typeof Store }[];
+}> = {
+  "Concept & Operations": {
+    Icon: Store,
+    heading: "Questions about our model, food, and restaurant operations.",
+    description: "Learn what makes Budda's different and how our bakery and restaurant operations work together to create a unique guest experience and a strong business model.",
+    resources: [
+      { title: "The Budda's Operating Model", description: "A closer look at our bakery, dayparts, and restaurant operations.", href: "/franchise/why-buddas", label: "Explore the operating model", Icon: FileText },
+      { title: "Support for Operators", description: "Training, resources, and a team committed to your success.", href: "/franchise/the-opportunity#support-runway", label: "See operator support", Icon: UsersRound },
+    ],
+  },
+  "Investment & Capital": {
+    Icon: Coins,
+    heading: "Questions about investment and capital readiness.",
+    description: "Review financial qualifications and the disclosure information that informs a potential franchise partnership.",
+    resources: [
+      { title: "Capital & Disclosure", description: "Understand the financial information available for the opportunity.", href: "/franchise/the-opportunity#capital-disclosure", label: "Review capital details", Icon: Coins },
+      { title: "The Evaluation Process", description: "See how mutual review and diligence fit together.", href: "/franchise/process", label: "Explore the process", Icon: FileText },
+    ],
+  },
+  "Territory & Markets": {
+    Icon: MapPin,
+    heading: "Questions about territories and market availability.",
+    description: "Learn how markets are evaluated and what an inquiry means for territory discussions.",
+    resources: [
+      { title: "Markets & Territory", description: "Review the public market and territory information.", href: "/franchise/the-opportunity#markets-territory", label: "Explore market details", Icon: MapPin },
+      { title: "Discuss Your Market", description: "Share your background and the market you would like to discuss.", href: "/franchise/contact", label: "Request franchise information", Icon: UsersRound },
+    ],
+  },
+  "Training & Support": {
+    Icon: UsersRound,
+    heading: "Questions about training and operator support.",
+    description: "Explore the standards, resources, and guidance behind opening and daily restaurant operations.",
+    resources: [
+      { title: "Support for Operators", description: "Review the systems and resources behind the restaurant.", href: "/franchise/the-opportunity#support-runway", label: "See operator support", Icon: UsersRound },
+      { title: "The Budda's Operating Model", description: "Learn how product, preparation, and hospitality work together.", href: "/franchise/why-buddas", label: "Explore the operating model", Icon: Store },
+    ],
+  },
+  "Process & Diligence": {
+    Icon: FileText,
+    heading: "Questions about the development process.",
+    description: "Understand the mutual evaluation stages, diligence, and preparation involved in a potential partnership.",
+    resources: [
+      { title: "The Development Process", description: "Review the steps from inquiry through mutual evaluation.", href: "/franchise/process", label: "Explore the process", Icon: FileText },
+      { title: "The Franchise Opportunity", description: "Consider the concept, qualifications, and partnership expectations.", href: "/franchise/the-opportunity", label: "Review the opportunity", Icon: Store },
+    ],
+  },
+};
 
 const getFaqSearchTopic = (query: string): "concept" | "financials" | "territory" | "supply" | "support" | "timeline" | "other" => {
   const normalized = normalizeFaqSearchTerm(query);
@@ -85,14 +137,13 @@ const FaqHelpfulness = ({ questionId, category, position }: { questionId: string
 
 const FaqContactCta = ({ resultCount }: { resultCount: number }) => (
   <aside className="faq-contact-cta" aria-labelledby="faq-inquiry-heading">
-    <div className="faq-contact-row">
+    <span className="faq-contact-icon" aria-hidden="true"><CircleHelp /></span>
       <div className="faq-contact-copy">
         <h2 id="faq-inquiry-heading">Still have a question?</h2>
-        <p>Need a direct conversation about your market or qualifications?</p>
-        <p>An inquiry is not an application, territory reservation, or offer of a franchise.</p>
+        <p>Get in touch with our team for answers specific to your market or qualifications.</p>
       </div>
-      <Link href="/franchise/contact" onClick={() => trackFunnelEvent("faq_inquiry_cta_click", { faq_category: "all", faq_position: "bottom", faq_result_count: resultCount, faq_destination_id: "franchise-contact" })} className="faq-inquiry-link">Start a franchise inquiry</Link>
-    </div>
+      <Link href="/franchise/contact" onClick={() => trackFunnelEvent("faq_inquiry_cta_click", { faq_category: "all", faq_position: "sidebar", faq_result_count: resultCount, faq_destination_id: "franchise-contact" })} className="faq-inquiry-link">Request Franchise Information<ArrowRight aria-hidden="true" /></Link>
+      <p className="faq-inquiry-boundary">An inquiry is not an application, territory reservation, or offer of a franchise.</p>
   </aside>
 );
 
@@ -106,7 +157,7 @@ const FaqCopyLink = ({ slug }: { slug: string }) => {
           ? (value) => navigator.clipboard.writeText(value)
           : undefined);
         setStatus(copied ? "copied" : "failed");
-      }}>Copy link</button>
+      }}><Link2 aria-hidden="true" />Copy answer link</button>
       <span role="status">{status === "copied" ? "Link copied." : status === "failed" ? "Could not copy. Select and copy the link below." : ""}</span>
       {status === "failed" ? (
         <label className="block">
@@ -127,7 +178,7 @@ export const FaqExplorer = ({
 }) => {
   const [state, dispatch] = useReducer(faqInteractionReducer, faqs, initialFaqState);
   const { input: searchInput, query } = state;
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(retrieval.categoryFilter.enabled ? getFaqTopicCategory(faqs[0]?.category ?? "") : "");
   const openFaqIds = query ? state.searchOpen : state.browseOpen;
   const [enhanced, setEnhanced] = useState(false);
   const [revealSlug, setRevealSlug] = useState<string | null>(null);
@@ -152,13 +203,20 @@ export const FaqExplorer = ({
     return () => window.removeEventListener("keydown", focusSearch);
   }, [retrieval.searchEnabled]);
 
-  const categoryCounts = useMemo(() => new Map(faqs.map((faq) => [faq.category, faqs.filter((item) => item.category === faq.category).length])), [faqs]);
-  const filterCategories = useMemo(() => [...categoryCounts.entries()].filter(([, count]) => count >= retrieval.categoryFilter.minimumQuestionsPerCategory).map(([name]) => name), [categoryCounts, retrieval.categoryFilter.minimumQuestionsPerCategory]);
-  const showCategoryFilter = retrieval.categoryFilter.enabled && filterCategories.length > 1;
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const faq of faqs) {
+      const topic = getFaqTopicCategory(faq.category);
+      counts.set(topic, (counts.get(topic) ?? 0) + 1);
+    }
+    return counts;
+  }, [faqs]);
+  const showCategoryFilter = retrieval.categoryFilter.enabled && categoryCounts.size > 1;
+  const selectedTopic = !query && enhanced ? faqTopics[category] : undefined;
 
   const visibleFaqs = useMemo(() => {
-    return faqs.filter((faq) => (!category || faq.category === category) && matchesFaqSearch(faq, query));
-  }, [category, faqs, query]);
+    return faqs.filter((faq) => (!enhanced || !category || query || getFaqTopicCategory(faq.category) === category) && matchesFaqSearch(faq, query));
+  }, [category, enhanced, faqs, query]);
   const areAllVisibleOpen = visibleFaqs.length > 0 && visibleFaqs.every((faq) => openFaqIds.has(faq.id));
 
   const setFaqOpen = (id: string, isOpen: boolean) => {
@@ -189,13 +247,14 @@ export const FaqExplorer = ({
   };
   const applyCategoryFilter = (nextCategory: string) => {
     setCategory(nextCategory);
-    trackFunnelEvent("faq_filter_applied", { faq_filter_id: nextCategory || "all", faq_result_count: nextCategory ? faqs.filter((faq) => faq.category === nextCategory).length : faqs.length });
+    dispatch({ type: "search", input: "", faqs });
+    trackFunnelEvent("faq_filter_applied", { faq_filter_id: nextCategory || "all", faq_result_count: nextCategory ? categoryCounts.get(nextCategory) ?? 0 : faqs.length });
   };
   useEffect(() => {
     const openHashTarget = () => {
       const faq = findFaqFragment(faqs, window.location.hash);
       if (!faq) return;
-      setCategory("");
+      setCategory(getFaqTopicCategory(faq.category));
       dispatch({ type: "fragment", id: faq.id });
       setRevealSlug(faq.slug);
       trackFunnelEvent("faq_deep_link_visit", { faq_question_id: faq.id, faq_slug: faq.slug, faq_category: faq.category, faq_viewport: getViewport() });
@@ -244,7 +303,7 @@ export const FaqExplorer = ({
     trackFunnelEvent("faq_search", { faq_category: "all", faq_result_count: visibleFaqs.length, faq_search_topic: getFaqSearchTopic(query), faq_zero_results: visibleFaqs.length === 0 });
   }, [query, retrieval.searchEnabled, visibleFaqs.length]);
   useEffect(() => {
-    const summary = `${visibleFaqs.length} ${visibleFaqs.length === 1 ? "question" : "questions"} available${category ? ` in ${category}` : ""}${query ? ` for ${query}` : ""}`;
+    const summary = `${visibleFaqs.length} ${visibleFaqs.length === 1 ? "question" : "questions"} available${category && !query ? ` in ${category}` : ""}${query ? ` for ${query}` : ""}`;
     const timer = window.setTimeout(() => setAnnouncedResultSummary(summary), 200);
     return () => window.clearTimeout(timer);
   }, [category, query, visibleFaqs.length]);
@@ -255,7 +314,7 @@ export const FaqExplorer = ({
       <div className="faq-toolbar">
         {retrieval.searchEnabled ? (
           <form className="faq-search" role="search" aria-label="Search franchise FAQs" onSubmit={(event) => event.preventDefault()}>
-            <label htmlFor="faq-search" className="faq-search-label">Search questions and answers</label>
+            <label htmlFor="faq-search" className="sr-only">Search questions and answers</label>
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-bds-text-body" aria-hidden="true" />
               <input
@@ -269,7 +328,7 @@ export const FaqExplorer = ({
                   dispatch({ type: "search", input: value, faqs });
                 }}
                 className={`w-full rounded-xl py-3 pl-10 placeholder:text-bds-text-body/80 ${searchInput ? "pr-12" : "pr-4"}`}
-                placeholder="Search questions and answers"
+                placeholder="Search by topic or keyword"
               />
               {searchInput ? (
                 <button type="button" onClick={clearSearch} aria-label="Clear search" className="absolute right-1 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-lg text-bds-teal-dark">
@@ -281,20 +340,11 @@ export const FaqExplorer = ({
         ) : null}
         <div className="faq-toolbar-actions">
           <p id="faq-results-heading" className="faq-result-count">
-            {visibleFaqs.length} {query ? "matching " : ""}{visibleFaqs.length === 1 ? "question" : "questions"}
+            {query ? visibleFaqs.length : faqs.length} {query ? "matching " : ""}{(query ? visibleFaqs.length : faqs.length) === 1 ? "question" : "questions"}
           </p>
-          {showCategoryFilter ? (
-            <label className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-bds-text-body">
-              Filter
-              <select value={category} onChange={(event) => applyCategoryFilter(event.target.value)} className="min-h-11 rounded-lg border border-bds-teal-dark/30 bg-white px-2 text-sm">
-                <option value="">All topics</option>
-                {filterCategories.map((item) => <option key={item}>{item}</option>)}
-              </select>
-            </label>
-          ) : null}
           {visibleFaqs.length ? (
             <button type="button" disabled={!enhanced} onClick={toggleVisibleAccordions} className="faq-tool">
-              {areAllVisibleOpen ? "Collapse all" : "Expand all"}
+              {areAllVisibleOpen ? "Hide all answers" : "Show all answers"}
             </button>
           ) : null}
           <button type="button" disabled={!enhanced} onClick={printVisibleFaqs} className="faq-tool">
@@ -303,18 +353,38 @@ export const FaqExplorer = ({
         </div>
       </div>
 
-      <section id="faq-results" aria-labelledby="faq-results-heading">
+      <div className="faq-desk-layout">
+        <aside className="faq-sidebar">
+          {showCategoryFilter && <nav className="faq-topics faq-js-only" aria-label="Browse FAQ topics">
+            <p className="faq-eyebrow">Browse by topic</p>
+            <ul>{[...categoryCounts].map(([name, count]) => {
+              const TopicIcon = faqTopics[name]?.Icon ?? FileText;
+              return <li key={name}><button type="button" disabled={!enhanced} aria-pressed={!query && category === name} onClick={() => applyCategoryFilter(name)}>
+                <span className="faq-topic-icon" aria-hidden="true"><TopicIcon /></span>
+                <span><strong>{name}</strong><small>{count} {count === 1 ? "question" : "questions"}</small></span>
+                <ChevronRight aria-hidden="true" />
+              </button></li>;
+            })}</ul>
+          </nav>}
+          <FaqContactCta resultCount={visibleFaqs.length} />
+        </aside>
+      <section id="faq-results" aria-labelledby="faq-topic-heading">
         <p aria-live="polite" aria-atomic="true" className="sr-only">{announcedResultSummary}</p>
+        <header className="faq-topic-header">
+          <div className="faq-topic-meta"><p className="faq-eyebrow">{query ? "Search results" : selectedTopic ? category : "All topics"}</p><p className="faq-eyebrow">{visibleFaqs.length} {visibleFaqs.length === 1 ? "question" : "questions"}</p></div>
+          <h2 id="faq-topic-heading">{query ? "Answers matching your search." : selectedTopic?.heading ?? "Browse all franchise questions."}</h2>
+          {selectedTopic && <p>{selectedTopic.description}</p>}
+        </header>
         {visibleFaqs.length ? (
-          <div className="border-b border-bds-teal-dark/20">
+          <div className="faq-answer-list">
             {visibleFaqs.map((faq, index) => {
               return (
                 <AccordionItem
                   key={faq.id}
                   id={faq.slug}
                   title={faq.title}
-                  category={faq.category}
-                  headingLevel={2}
+                  category={query ? getFaqTopicCategory(faq.category) : undefined}
+                  headingLevel={3}
                   variant="ledger"
                   nativeDisclosure
                   isOpen={openFaqIds.has(faq.id)}
@@ -340,11 +410,10 @@ export const FaqExplorer = ({
                         })}
                         className="faq-deep-link touch-target-inline mt-4 inline-flex text-sm font-bold text-bds-teal-dark underline underline-offset-4"
                       >
-                        {faq.deepLink.label}
+                        {faq.deepLink.label}<ArrowRight aria-hidden="true" />
                       </Link>
                     ) : null}
                     <FaqCopyLink slug={faq.slug} />
-                    <button type="button" className="faq-tool faq-js-only" onClick={() => handleFaqOpenChange(faq, false)}>Collapse answer</button>
                   </div>
                 </AccordionItem>
               );
@@ -356,13 +425,21 @@ export const FaqExplorer = ({
             <p className="mt-2 break-words text-sm text-bds-text-body">No questions match <strong>“{searchInput.trim()}”</strong>.</p>
             <div className="mt-4 flex flex-wrap gap-3">
               <button type="button" onClick={clearSearch} className="faq-tool">Clear search</button>
-              <a href="#faq-results" onClick={clearSearch} className="faq-tool">View all questions</a>
+              <button type="button" onClick={() => applyCategoryFilter("")} className="faq-tool">View all questions</button>
             </div>
           </div>
         )}
-        <FaqContactCta resultCount={visibleFaqs.length} />
+        {selectedTopic && <section className="faq-related" aria-labelledby="faq-related-heading">
+          <h3 id="faq-related-heading" className="faq-eyebrow">Related resources</h3>
+          <div className="faq-resource-grid">{selectedTopic.resources.map(({ title, description, href, label, Icon }) => <article key={href}>
+            <span className="faq-topic-icon" aria-hidden="true"><Icon /></span>
+            <div><h4>{title}</h4><p>{description}</p><Link href={href}>{label}<ArrowRight aria-hidden="true" /></Link></div>
+          </article>)}</div>
+        </section>}
         <p className="faq-print-legal hidden text-xs leading-5">{FOOTER_CONTENT.legalDisclaimer}</p>
       </section>
+      </div>
+      <div className="faq-brand-strip"><p>People. Food. Community.<br />A brighter tomorrow together.</p><span aria-hidden="true" /><p><Leaf aria-hidden="true" />Budda&apos;s Hawaiian</p></div>
     </div>
   );
 };

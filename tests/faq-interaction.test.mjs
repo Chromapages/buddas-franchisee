@@ -1,10 +1,24 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { copyFaqAnswer, faqAnswerUrl, faqInteractionReducer as reduce, findFaqFragment, initialFaqState, matchesFaqSearch, normalizeFaqSearchTerm } from '../src/features/franchise/faq-interaction.ts';
+import { copyFaqAnswer, faqAnswerUrl, faqInteractionReducer as reduce, findFaqFragment, getFaqTopicCategory, initialFaqState, matchesFaqSearch, normalizeFaqSearchTerm } from '../src/features/franchise/faq-interaction.ts';
 import { getPublicFranchiseFaqItems } from '../src/features/franchise/faq-content.ts';
 
 const faqs = getPublicFranchiseFaqItems();
 const ids = faqs.map(({ id }) => id);
+
+test('topic presentation groups roll baking without changing governed FAQ records', () => {
+  const originalCategories = faqs.map(faq => faq.category);
+  const counts = new Map();
+  for (const faq of faqs) {
+    const topic = getFaqTopicCategory(faq.category);
+    counts.set(topic, (counts.get(topic) ?? 0) + 1);
+  }
+  assert.equal(counts.size, 5);
+  assert.equal(counts.get('Concept & Operations'), 2);
+  assert.equal([...counts.values()].reduce((sum, count) => sum + count, 0), faqs.length);
+  assert.deepEqual(faqs.map(faq => faq.category), originalCategories);
+  assert.equal(getFaqTopicCategory('Unlisted topic'), 'Unlisted topic');
+});
 
 test('browse defaults to first persisted ID; all can close and mixed state can expand', () => {
   let state = initialFaqState(faqs);

@@ -79,8 +79,8 @@ export const FranchiseFinalCta = ({
   if (simplified) return <div ref={sectionRef}>
     <section aria-labelledby="franchise-final-cta-title" className={fullBleed ? "home-section bg-bds-teal-dark text-bds-cream" : "home-section content-wide rounded-xl bg-bds-teal-dark p-8 text-bds-cream"}>
       <div className="content-wide grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.7fr)] lg:items-center lg:gap-16">
-        <div><h2 id="franchise-final-cta-title" className="home-section-title text-bds-cream">{content.title}</h2><p className="home-section-intro text-bds-cream">We&apos;ll determine together whether Budda&apos;s is the right fit.</p></div>
-        <div><FinalCtaAction href={contactHref} label={content.primaryAction.label} onPrimaryClick={onPrimaryClick} fullWidth /><p className="mt-4 max-w-[48ch] font-body text-sm leading-6 text-bds-cream">{content.boundary}</p></div>
+        <div><h2 id="franchise-final-cta-title" className="home-section-title text-bds-cream">{content.title}</h2><p className="home-section-intro text-bds-cream">We&apos;ll determine together whether Budda&apos;s is the right fit.</p><p className="mt-6 font-heading text-sm font-semibold text-bds-cream">Good food brings people together.</p></div>
+        <div><FinalCtaAction href={content.primaryAction.href} label={content.primaryAction.label} onPrimaryClick={onPrimaryClick} fullWidth /><p className="mt-4 max-w-[48ch] font-body text-sm leading-6 text-bds-cream">{content.boundary}</p></div>
       </div>
     </section>
   </div>;
